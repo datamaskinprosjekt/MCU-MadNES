@@ -103,9 +103,6 @@ override ASMFLAGS += -x assembler-with-cpp -D$(DEVICE) -Wall -Wextra -mcpu=corte
 #
 # NOTE: The -Wl,--gc-sections flag may interfere with debugging using gdb.
 #
-#override LDFLAGS += -Xlinker -Map=$(LST_DIR)/$(PROJECTNAME).map -mcpu=cortex-m3 \
-#-mthumb -T$(LIB)/EFM32GG/Source/GCC/efm32gg.ld \
-#-Wl,--gc-sections
 
 override LDFLAGS += -Xlinker -Map=$(LST_DIR)/$(PROJECTNAME).map -mcpu=cortex-m3 \
 -mthumb -T$(LIB)/EFM32GG/Source/GCC/efm32gg.ld --specs=nano.specs \
@@ -202,10 +199,12 @@ $(EXE_DIR)/$(PROJECTNAME).bin: $(EXE_DIR)/$(PROJECTNAME).out
 # Uncomment next line to produce assembly listing of entire program
 #	$(DUMP) -h -S -C $(EXE_DIR)/$(PROJECTNAME).out>$(LST_DIR)/$(PROJECTNAME)out.lst
 
+.PHONY : clean
 clean:
 ifeq ($(filter $(MAKECMDGOALS),all debug release),)
 	$(RMDIRS) $(OBJ_DIR) $(LST_DIR) $(EXE_DIR)
 endif
+	
 
 # include auto-generated dependency files (explicit rules)
 ifneq (clean,$(findstring clean, $(MAKECMDGOALS)))
