@@ -17,7 +17,8 @@ EXE_DIR = exe
 LST_DIR = lst
 
 LIB = lib
-SOURCE = src
+SRC = src
+INC = inc
 DIR = .
 
 ####################################################################
@@ -116,7 +117,9 @@ INCLUDEPATHS += \
 -I$(LIB)/EFM32GG/Include \
 -I$(LIB)/emlib/inc \
 -I$(LIB)/kit/common/bsp \
+-I$(LIB)/kit/common/halconfig \
 -I$(LIB)/kit/EFM32GG_DK3750/config \
+-I$(INC)\
 
 
 ####################################################################
@@ -124,11 +127,10 @@ INCLUDEPATHS += \
 ####################################################################
 
 C_SRC +=  \
+$(SRC)/main.c \
+$(SRC)/ebi.c \
+$(SRC)/time.c \
 $(LIB)/EFM32GG/Source/system_efm32gg.c \
-$(SOURCE)/blink.c \
-$(LIB)/kit/common/bsp/bsp_dk_3201.c \
-$(LIB)/kit/common/bsp/bsp_dk_leds.c \
-$(LIB)/kit/common/bsp/bsp_trace.c \
 $(LIB)/emlib/src/em_assert.c \
 $(LIB)/emlib/src/em_cmu.c \
 $(LIB)/emlib/src/em_core.c \
@@ -204,7 +206,6 @@ clean:
 ifeq ($(filter $(MAKECMDGOALS),all debug release),)
 	$(RMDIRS) $(OBJ_DIR) $(LST_DIR) $(EXE_DIR)
 endif
-	
 
 # include auto-generated dependency files (explicit rules)
 ifneq (clean,$(findstring clean, $(MAKECMDGOALS)))
