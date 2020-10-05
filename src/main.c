@@ -16,14 +16,15 @@ int main(void) {
 
     /* Configure core clock to 48 MHz high frequency crystal oscillator*/
     CMU_ClockSelectSet(cmuClock_HF, cmuSelect_HFXO);
+    CMU_ClockDivSet(cmuClock_HF, cmuClkDiv_512);
 
     /* Setup SysTick Timer for 1 msec interrupts  */
-    // SysTick_Config(CMU_ClockFreqGet(cmuClock_CORE) / 1000);
+    //SysTick_Config(CMU_ClockFreqGet(cmuClock_CORE) / 1000);
 
     EBI_SetUp();
 
     /* Memory bank 0: 0x80000000 -> 0x83ffffff */
-    fpgaAddr = (uint16_t *) EBI_BankAddress(EBI_BANK1);
+    fpgaAddr = (uint16_t *) EBI_BankAddress(EBI_BANK0);
 
     /* Write garbage to FPGA */
 
