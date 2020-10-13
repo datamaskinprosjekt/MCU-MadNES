@@ -42,11 +42,6 @@ void EBI_SetUp(void) {
 
 	/* Address latch enable */
 	GPIO_PinModeSet(gpioPortC, 11, gpioModePushPull, 0); 	//EBI_ALE (C11 loc 1, F3 loc 0)
-    
-	/* Configure board for OFF mode on PB15 MCU_EBI_CONNECT */
-	GPIO_PinModeSet(gpioPortB, 15, gpioModePushPull, 1);
-	/* Configure board for OFF mode on PD13 MCU_SPI_CONNECT */
-	GPIO_PinModeSet(gpioPortD, 13, gpioModePushPull, 1);
 
 	/**************************
 	 * Set EBI configurations *
@@ -157,12 +152,7 @@ void EBI_TearDown(void) {
 	GPIO_PinModeSet(gpioPortF, 9, gpioModeDisabled, 0);		// EBI_REn
 
 	/* Address latch enable */
-	GPIO_PinModeSet(gpioPortC, 11, gpioModeDisabled, 0); 	//EBI_ALEm
-
-	/* Configure board for OFF mode on PB15 MCU_EBI_CONNECT */
-	GPIO_PinModeSet(gpioPortB, 15, gpioModeDisabled, 1);
-	/* Configure board for OFF mode on PD13 MCU_SPI_CONNECT */
-	GPIO_PinModeSet(gpioPortD, 13, gpioModeDisabled, 1);
+	GPIO_PinModeSet(gpioPortC, 11, gpioModeDisabled, 0); 	//EBI_ALE
 
 	/****************************
 	 * Reset EBI configurations *

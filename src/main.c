@@ -34,11 +34,14 @@ int main(void) {
         *(garbage + i) = i;
 
     int offset = 0;
+    int offsetAddr = 0;
+    int offsetData = 0;
 
     while(1) {
-        offset++;
-        offset = offset % 255;
-        writeFPGA(fpgaAddr, *(garbage + offset));
+        offset ++;
+        offsetData = offset % 255;
+	offsetAddr = offset % 640;
+        writeFPGA(fpgaAddr + offsetAddr, *(garbage + offsetData));
     }
 
 
