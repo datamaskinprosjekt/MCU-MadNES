@@ -1,0 +1,9 @@
+-I. \
+-Ilib/CMSIS/Include \
+-Ilib/EFM32GG/Include \
+-Ilib/emlib/inc \
+-Ilib/kit/common/bsp \
+-Ilib/kit/common/halconfig \
+-Ilib/kit/EFM32GG_DK3750/config \
+-Iinc \
+
