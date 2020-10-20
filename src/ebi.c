@@ -32,9 +32,9 @@ void EBI_SetUp(void) {
 
 	/* Chip select */
 	GPIO_PinModeSet(gpioPortD, 9, gpioModePushPull, 1);		// EBI_CS0
-	//GPIO_PinModeSet(gpioPortD, 10, gpioModePushPull, 1);	// EBI_CS1
-	//GPIO_PinModeSet(gpioPortD, 11, gpioModePushPull, 1);	// EBI_CS2
-	//GPIO_PinModeSet(gpioPortD, 12, gpioModePushPull, 1);	// EBI_CS3
+	GPIO_PinModeSet(gpioPortD, 10, gpioModePushPull, 1);	// EBI_CS1
+	GPIO_PinModeSet(gpioPortD, 11, gpioModePushPull, 1);	// EBI_CS2
+	GPIO_PinModeSet(gpioPortD, 12, gpioModePushPull, 1);	// EBI_CS3
 
 	/* Write and read enable */
 	GPIO_PinModeSet(gpioPortF, 8, gpioModePushPull, 0);		// EBI_WEn
@@ -83,10 +83,10 @@ void EBI_SetUp(void) {
 
 	EBI_Init_TypeDef ebiConfig = EBI_INIT_DEFAULT;
 
-	/* FPGA */
+	/* FPGA (all banks) */
 	ebiConfig.mode = ebiModeD16A16ALE;
-	ebiConfig.banks = EBI_BANK0;
-	ebiConfig.csLines = EBI_CS0;
+	ebiConfig.banks = EBI_BANK0 | EBI_BANK1 | EBI_BANK2 | EBI_BANK3;
+	ebiConfig.csLines = EBI_CS0 | EBI_CS1 | EBI_CS2 | EBI_CS3;
 
 	ebiConfig.addrHoldCycles  = 3;
 	ebiConfig.addrSetupCycles = 3;
@@ -103,9 +103,6 @@ void EBI_SetUp(void) {
 	ebiConfig.wePolarity = ebiActiveLow;
 	ebiConfig.rePolarity = ebiActiveLow;
 	ebiConfig.csPolarity = ebiActiveLow;
-
-	ebiConfig.addrHalfALE = true;
-	ebiConfig.noIdle = true;
 
 	ebiConfig.location = ebiLocation1;
 	

@@ -116,9 +116,6 @@ INCLUDEPATHS += \
 -I$(LIB)/CMSIS/Include \
 -I$(LIB)/EFM32GG/Include \
 -I$(LIB)/emlib/inc \
--I$(LIB)/kit/common/bsp \
--I$(LIB)/kit/common/halconfig \
--I$(LIB)/kit/EFM32GG_DK3750/config \
 -I$(INC)\
 
 

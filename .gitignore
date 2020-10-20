@@ -3,3 +3,5 @@ lst/
 exe/
 tags
 .vscode/
+*.swp
+.ccls
