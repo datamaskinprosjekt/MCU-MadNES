@@ -3,12 +3,16 @@
 
 #include <stdint.h>
 #include <stdlib.h>
+#include <stdbool.h>
+
+#define WIDTH 640
+#define HEIGHT 480
 
 typedef enum {
     ASTEROID,
     SHIP,
     LASER,
-    STATUS_ELEMENT
+    STATUS
 } spriteName;
 
 typedef struct {
@@ -23,16 +27,31 @@ typedef struct {
     uint8_t localSpriteIdx;
     uint16_t xPos;
     uint16_t yPos;
-    uint8_t state; //0000 [flipY][flipX][priority][enable]
-} Object;
+    bool xFlip;
+    bool yFlip;
+    bool enable;
+    uint8_t priority; //0000 [flipY][flipX][priority][enable]
+} object;
 
-spriteType astroid = (spriteType) {ASTEROID, 0, 11};
-spriteType ship = (spriteType) {SHIP, 11, 5};
-spriteType laser = (spriteType) {LASER, 16, 5};
-spriteType statusElement = (spriteType) {STATUS_ELEMENT, 21, 3};
+spriteType shipType;
+spriteType statusType;
+spriteType asteroidType;
+spriteType laserType;
 
-void init_object();
+int objMax;
+int shipMax;
+int statusMax;
+int asteroidMax;
+int laserMax;
+object* shipObjs;
+object* statusObjs;
+object* asteroidObjs;
+object* laserObjs;
+object* dirtyObjs;
 
-void write_object(Object* obj);
+void init_objects();
+void add_dirty_object(object* obj);
+void delete_objects();
+void print_object(object* obj);
 
 #endif
