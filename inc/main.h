@@ -1,7 +1,8 @@
 #ifndef _MAIN_H
 #define _MAIN_H
 
-#include "ebi_main.h"
+#include "time.h"
+#include "ebi_test.h"
 
 int main();
 

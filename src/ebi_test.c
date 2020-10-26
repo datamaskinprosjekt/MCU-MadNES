@@ -1,4 +1,4 @@
-#include "ebi_main.h"
+#include "ebi_test.h"
 
 void readFPGA(uint16_t *addr, uint16_t *data) {
     *data = *addr;
@@ -8,7 +8,7 @@ void writeFPGA(uint16_t *addr, uint16_t data) {
     *addr = data;
 }
 
-int ebi_main(void) {
+int ebi_test(void) {
     
     uint16_t *fpgaAddr0;
     uint16_t *fpgaAddr1;
@@ -50,6 +50,5 @@ int ebi_main(void) {
 	    offsetAddr = offset % 640;
         writeFPGA(fpgaAddr0 + offsetAddr, *(garbage + offsetData));
     }
-
 
 }
