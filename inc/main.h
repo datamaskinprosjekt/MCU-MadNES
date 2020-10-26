@@ -1,7 +1,7 @@
 #ifndef _MAIN_H
 #define _MAIN_H
 
-#include "ebi_main.h"
+#include "fpga_test.h"
 
 int main();
 

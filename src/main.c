@@ -1,5 +1,5 @@
 #include "main.h"
 
 int main() {
-    ebi_main();
+    fpga_test();
 }

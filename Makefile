@@ -127,6 +127,8 @@ C_SRC +=  \
 $(SRC)/main.c \
 $(SRC)/ebi.c \
 $(SRC)/ebi_main.c \
+$(SRC)/fpga.c \
+$(SRC)/fpga_test.c \
 $(LIB)/EFM32GG/Source/system_efm32gg.c \
 $(LIB)/emlib/src/em_assert.c \
 $(LIB)/emlib/src/em_cmu.c \
