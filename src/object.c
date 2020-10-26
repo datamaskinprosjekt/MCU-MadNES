@@ -13,7 +13,7 @@ void init_objects(void)
     objMax = 0;
     shipMax = 1;
     statusMax = 1;
-    asteroidMax = 2;
+    asteroidMax = 1;
     laserMax = 2;
     
     shipObjs = (object *) malloc(sizeof(object) * shipMax);
@@ -22,21 +22,44 @@ void init_objects(void)
     laserObjs = (object *) malloc(sizeof(object) * laserMax);
 
     for (int i=0; i<shipMax; i++) {
-        shipObjs[i] = (object) {objMax++, &shipType, 2, 200, 100, 1, 0, 1, 1};
+        shipObjs[i] = (object) {objMax++, &shipType, shipType.globalSpriteIdx, 200, 400, 1, 0, 1, 0};
+        add_dirty_object(&shipObjs[i]);
     }
     for (int i=0; i<statusMax; i++) {
-        statusObjs[i] = (object) {objMax++, &statusType, 0, 0, 0, 0, 0, 1, 0};
+        statusObjs[i] = (object) {objMax++, &statusType, statusType.globalSpriteIdx, WIDTH - 16, HEIGHT, 0, 0, 1, 1};
+        add_dirty_object(&statusObjs[i]);
     }
     for (int i=0; i<asteroidMax; i++) {
-        asteroidObjs[i] = (object) {objMax++, &asteroidType, 0, 0, 0, 0, 0, 1, 1};
+        asteroidObjs[i] = (object) {objMax++, &asteroidType, asteroidType.globalSpriteIdx, 450, 150, 0, 0, 1, 0};
+        add_dirty_object(&asteroidObjs[i]);
     }
     for (int i=0; i<laserMax; i++) {
-        laserObjs[i] = (object) {objMax++, &laserType, 0, 0, 0, 0, 0, 0, 1};
+        laserObjs[i] = (object) {objMax++, &laserType, laserType.globalSpriteIdx, 0, 0, 0, 0, 0, 0};
+        add_dirty_object(&laserObjs[i]);
     }
 }
 
 void add_dirty_object(object* obj) {
     //
+}
+
+int get_rot(object* object) {
+    bool xFlip = object->xFlip;
+    bool yFlip = object->yFlip;
+
+    if (!xFlip && !yFlip)
+    {
+        return object->localSpriteIdx;
+    }
+    else if (xFlip && !yFlip)
+    {
+        return (16 - object->localSpriteIdx) % 16;
+    }
+    else if (!xFlip && yFlip)
+    {
+        return 8 - object->localSpriteIdx;
+    }
+    return object->localSpriteIdx + 8;
 }
 
 void delete_objects() {

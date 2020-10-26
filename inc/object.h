@@ -43,6 +43,7 @@ int shipMax;
 int statusMax;
 int asteroidMax;
 int laserMax;
+// TODO REPLACE WITH OBJECTLIST
 object* shipObjs;
 object* statusObjs;
 object* asteroidObjs;
@@ -51,6 +52,7 @@ object* dirtyObjs;
 
 void init_objects();
 void add_dirty_object(object* obj);
+int get_rot(object* obj);
 void delete_objects();
 void print_object(object* obj);
 
