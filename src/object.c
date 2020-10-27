@@ -16,26 +16,24 @@ void init_objects(void)
     asteroidMax = 1;
     laserMax = 2;
     
-    shipObjs = (object *) malloc(sizeof(object) * shipMax);
-    statusObjs = (object *) malloc(sizeof(object) * statusMax);
-    asteroidObjs = (object *) malloc(sizeof(object) * asteroidMax);
-    laserObjs = (object *) malloc(sizeof(object) * laserMax);
+    objs = (object *) malloc(sizeof(object) * (shipMax + statusMax + asteroidMax + laserMax));
+    dirtyObjs = (object *) malloc(sizeof(object) * (shipMax + statusMax + asteroidMax + laserMax));
 
     for (int i=0; i<shipMax; i++) {
-        shipObjs[i] = (object) {objMax++, &shipType, shipType.globalSpriteIdx, 200, 400, 1, 0, 1, 0};
-        add_dirty_object(&shipObjs[i]);
+        objs[i] = (object) {objMax++, &shipType, shipType.globalSpriteIdx, 200, 400, 1, 0, 1, 0};
+        add_dirty_object(&objs[i]);
     }
     for (int i=0; i<statusMax; i++) {
-        statusObjs[i] = (object) {objMax++, &statusType, statusType.globalSpriteIdx, WIDTH - 16, HEIGHT, 0, 0, 1, 1};
-        add_dirty_object(&statusObjs[i]);
+        objs[i] = (object) {objMax++, &statusType, statusType.globalSpriteIdx, WIDTH - 16, HEIGHT, 0, 0, 1, 1};
+        add_dirty_object(&objs[i]);
     }
     for (int i=0; i<asteroidMax; i++) {
-        asteroidObjs[i] = (object) {objMax++, &asteroidType, asteroidType.globalSpriteIdx, 450, 150, 0, 0, 1, 0};
-        add_dirty_object(&asteroidObjs[i]);
+        objs[i] = (object) {objMax++, &asteroidType, asteroidType.globalSpriteIdx, 450, 150, 0, 0, 1, 0};
+        add_dirty_object(&objs[i]);
     }
     for (int i=0; i<laserMax; i++) {
-        laserObjs[i] = (object) {objMax++, &laserType, laserType.globalSpriteIdx, 0, 0, 0, 0, 0, 0};
-        add_dirty_object(&laserObjs[i]);
+        objs[i] = (object) {objMax++, &laserType, laserType.globalSpriteIdx, 0, 0, 0, 0, 0, 0};
+        add_dirty_object(&objs[i]);
     }
 }
 
@@ -63,10 +61,7 @@ int get_rot(object* object) {
 }
 
 void delete_objects() {
-    free(shipObjs);
-    free(statusObjs);
-    free(asteroidObjs);
-    free(laserObjs);
+    free(objs);
 }
 
 void print_object(object* obj) {

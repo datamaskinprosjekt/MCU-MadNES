@@ -43,11 +43,8 @@ int shipMax;
 int statusMax;
 int asteroidMax;
 int laserMax;
-// TODO REPLACE WITH OBJECTLIST
-object* shipObjs;
-object* statusObjs;
-object* asteroidObjs;
-object* laserObjs;
+
+object* objs;
 object* dirtyObjs;
 
 void init_objects();
