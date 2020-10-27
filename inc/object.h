@@ -45,10 +45,11 @@ int asteroidMax;
 int laserMax;
 
 object* objs;
-object* dirtyObjs;
+int* dirtyObjs;
 
 void init_objects();
 void add_dirty_object(object* obj);
+void move_object(object* obj, int rot, int speed);
 int get_rot(object* obj);
 void delete_objects();
 void print_object(object* obj);
