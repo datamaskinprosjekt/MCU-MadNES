@@ -41,9 +41,9 @@ typedef struct {
 } Object;
 
 typedef struct Color {
-    char r;
-    char g;
-    char b;
+    unsigned char r;
+    unsigned char g;
+    unsigned char b;
 } Color;
 
 void write_sprite_sheet(char* spriteSheet);

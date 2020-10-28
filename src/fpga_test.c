@@ -26,7 +26,7 @@ char* read_file(char* fileName) {
 void fpga_test() {
 
     char* spriteSheet;
-    Color* palette[NUM_COLORS];
+    Color* palette;
 
     char* spriteFile;
 
@@ -36,7 +36,7 @@ void fpga_test() {
     spriteType st1 = {name: ASTEROID, globalSpriteIdx: 0};
     Object obj1 = {id: 1, type: &st1, localSpriteIdx: 0, xPos: 320, yPos: 240, xFlip: false, yFlip: false, enabled: true, priority: 1};
 
-    char i, j;
+    int i, j;
 
     spriteFile = "sprite_sheet.txt";
     paletteFile = "color_palette.txt";
@@ -52,17 +52,17 @@ void fpga_test() {
     spriteSheet = read_file(spriteFile);
     paletteBuffer = read_file(paletteFile);
 
-    *palette = (Color*) malloc((NUM_COLORS + 1) * sizeof(void*));
+    palette = (Color*) malloc((NUM_COLORS + 1) * sizeof(void*));
     i = 0;
 
     for (j = 0; j < SIZE_PALETTE; j += 3) {
-        Color color = {.r = *paletteBuffer[j], .g = *paletteBuffer[j+1], .b = *paletteBuffer[j+2]};
-        palette[i] = &color;
+        Color color = {.r = (unsigned char) paletteBuffer[j], .g = (unsigned char) paletteBuffer[j+1], .b = (unsigned char) paletteBuffer[j+2]};
+        palette[i] = color;
         i++;
     }
 
     write_sprite_sheet(spriteSheet);
-    write_palette(*palette, NUM_COLORS);
+    write_palette(palette, NUM_COLORS);
     write_object(&obj1);
 
     free(spriteSheet);
