@@ -76,12 +76,12 @@ ifeq (clean,$(findstring clean, $(MAKECMDGOALS)))
     $(shell $(RMFILES) $(LST_DIR)$(ALLFILES)>$(NULLDEVICE) 2>&1)
   endif
 endif
-
-CC	= $(QUOTE)$(TOOLDIR)/bin/arm-none-eabi-gcc$(QUOTE)
-LD	= $(QUOTE)$(TOOLDIR)/bin/arm-none-eabi-ld$(QUOTE)
-AR	= $(QUOTE)$(TOOLDIR)/bin/arm-none-eabi-ar$(QUOTE)
-OBJCOPY = $(QUOTE)$(TOOLDIR)/bin/arm-none-eabi-objcopy$(QUOTE)
-DUMP	= $(QUOTE)$(TOOLDIR)/bin/arm-none-eabi-objdump$(QUOTE)
+#$(QUOTE)$(TOOLDIR)/bin/
+CC	= arm-none-eabi-gcc
+LD	= arm-none-eabi-ld
+AR	= arm-none-eabi-ar
+OBJCOPY = arm-none-eabi-objcopy
+DUMP	= arm-none-eabi-objdump
 
 ####################################################################
 # Flags                                                            #
@@ -126,7 +126,6 @@ INCLUDEPATHS += \
 C_SRC +=  \
 $(SRC)/main.c \
 $(SRC)/ebi.c \
-$(SRC)/ebi_main.c \
 $(SRC)/fpga.c \
 $(SRC)/fpga_test.c \
 $(LIB)/EFM32GG/Source/system_efm32gg.c \

@@ -1,31 +1,41 @@
 #include "fpga.h"
 
-#define SIZE_OBJECTS
+void write_sprite_sheet(char* spriteSheet) {
+    char id = 0;
+    char* next = spriteSheet + id;
 
-void write_initial_data() {
-    //Needs timing
-}
-
-void write_sprite_sheet() {
-    //TODO
-    //Write sprite data using EBI bank 1 and CS 1
+    while (next != '\0') {
+        *(fpgaAddr0 + id) = *next;
+        next = spriteSheet + id;
+    }
 }
 
 void write_tile_sheet() {
     //TODO
-    //Write tile data using EBI bank 2 and CS 2
 }
 
-void write_palettes() {
-    //TODO
-    //Write palette data using EBI bank 3 and CS 3
+void write_palette(Color* firstColor, int size) {
+    uint16_t* addr = fpgaAddr0;
+    
+    for (int id = 0; id < size; id++) {
+        addr += sizeof(uint16_t) * id;
+
+        Color* color = (firstColor + id);
+
+        // Possible undefined behavior, must allocate an additional byte
+        // in color palette to avoid accessing unallocated memory
+        uint16_t RG_Pair = (color->r << 8) + color->g;
+        uint16_t B_Single = color->b;
+        
+        *addr = RG_Pair;
+        *(addr + 1) = B_Single;
+    }
 }
 
 void write_object(Object* obj) {
 
-    //Write object data using EBI bank 3 and CS 3
     uint32_t data = 0; //[1:enabled][1:priority][1:yFlip][1:xFlip][20:xyPos][8:spriteId]
-    uint16_t addr = fpgaAddr3 + sizeof(uint32_t) * obj->id;
+    uint16_t* addr = fpgaAddr0 + sizeof(uint16_t) * obj->id;
 
     //SpriteId
     uint8_t spriteId = obj->type->globalSpriteIdx + obj->localSpriteIdx;
@@ -67,15 +77,9 @@ void write_object(Object* obj) {
         data |= 1 << 30;
     }
     
-    //Fix this!
-    addr = data;
-}
+    uint16_t* data1 = (uint16_t*) &data;
+    uint16_t* data2 = (uint16_t*) &data + 1;
 
-void update_palette(uint8_t paletteId) {
-    //Write paletteId to some (currently unknown) address
-    //TODO
-}
-
-void update_background() {
-    //TODO
+    *addr = *data1;
+    *(addr + 1) = *data2;
 }

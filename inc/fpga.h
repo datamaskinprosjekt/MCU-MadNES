@@ -7,13 +7,13 @@
 #include "em_ebi.h"
 
 /* Memory bank 0: 0x80000000 -> 0x83ffffff */
-#define fpgaAddr0 0x80000000
+#define fpgaAddr0 (uint16_t*) 0x80000000
 /* Memory bank 1: 0x84000000 -> 0x87ffffff */
-#define fpgaAddr1 0x84000000
+#define fpgaAddr1 (uint16_t*) 0x84000000
 /* Memory bank 2: 0x88000000 -> 0x8bffffff */
-#define fpgaAddr2 0x88000000
+#define fpgaAddr2 (uint16_t*) 0x88000000
 /* Memory bank 3: 0x8c000000 -> 0x8fffffff */
-#define fpgaAddr3 0x8c000000
+#define fpgaAddr3 (uint16_t*) 0x8c000000
 
 typedef enum {
     ASTEROID,
@@ -40,23 +40,18 @@ typedef struct {
     uint8_t priority;
 } Object;
 
-/* Write the initial data to the fpga */
-void write_initial_data();
+typedef struct Color {
+    char r;
+    char g;
+    char b;
+} Color;
 
-void write_sprite_sheet();
+void write_sprite_sheet(char* spriteSheet);
 
 void write_tile_sheet();
 
-void write_palettes();
+void write_palette(Color* firstColor, int size);
 
-/* Write all objects to fpga */
 void write_object(Object* obj);
-
-void write_background();
-
-void handle_fpga_interrupt();
-
-/* Write a new current pallette to the fpga */
-void update_palette(uint8_t paletteId);
 
 #endif
