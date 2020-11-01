@@ -49,6 +49,8 @@ void fpga_test() {
 
     EBI_SetUp();
 
+    EBI_ChipSelectEnable(0xff, false);
+
     spriteSheet = read_file(spriteFile);
     paletteBuffer = read_file(paletteFile);
 
@@ -56,7 +58,7 @@ void fpga_test() {
     i = 0;
 
     for (j = 0; j < SIZE_PALETTE; j += 3) {
-        Color color = {.r = (unsigned char) paletteBuffer[j], .g = (unsigned char) paletteBuffer[j+1], .b = (unsigned char) paletteBuffer[j+2]};
+        Color color = {.r = paletteBuffer[j], .g = paletteBuffer[j+1], .b = paletteBuffer[j+2]};
         palette[i] = color;
         i++;
     }

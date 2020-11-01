@@ -48,8 +48,8 @@ int ebi_main(void) {
         offset ++;
         offsetData = offset % 255;
 	    offsetAddr = offset % 640;
+        GPIO_PinOutSet(gpioPortD, 9);
         writeFPGA(fpgaAddr0 + offsetAddr, *(garbage + offsetData));
+        GPIO_PinOutClear(gpioPortD, 9);
     }
-
-
 }

@@ -102,7 +102,7 @@ void EBI_SetUp(void) {
 	ebiConfig.alePolarity = ebiActiveLow;
 	ebiConfig.wePolarity = ebiActiveLow;
 	ebiConfig.rePolarity = ebiActiveLow;
-	ebiConfig.csPolarity = ebiActiveLow;
+	//ebiConfig.csPolarity = ebiActiveLow;
 
 	ebiConfig.location = ebiLocation1;
 	

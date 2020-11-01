@@ -33,6 +33,8 @@ void write_palette(Color* firstColor, int size) {
 }
 
 void write_object(Object* obj) {
+    
+    GPIO_PinOutSet(gpioPortD, 9);
 
     uint32_t data = 0; //[1:enabled][1:priority][1:yFlip][1:xFlip][20:xyPos][8:spriteId]
     uint16_t* addr = fpgaAddr0 + sizeof(uint16_t) * obj->id;
