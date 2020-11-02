@@ -85,8 +85,6 @@ void EBI_SetUp(void) {
 
 	/* FPGA */
 	ebiConfig.mode = ebiModeD16A16ALE;
-	//ebiConfig.banks = EBI_BANK0;
-	//ebiConfig.csLines = EBI_CS0;
 
 	ebiConfig.addrHoldCycles  = 3;
 	ebiConfig.addrSetupCycles = 3;
@@ -102,7 +100,7 @@ void EBI_SetUp(void) {
 	ebiConfig.alePolarity = ebiActiveLow;
 	ebiConfig.wePolarity = ebiActiveLow;
 	ebiConfig.rePolarity = ebiActiveLow;
-	//ebiConfig.csPolarity = ebiActiveLow;
+	ebiConfig.csPolarity = ebiActiveHigh;
 
 	ebiConfig.location = ebiLocation1;
 	
@@ -112,6 +110,14 @@ void EBI_SetUp(void) {
 
 	EBI_Init(&ebiConfig);
 
+	/* Disable EBI_CS0 and clear all chip selecect lines */
+
+	EBI_ChipSelectEnable(EBI_CS0, false);
+
+	GPIO_PinOutClear(gpioPortD, 9);
+	GPIO_PinOutClear(gpioPortD, 10);
+	GPIO_PinOutClear(gpioPortD, 11);
+	GPIO_PinOutClear(gpioPortD, 12);
 }
 
 void EBI_TearDown(void) {
@@ -162,5 +168,29 @@ void EBI_TearDown(void) {
 	 **********************/
 
 	CMU_ClockEnable(cmuClock_EBI, false);
+}
 
+void set_bank(BANKSELECT bank) {
+	uint32_t value;
+	switch (bank) {
+		case OAM:
+			GPIO_PortOutSetVal(gpioPortD, OAM_BANK_VAL, CS_MASK);
+			break;
+		case SPRITE:
+			GPIO_PortOutSetVal(gpioPortD, SPRITE_BANK_VAL, CS_MASK);
+			break;
+		case TILE:
+			GPIO_PortOutSetVal(gpioPortD, TILE_BANK_VAL, CS_MASK);
+			break;
+		case PALETTE:
+			GPIO_PortOutSetVal(gpioPortD, PALETTE_BANK_VAL, CS_MASK);
+			break;
+		case TAM:
+			GPIO_PortOutSetVal(gpioPortD, TAM_BANK_VAL, CS_MASK);
+			break;
+	}
+}
+
+void clear_bank() {
+	GPIO_PortOutClear(gpioPortD, CS_MASK);
 }

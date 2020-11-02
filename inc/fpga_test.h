@@ -12,7 +12,7 @@
 #define NUM_SPRITES 57
 #define SIZE_SHEET (NUM_SPRITES * 256)
 #define NUM_COLORS 49
-#define SIZE_PALETTE (NUM_COLORS * 3)
+#define SIZE_PALETTE (NUM_COLORS + 1)
 #define SIZE_OBJS 1
 
 char* read_file(char* fileName);

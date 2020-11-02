@@ -44,12 +44,15 @@ int ebi_main(void) {
     int offsetAddr = 0;
     int offsetData = 0;
 
+    uint32_t val = 4 << 9;
+    uint32_t mask = 0b0001111000000000;
+
     while(1) {
         offset ++;
         offsetData = offset % 255;
 	    offsetAddr = offset % 640;
-        GPIO_PinOutSet(gpioPortD, 9);
+        set_bank(OAM);
         writeFPGA(fpgaAddr0 + offsetAddr, *(garbage + offsetData));
-        GPIO_PinOutClear(gpioPortD, 9);
+        GPIO_PortOutClear(gpioPortD, mask);
     }
 }

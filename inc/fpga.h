@@ -6,6 +6,7 @@
 
 #include "em_ebi.h"
 #include "em_gpio.h"
+#include "ebi.h"
 
 /* Memory bank 0: 0x80000000 -> 0x83ffffff */
 #define fpgaAddr0 (uint16_t*) 0x80000000
