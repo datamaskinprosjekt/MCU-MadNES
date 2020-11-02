@@ -45,8 +45,10 @@ def save_sheets():
 			s = ""
 			for j in range(16):
 				s += str(spriteSheet[i][j]) + " "
-			s = s.rstrip()
-			sheetFile.write(s + "\n")
+			sheetFile.write(s)
+			if (i+1) % 16 == 0:
+				s = s.rstrip()
+				sheetFile.write("\n")
 
 
 def print_sheets():

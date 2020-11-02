@@ -30,7 +30,10 @@ with open('sheets/dark_palette.txt', 'w') as darkFile:
 
 
 with open('sheets/sprite_sheet.txt', 'r') as spriteFile:
-	spriteSheet = [list(map(int, line.rstrip().split(' '))) for line in spriteFile]
+	spriteSheetTmp = [list(map(int, line.rstrip().split(' '))) for line in spriteFile]
+for i in range(len(spriteSheetTmp)):
+	for j in range(16):
+		spriteSheet.append(spriteSheetTmp[i][j*16:j*16+16])
 
 
 
