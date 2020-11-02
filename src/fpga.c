@@ -8,6 +8,7 @@ void write_sprite_sheet(char* spriteSheet) {
 
     while (next != '\0') {
         *(fpgaAddr0 + id) = *next;
+        id++;
         next = spriteSheet + id;
     }
 
