@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <time.h>
 #include "object.h"
 
 void init_objects(void)
@@ -31,7 +32,17 @@ void init_objects(void)
     }
     cnt += statusMax;
     for (int i=cnt; i<cnt + asteroidMax; i++) {
-        objs[i] = (object) {objMax++, &asteroidType, 0, 180, 409, 0, 0, 1, 0};
+        bool seek = 1;
+        int xPos = 0;
+        int yPos = 0;
+        while (seek) {
+            xPos = rand() % (WIDTH - 16);
+            yPos = rand() % (HEIGHT - 16);
+            if (xPos <= 100 || xPos >= 300 || yPos <= 300 || yPos >= 500) {
+                seek = 0;
+            }
+        }
+        objs[i] = (object) {objMax++, &asteroidType, 0, xPos, yPos, 0, 0, 1, 0};
         add_dirty_object(&objs[i]);
     }
     cnt += asteroidMax;

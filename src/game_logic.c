@@ -135,6 +135,18 @@ void time_handler() {
 			asteroid->isHit = 0;
 			asteroid->asteroidObj->enable = 1;
 			asteroid->asteroidObj->localSpriteIdx = asteroid->asteroidObj->type->globalSpriteIdx;
+			int xPos = 0;
+			int yPos = 0;
+			bool seek = 1;
+			int playerXPos = players[0].shipObj->xPos;
+			int playerYPos = players[0].shipObj->yPos;
+			while (seek) {
+				xPos = rand() % (WIDTH - 16);
+				yPos = rand() % (HEIGHT - 16);
+            if (xPos <= (playerXPos - 100) || xPos >= (playerXPos + 100) || yPos <= (playerYPos - 100) || yPos >= (playerYPos + 100)) {
+                seek = 0;
+            }
+        }
 			asteroid->asteroidObj->xPos = 0;
 			asteroid->asteroidObj->yPos = 0;
 			asteroidCnt++;
