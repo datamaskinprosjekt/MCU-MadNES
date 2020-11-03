@@ -71,6 +71,7 @@ add_sprite(spriteSheet, 'img/asteroid-1.png')
 add_sprite(spriteSheet, 'img/asteroid-2.png')
 add_sprite(spriteSheet, 'img/asteroid-3.png')
 add_sprite(spriteSheet, 'img/laser-2.png')
+add_sprite(spriteSheet, 'img/gameover-1.png')
 
 save_sheets()
 
