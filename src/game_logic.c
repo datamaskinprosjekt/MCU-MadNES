@@ -41,6 +41,7 @@ void init_game() {
 	players = (player_elem *) malloc(sizeof(player_elem) * shipMax);
 	asteroids = (asteroid_elem *) malloc(sizeof(asteroid_elem) * asteroidMax);
 	lasers = (laser_elem *) malloc(sizeof(laser_elem) * laserMax);
+	letters = (letter_elem *) malloc(sizeof(letter_elem) * letterMax);
 
 	int cnt = 0;
 	for (int i=0; i<shipMax; i++) {
@@ -53,6 +54,10 @@ void init_game() {
 	cnt += asteroidMax;
 	for (int i=0; i<laserMax; i++) {
 		lasers[i] = (laser_elem) {&objs[cnt + i]};
+	}
+	cnt += laserMax;
+	for (int i=0; i<letterMax; i++) {
+		letters[i] = (letter_elem) {&objs[cnt + i]};
 	}
 }
 
@@ -161,9 +166,13 @@ void time_handler() {
 		}
 		add_dirty_object(asteroid->asteroidObj);
 	}
-
+	
 	if (!game) {
-		// display game over
+		for (int i=0; i<letterMax; i++) {
+			letter_elem* letter = &letters[i];
+			letter->letterObj->enable = 1;
+			add_dirty_object(letter->letterObj);
+		}
 	}
 }
 
@@ -257,6 +266,7 @@ void end_game() {
 	free(players);
 	free(asteroids);
 	free(lasers);
+	free(letters);
 }
 
 void test_game_print() {
@@ -289,6 +299,12 @@ void test_print() {
 	printf("lasers\n");
 	for (int i=0; i<laserMax; i++) {
 		print_object(lasers[i].laserObj);
+	}
+	printf("\n");
+
+	printf("letters\n");
+	for (int i=0; i<letterMax; i++) {
+		print_object(letters[i].letterObj);
 	}
 	printf("\n\n");
 }

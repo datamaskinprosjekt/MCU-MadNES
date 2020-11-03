@@ -12,7 +12,8 @@ typedef enum {
     ASTEROID,
     SHIP,
     LASER,
-    STATUS
+    STATUS,
+    LETTER
 } spriteName;
 
 typedef struct {
@@ -39,12 +40,14 @@ spriteType asteroid1Type;
 spriteType asteroid2Type;
 spriteType asteroid3Type;
 spriteType laserType;
+spriteType letterType;
 
 int objMax;
 int shipMax;
 int statusMax;
 int asteroidMax;
 int laserMax;
+int letterMax;
 
 object* objs;
 int* dirtyObjs;

@@ -11,6 +11,7 @@ void init_objects(void)
     asteroid2Type = (spriteType) {ASTEROID, 25, 11};
     asteroid3Type = (spriteType) {ASTEROID, 36, 16};
     laserType = (spriteType) {LASER, 52, 5};
+    letterType = (spriteType) {LETTER, 57, 8};
     spriteType* asteroidTypes[3] = {&asteroid1Type, &asteroid2Type, &asteroid3Type};
 
     objMax = 0;
@@ -18,9 +19,10 @@ void init_objects(void)
     statusMax = 1;
     asteroidMax = 7;
     laserMax = 2;
+    letterMax = 8;
     
-    objs = (object *) malloc(sizeof(object) * (shipMax + statusMax + asteroidMax + laserMax));
-    dirtyObjs = (int *) malloc(sizeof(int) * (shipMax + statusMax + asteroidMax + laserMax));
+    objs = (object *) malloc(sizeof(object) * (shipMax + statusMax + asteroidMax + laserMax + letterMax));
+    dirtyObjs = (int *) malloc(sizeof(int) * (shipMax + statusMax + asteroidMax + laserMax + letterMax));
 
     int cnt = 0;
     for (int i=0; i<shipMax; i++) {
@@ -51,6 +53,15 @@ void init_objects(void)
     for (int i=cnt; i<cnt + laserMax; i++) {
         objs[i] = (object) {objMax++, &laserType, 0, 0, 0, 0, 0, 0, 0};
         add_dirty_object(&objs[i]);
+    }
+    cnt += laserMax;
+    int xLetterBase = WIDTH / 2 - 32;
+    int yLetterBase = HEIGHT / 2 - 16;
+    for (int i=cnt; i<cnt + letterMax; i++) {
+        int num = i - shipMax - statusMax - asteroidMax - laserMax;
+        int xLetter = xLetterBase + 16 * (num % 4);
+        int yLetter = yLetterBase + 16 * (num / 4);
+        objs[i] = (object) {objMax++, &letterType, num, xLetter, yLetter, 0, 0, 0, 0};
     }
 }
 

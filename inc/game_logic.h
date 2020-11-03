@@ -20,7 +20,9 @@ typedef struct {
     object* laserObj;
 } laser_elem;
 
-//uniontype and typepunning
+typedef struct {
+    object* letterObj;
+} letter_elem;
 
 bool game;
 int playerSpeed;
@@ -32,6 +34,7 @@ int laserCnt;
 player_elem* players;
 asteroid_elem* asteroids;
 laser_elem* lasers;
+letter_elem* letters;
 
 void init_game();
 void time_handler();
