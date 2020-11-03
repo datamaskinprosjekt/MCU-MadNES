@@ -21,22 +21,22 @@ void init_objects(void)
 
     int cnt = 0;
     for (int i=0; i<shipMax; i++) {
-        objs[i] = (object) {objMax++, &shipType, shipType.globalSpriteIdx, 200, 400, 1, 0, 1, 0};
+        objs[i] = (object) {objMax++, &shipType, 1, 200, 400, 1, 0, 1, 0};
         add_dirty_object(&objs[i]);
     }
     cnt += shipMax;
     for (int i=cnt; i<cnt + statusMax; i++) {
-        objs[i] = (object) {objMax++, &statusType, statusType.globalSpriteIdx, WIDTH - 16, HEIGHT, 0, 0, 1, 1};
+        objs[i] = (object) {objMax++, &statusType, 0, WIDTH - 16, 0, 0, 0, 1, 1};
         add_dirty_object(&objs[i]);
     }
     cnt += statusMax;
     for (int i=cnt; i<cnt + asteroidMax; i++) {
-        objs[i] = (object) {objMax++, &asteroidType, asteroidType.globalSpriteIdx, 450, 150, 0, 0, 1, 0};
+        objs[i] = (object) {objMax++, &asteroidType, 0, 180, 409, 0, 0, 1, 0};
         add_dirty_object(&objs[i]);
     }
     cnt += asteroidMax;
     for (int i=cnt; i<cnt + laserMax; i++) {
-        objs[i] = (object) {objMax++, &laserType, laserType.globalSpriteIdx, 0, 0, 0, 0, 0, 0};
+        objs[i] = (object) {objMax++, &laserType, 0, 0, 0, 0, 0, 0, 0};
         add_dirty_object(&objs[i]);
     }
 }
@@ -55,7 +55,7 @@ void move_object(object* obj, int rot, int speed) {
 
 	switch(angle) {
 		case 0:
-			yOffset += speed;
+			yOffset -= speed;
 			break;
 		case 1:
 			xOffset += (speed + 1) / 2;
@@ -74,8 +74,8 @@ void move_object(object* obj, int rot, int speed) {
 	switch(dir) {
 		case 1:
 			tmp = xOffset;
-			xOffset = yOffset;
-			yOffset = -tmp;
+			xOffset = -yOffset;
+			yOffset = tmp;
 			break;
 		case 2:
 			xOffset = -xOffset;
@@ -90,6 +90,7 @@ void move_object(object* obj, int rot, int speed) {
 
 	int xNew = obj->xPos + xOffset;
 	int yNew = obj->yPos + yOffset;
+
 	if (xNew < 0 || xNew + 15 >= WIDTH || yNew < 0 || yNew + 15 >= HEIGHT) {
 		return;
 	}

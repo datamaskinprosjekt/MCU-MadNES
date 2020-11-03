@@ -15,6 +15,7 @@ int main(void) {
 		game = 0;
 		button_handler();
 		time_handler();
+		//joystick_handler(0);
 	}
 	test_print();
 
@@ -64,13 +65,13 @@ void time_handler() {
 			} else {
 				int xDiff = asteroid->asteroidObj->xPos - players[0].shipObj->xPos;
 				int yDiff = asteroid->asteroidObj->yPos - players[0].shipObj->yPos;
-				if (xDiff != 0 && yDiff != 0) {
+				if (xDiff != 0 || yDiff != 0) {
 					int rot;
 					int xDiffAbs = abs(xDiff);
 					int yDiffAbs = abs(yDiff);
 					if (xDiffAbs < yDiffAbs)
 					{
-						float tmp = xDiffAbs / yDiffAbs;
+						float tmp = (float) xDiffAbs / yDiffAbs;
 						if (tmp < 0.25) {
 							rot = 0;
 						} else if (tmp > 0.75) {
@@ -81,13 +82,13 @@ void time_handler() {
 					}
 					else if(yDiffAbs < xDiffAbs)
 					{
-						float tmp = yDiffAbs / xDiffAbs;
+						float tmp = (float) yDiffAbs / xDiffAbs;
 						if (tmp < 0.25) {
-							rot = 2;
+							rot = 4;
 						} else if (tmp > 0.75) {
-							rot = 0;
+							rot = 2;
 						} else {
-							rot = 1;
+							rot = 3;
 						}
 					}
 					else
@@ -95,17 +96,17 @@ void time_handler() {
 						rot = 2;
 					}
 
-					if (xDiff >= 0 && yDiff >= 0)
+					if (xDiff < 0 && yDiff <= 0)
 					{
 						rot = 8 - rot;
 					}
-					else if (xDiff <= 0 && yDiff >= 0)
+					else if (xDiff >= 0 && yDiff <= 0)
 					{
 						rot += 8;
 					}
-					else if (xDiff <= 0 && yDiff <= 0)
+					else if (xDiff > 0 && yDiff >= 0)
 					{
-						rot += (16 - rot) % 16;
+						rot = (16 - rot) % 16;
 					}
 
 					move_object(asteroid->asteroidObj, rot, asteroid->speed);
