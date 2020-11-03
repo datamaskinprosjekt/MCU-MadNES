@@ -10,12 +10,13 @@
 #include "em_chip.h"
 
 #define NUM_SPRITES 57
-#define SIZE_SHEET (NUM_SPRITES * 256)
 #define NUM_COLORS 49
-#define SIZE_PALETTE (NUM_COLORS + 1)
-#define SIZE_OBJS 1
+#define NUM_OBJS 1
 
-char* read_file(char* fileName);
+char* read_data(char* fileName);
+char** parse_data(char* data, int size);
+Color* create_palette(char* paletteFile, int num_colors);
+char* create_sprite_sheet(char* spriteFile, int num_sprites);
 
 void fpga_test();
 

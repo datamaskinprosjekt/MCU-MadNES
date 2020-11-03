@@ -35,7 +35,7 @@ int ebi_main(void) {
 
     /* Write garbage to FPGA */
 
-    char* garbage = malloc(sizeof(char)*255);
+    char* garbage = malloc(sizeof(char) * 255);
 
     for(int i = 0; i < 255; i++)
         *(garbage + i) = i;
@@ -44,15 +44,12 @@ int ebi_main(void) {
     int offsetAddr = 0;
     int offsetData = 0;
 
-    uint32_t val = 4 << 9;
-    uint32_t mask = 0b0001111000000000;
-
     while(1) {
         offset ++;
         offsetData = offset % 255;
 	    offsetAddr = offset % 640;
         set_bank(OAM);
         writeFPGA(fpgaAddr0 + offsetAddr, *(garbage + offsetData));
-        GPIO_PortOutClear(gpioPortD, mask);
+        clear_bank();
     }
 }

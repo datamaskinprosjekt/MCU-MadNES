@@ -1,31 +1,24 @@
 #include "fpga.h"
 
-void write_sprite_sheet(char* spriteSheet) {
-    char id = 0;
-    char* next = spriteSheet + id;
-
-    set_bank(SPRITE);
-
-    while (next != '\0') {
-        *(fpgaAddr0 + id) = *next;
-        id++;
-        next = spriteSheet + id;
+void write_sprite_sheet(char* spriteSheet, int size) {
+    for (int id = 0; id < size; id++) {
+        set_bank(SPRITE);
+        *(fpgaAddr0 + id) = *(spriteSheet + id);
+        clear_bank();
     }
-
-    clear_bank(SPRITE);
 }
 
 void write_tile_sheet() {
     //TODO
 }
 
-void write_palette(Color* firstColor, int size) {
+void write_palette(Color* palette, int size) {
     uint16_t* addr = fpgaAddr0;
     
     for (int id = 0; id < size; id++) {
         addr += sizeof(uint16_t) * id;
 
-        Color* color = (firstColor + id);
+        Color* color = palette + id;
 
         // Possible undefined behavior, must allocate an additional byte
         // in color palette to avoid accessing unallocated memory
@@ -37,7 +30,7 @@ void write_palette(Color* firstColor, int size) {
         *addr = RG_Pair;
         *(addr + 1) = B_Single;
 
-        bank_clear();
+        clear_bank();
     }
 }
 

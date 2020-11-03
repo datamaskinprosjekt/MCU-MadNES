@@ -171,7 +171,6 @@ void EBI_TearDown(void) {
 }
 
 void set_bank(BANKSELECT bank) {
-	uint32_t value;
 	switch (bank) {
 		case OAM:
 			GPIO_PortOutSetVal(gpioPortD, OAM_BANK_VAL, CS_MASK);

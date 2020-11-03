@@ -48,7 +48,7 @@ typedef struct Color {
     unsigned char b;
 } Color;
 
-void write_sprite_sheet(char* spriteSheet);
+void write_sprite_sheet(char* spriteSheet, int size);
 
 void write_tile_sheet();
 
