@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
-#include <time.h>
 #include "object.h"
 
 void init_objects(void)
@@ -22,7 +21,7 @@ void init_objects(void)
 
     int cnt = 0;
     for (int i=0; i<shipMax; i++) {
-        objs[i] = (object) {objMax++, &shipType, 1, 200, 400, 1, 0, 1, 0};
+        objs[i] = (object) {objMax++, &shipType, 0, 200, 400, 0, 0, 1, 0};
         add_dirty_object(&objs[i]);
     }
     cnt += shipMax;
@@ -56,7 +55,7 @@ void add_dirty_object(object* obj) {
     dirtyObjs[obj->id] = 1;
 }
 
-void move_object(object* obj, int rot, int speed) {
+int move_object(object* obj, int rot, int speed) {
 	int xOffset = 0;
 	int yOffset = 0;
 
@@ -103,11 +102,12 @@ void move_object(object* obj, int rot, int speed) {
 	int yNew = obj->yPos + yOffset;
 
 	if (xNew < 0 || xNew + 15 >= WIDTH || yNew < 0 || yNew + 15 >= HEIGHT) {
-		return;
+		return 0;
 	}
 
 	obj->xPos = xNew;
 	obj->yPos = yNew;
+    return 1;
 }
 
 int get_rot(object* object) {

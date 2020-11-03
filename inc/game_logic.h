@@ -42,6 +42,7 @@ bool check_collision_laser(laser_elem* laser, asteroid_elem* asteroid);
 void collision_player(player_elem* player, asteroid_elem* asteroid);
 void collision_laser(laser_elem* laser, asteroid_elem* asteroid);
 void end_game();
+void test_game_print();
 void test_print();
 
 #endif
