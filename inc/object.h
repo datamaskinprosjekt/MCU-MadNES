@@ -35,7 +35,9 @@ typedef struct {
 
 spriteType shipType;
 spriteType statusType;
-spriteType asteroidType;
+spriteType asteroid1Type;
+spriteType asteroid2Type;
+spriteType asteroid3Type;
 spriteType laserType;
 
 int objMax;

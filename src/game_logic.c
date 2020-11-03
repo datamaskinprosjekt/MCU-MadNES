@@ -18,10 +18,11 @@ int main(void) {
 		time_handler();
 		//test_game_print();
 		if (!asteroids[0].asteroidObj->enable) {
-			game = 0;
+			//game = 0;
 		}
 		//joystick_handler(0);
 	}
+	test_print();
 
 	end_game();
 

@@ -7,13 +7,16 @@ void init_objects(void)
 {
     shipType = (spriteType) {SHIP, 0, 5};
     statusType = (spriteType) {STATUS, 10, 4};
-    asteroidType = (spriteType) {ASTEROID, 14, 11};
+    asteroid1Type = (spriteType) {ASTEROID, 14, 11};
+    asteroid2Type = (spriteType) {ASTEROID, 25, 11};
+    asteroid3Type = (spriteType) {ASTEROID, 36, 16};
     laserType = (spriteType) {LASER, 52, 5};
+    spriteType* asteroidTypes[3] = {&asteroid1Type, &asteroid2Type, &asteroid3Type};
 
     objMax = 0;
     shipMax = 1;
     statusMax = 1;
-    asteroidMax = 1;
+    asteroidMax = 7;
     laserMax = 2;
     
     objs = (object *) malloc(sizeof(object) * (shipMax + statusMax + asteroidMax + laserMax));
@@ -41,7 +44,7 @@ void init_objects(void)
                 seek = 0;
             }
         }
-        objs[i] = (object) {objMax++, &asteroidType, 0, xPos, yPos, 0, 0, 1, 0};
+        objs[i] = (object) {objMax++, asteroidTypes[(i - shipMax - statusMax) % 3], 0, xPos, yPos, 0, 0, 1, 0};
         add_dirty_object(&objs[i]);
     }
     cnt += asteroidMax;
@@ -134,6 +137,6 @@ void delete_objects() {
 }
 
 void print_object(object* obj) {
-    printf("id:%d, localSpriteIdx:%d, xPos:%d, yPos:%d, xFlip:%d, yFlip:%d, enable:%d, priority:%d\n",
-    obj->id, obj->localSpriteIdx, obj->xPos, obj->yPos, obj->xFlip, obj->yFlip, obj->enable, obj->priority);
+    printf("id:%d, globalSpriteIdx:%d, localSpriteIdx:%d, xPos:%d, yPos:%d, xFlip:%d, yFlip:%d, enable:%d, priority:%d\n",
+    obj->id, obj->type->globalSpriteIdx, obj->localSpriteIdx, obj->xPos, obj->yPos, obj->xFlip, obj->yFlip, obj->enable, obj->priority);
 }
