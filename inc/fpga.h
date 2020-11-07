@@ -9,13 +9,13 @@
 #include "ebi.h"
 
 /* Memory bank 0: 0x80000000 -> 0x83ffffff */
-#define fpgaAddr0 (uint16_t*) 0x80000000
+//#define fpgaAddr0 0x80000000
 /* Memory bank 1: 0x84000000 -> 0x87ffffff */
-#define fpgaAddr1 (uint16_t*) 0x84000000
+//#define fpgaAddr1 0x84000000
 /* Memory bank 2: 0x88000000 -> 0x8bffffff */
-#define fpgaAddr2 (uint16_t*) 0x88000000
+//#define fpgaAddr2 0x88000000
 /* Memory bank 3: 0x8c000000 -> 0x8fffffff */
-#define fpgaAddr3 (uint16_t*) 0x8c000000
+//#define fpgaAddr3 0x8c000000
 
 typedef enum {
     ASTEROID,
@@ -38,8 +38,8 @@ typedef struct {
     uint16_t yPos;
     bool xFlip;
     bool yFlip;
-    bool enabled;
     uint8_t priority;
+    bool enabled;
 } Object;
 
 typedef struct Color {
@@ -48,7 +48,9 @@ typedef struct Color {
     unsigned char b;
 } Color;
 
-void write_sprite_sheet(char* spriteSheet, int size);
+uint16_t* fpgaAddr0;
+
+void write_sprite_sheet(uint16_t* spriteSheet, int size);
 
 void write_tile_sheet();
 

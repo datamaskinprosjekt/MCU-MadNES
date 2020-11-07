@@ -19,7 +19,7 @@ int ebi_main(void) {
 
     /* Configure core clock to 48 MHz high frequency crystal oscillator*/
     CMU_ClockSelectSet(cmuClock_HF, cmuSelect_HFXO);
-    CMU_ClockDivSet(cmuClock_HF, cmuClkDiv_512);
+    CMU_ClockDivSet(cmuClock_HF, cmuClkDiv_256);
 
     EBI_SetUp();
 
@@ -34,7 +34,6 @@ int ebi_main(void) {
 
 
     /* Write garbage to FPGA */
-
     char* garbage = malloc(sizeof(char) * 255);
 
     for(int i = 0; i < 255; i++)

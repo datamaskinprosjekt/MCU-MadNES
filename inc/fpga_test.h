@@ -15,8 +15,8 @@
 
 char* read_data(char* fileName);
 char** parse_data(char* data, int size);
-Color* create_palette(char* paletteFile, int num_colors);
-char* create_sprite_sheet(char* spriteFile, int num_sprites);
+Color* create_palette(int num_colors);
+char* create_sprite_sheet(int num_sprites);
 
 void fpga_test();
 

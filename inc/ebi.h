@@ -7,12 +7,15 @@
 #include "em_ebi.h"
 #include "em_gpio.h"
 
-#define CS_MASK 0b0001111000000000
-#define OAM_BANK_VAL 0 << 9
-#define SPRITE_BANK_VAL 1 << 9
-#define TILE_BANK_VAL 2 << 9 
-#define PALETTE_BANK_VAL 3 << 9 
-#define TAM_BANK_VAL 4 << 9 
+// Bits 9-12
+#define CS_MASK 0b111 << 9
+
+// Bank Selects
+#define OAM_BANK_VAL     0 << 9
+#define SPRITE_BANK_VAL  1 << 9
+#define TILE_BANK_VAL    2 << 9
+#define PALETTE_BANK_VAL 3 << 9
+#define TAM_BANK_VAL     4 << 9
 
 typedef enum BANKSELECT {
     OAM,

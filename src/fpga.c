@@ -1,6 +1,7 @@
 #include "fpga.h"
 
-void write_sprite_sheet(char* spriteSheet, int size) {
+void write_sprite_sheet(uint16_t* spriteSheet, int size) {
+    fpgaAddr0 = (uint16_t *) EBI_BankAddress(EBI_BANK0);
     for (int id = 0; id < size; id++) {
         set_bank(SPRITE);
         *(fpgaAddr0 + id) = *(spriteSheet + id);
@@ -13,6 +14,7 @@ void write_tile_sheet() {
 }
 
 void write_palette(Color* palette, int size) {
+    fpgaAddr0 = (uint16_t *) EBI_BankAddress(EBI_BANK0);
     uint16_t* addr = fpgaAddr0;
     
     for (int id = 0; id < size; id++) {
@@ -20,8 +22,6 @@ void write_palette(Color* palette, int size) {
 
         Color* color = palette + id;
 
-        // Possible undefined behavior, must allocate an additional byte
-        // in color palette to avoid accessing unallocated memory
         uint16_t RG_Pair = (color->r << 8) + color->g;
         uint16_t B_Single = color->b;
 
@@ -35,9 +35,10 @@ void write_palette(Color* palette, int size) {
 }
 
 void write_object(Object* obj) {
+    fpgaAddr0 = (uint16_t *) EBI_BankAddress(EBI_BANK0);
 
     uint32_t data = 0; //[1:enabled][1:priority][1:yFlip][1:xFlip][20:xyPos][8:spriteId]
-    uint16_t* addr = fpgaAddr0 + sizeof(uint16_t) * obj->id;
+    uint16_t* addr = (uint16_t*) fpgaAddr0 + 2 * obj->id;
 
     //SpriteId
     uint8_t spriteId = obj->type->globalSpriteIdx + obj->localSpriteIdx;
@@ -45,19 +46,19 @@ void write_object(Object* obj) {
     data |= (uint32_t) spriteId;
 
     //xyPos
-    data |= (uint32_t) obj->xPos << 8;
-    data &= ~(1 << 18);
-    data &= ~(1 << 19);
-    data &= ~(1 << 20);
-    data &= ~(1 << 21);
-    data &= ~(1 << 22);
+ 	//xyPos
+	data |= (uint32_t) obj->xPos << 8;
+	data &= ~(1 << 18);
+	data &= ~(1 << 19);
+	data &= ~(1 << 20);
+	data &= ~(1 << 21);
 
-    data |= (uint32_t) obj->yPos << 18;
-    data &= ~(1 << 27);
-    data &= ~(1 << 28);
-    data &= ~(1 << 29);
-    data &= ~(1 << 30);
-    data &= ~(1 << 31);
+
+	data |= (uint32_t) obj->yPos << 18;
+	data &= ~(1 << 28);
+	data &= ~(1 << 29);
+	data &= ~(1 << 30);
+	data &= ~(1 << 31);
 
     //xFlip
     if (obj->xFlip) {
@@ -69,14 +70,14 @@ void write_object(Object* obj) {
         data |= 1 << 29;
     }
 
-    //Enabled
-    if (obj->enabled) {
-        data |= 1 << 31;
-    }
-
     //Priority
     if (obj->priority) {
         data |= 1 << 30;
+    }
+
+    //Enabled
+    if (obj->enabled) {
+        data |= 1 << 31;
     }
     
     uint16_t* data1 = (uint16_t*) &data;
@@ -88,4 +89,5 @@ void write_object(Object* obj) {
     *(addr + 1) = *data2;
 
     clear_bank();
+
 }
