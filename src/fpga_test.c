@@ -30,17 +30,17 @@ void fpga_test() {
 
     Object obj0 = {.id = 0, .type = &st1, .localSpriteIdx = 1, .xPos = 0, .yPos = 0, .xFlip = false, .yFlip = false, .priority = 0, .enabled = false};
 
-	Object obj1 = {.id = 1, .type = &st1, .localSpriteIdx = 1, .xPos = 0, .yPos = 300, .xFlip = false, .yFlip = true, .priority = 0, .enabled = true};
+	Object obj1 = {.id = 0, .type = &st1, .localSpriteIdx = 1, .xPos = 0, .yPos = 300, .xFlip = false, .yFlip = true, .priority = 0, .enabled = true};
 
-    Object obj2 = {.id = 2, .type = &st1, .localSpriteIdx = 2, .xPos = 240, .yPos = 250, .xFlip = true, .yFlip = false, .priority = 0, .enabled = true};
+    Object obj2 = {.id = 2, .type = &st1, .localSpriteIdx = 1, .xPos = 240, .yPos = 250, .xFlip = true, .yFlip = false, .priority = 0, .enabled = true};
 
-    Object obj3 = {.id = 3, .type = &st1, .localSpriteIdx = 4, .xPos = 260, .yPos = 270, .xFlip = true, .yFlip = true, .priority = 0, .enabled = true};
+    Object obj3 = {.id = 3, .type = &st1, .localSpriteIdx = 1, .xPos = 260, .yPos = 270, .xFlip = true, .yFlip = true, .priority = 0, .enabled = true};
 
-    Object obj4 = {.id = 4, .type = &st1, .localSpriteIdx = 16, .xPos = 280, .yPos = 290, .xFlip = false, .yFlip = false, .priority = 0, .enabled = true};
+    Object obj4 = {.id = 4, .type = &st1, .localSpriteIdx = 1, .xPos = 280, .yPos = 290, .xFlip = false, .yFlip = false, .priority = 0, .enabled = true};
 
     Object obj5 = {.id = 5, .type = &st1, .localSpriteIdx = 1, .xPos = 300, .yPos = 310, .xFlip = false, .yFlip = true, .priority = 0, .enabled = true};
 
-    Object obj6 = {.id = 6, .type = &st1, .localSpriteIdx = 2, .xPos = 320, .yPos = 330, .xFlip = true, .yFlip = false, .priority = 0, .enabled = true};
+    Object obj6 = {.id = 6, .type = &st1, .localSpriteIdx = 1, .xPos = 320, .yPos = 330, .xFlip = true, .yFlip = false, .priority = 0, .enabled = true};
 
     Object obj7 = {.id = 7, .type = &st1, .localSpriteIdx = 1, .xPos = 340, .yPos = 350, .xFlip = true, .yFlip = true, .priority = 0, .enabled = true};
 
