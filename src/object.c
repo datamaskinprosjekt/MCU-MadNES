@@ -134,13 +134,13 @@ int get_rot(object* object) {
     }
     else if (xFlip && !yFlip)
     {
-        return (16 - object->localSpriteIdx) % 16;
-    }
-    else if (!xFlip && yFlip)
-    {
         return 8 - object->localSpriteIdx;
     }
-    return object->localSpriteIdx + 8;
+    else if (xFlip && yFlip)
+    {
+        return object->localSpriteIdx + 8;
+    }
+    return (16 - object->localSpriteIdx) % 16;
 }
 
 void delete_objects() {

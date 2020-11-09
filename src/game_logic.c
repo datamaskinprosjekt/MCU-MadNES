@@ -20,15 +20,14 @@ int main(void) {
 	while (roundNo) {
 		if (roundNo < tmp) {
 			tmp--;
-			printf("\nGAME ROUNDNo %d\n\n", roundNo);
+			printf("\nGAME ROUND %d\n\n", roundNo);
 		}
-
 		time_handler();
-		if (roundNo == 1) {
+		if (roundNo == 3) {
 			test_game_print();
 		}
-		//joystick_handler(0);
 	}
+
 	test_print();
 	button_shoot_handler();
 	time_handler();
@@ -145,6 +144,7 @@ void time_handler() {
 							int moved = move_object(laser->laserObj, laserRot, laserSpeed);
 							if (!moved) {
 								laser->laserObj->enable = 0;
+								laserCnt--;
 							}
 
 							if (check_collision_laser(laser, asteroid)) {
@@ -192,12 +192,12 @@ void joystick_handler(int rot) {
 		switch(dir) {
 			case 1:
 				spriteIdx = 8 - rot;
-				xFlip = 1;
+				xFlip = rot == 4? 0 : 1;
 				break;
 			case 2:
 				spriteIdx = rot - 8;
 				xFlip = 1;
-				yFlip = 1;
+				yFlip = rot == 8? 0 : 1;
 				break;
 			case 3:
 				spriteIdx = 16 - rot;
