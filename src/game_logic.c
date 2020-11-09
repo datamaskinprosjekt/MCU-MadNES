@@ -9,19 +9,29 @@
 
 int main(void) {
 	srand(time(NULL));
+	roundNo = 3;
 	game = 1;
 
 	init_game();
 	test_print();
-	button_handler();
-	while (game) {
+	button_shoot_handler();
+
+	int tmp = roundNo + 1;
+	while (roundNo) {
+		if (roundNo < tmp) {
+			tmp--;
+			printf("\nGAME ROUNDNo %d\n\n", roundNo);
+		}
+
 		time_handler();
-		//test_game_print();
-		if (!asteroids[0].asteroidObj->enable) {
-			//game = 0;
+		if (roundNo == 1) {
+			test_game_print();
 		}
 		//joystick_handler(0);
 	}
+	test_print();
+	button_shoot_handler();
+	time_handler();
 	test_print();
 
 	end_game();
@@ -62,155 +72,183 @@ void init_game() {
 }
 
 void time_handler() {	
-	for (int i=0; i<asteroidMax; i++) {
-		asteroid_elem* asteroid = &asteroids[i];
-		if (asteroid->asteroidObj->enable) {
-			if (asteroid->isHit) {
-				if (asteroid->asteroidObj->localSpriteIdx + 1 >= asteroid->asteroidObj->type->length) {
-					asteroid->asteroidObj->enable = 0;
-					asteroidCnt--;
+	if (game) {
+		for (int i=0; i<asteroidMax; i++) {
+			asteroid_elem* asteroid = &asteroids[i];
+			if (asteroid->asteroidObj->enable) {
+				if (asteroid->isHit) {
+					if (asteroid->asteroidObj->localSpriteIdx + 1 >= asteroid->asteroidObj->type->length) {
+						asteroid->asteroidObj->enable = 0;
+						asteroidCnt--;
+					} else {
+						asteroid->asteroidObj->localSpriteIdx++;
+					}
 				} else {
-					asteroid->asteroidObj->localSpriteIdx++;
+					int xDiff = asteroid->asteroidObj->xPos - players[0].shipObj->xPos;
+					int yDiff = asteroid->asteroidObj->yPos - players[0].shipObj->yPos;
+					if (xDiff != 0 || yDiff != 0) {
+						int rot;
+						int xDiffAbs = abs(xDiff);
+						int yDiffAbs = abs(yDiff);
+						if (xDiffAbs < yDiffAbs)
+						{
+							float tmp = (float) xDiffAbs / yDiffAbs;
+							if (tmp < 0.25) {
+								rot = 0;
+							} else if (tmp > 0.75) {
+								rot = 2;
+							} else {
+								rot = 1;
+							}
+						}
+						else if(yDiffAbs < xDiffAbs)
+						{
+							float tmp = (float) yDiffAbs / xDiffAbs;
+							if (tmp < 0.25) {
+								rot = 4;
+							} else if (tmp > 0.75) {
+								rot = 2;
+							} else {
+								rot = 3;
+							}
+						}
+						else
+						{
+							rot = 2;
+						}
+
+						if (xDiff < 0 && yDiff <= 0)
+						{
+							rot = 8 - rot;
+						}
+						else if (xDiff >= 0 && yDiff <= 0)
+						{
+							rot += 8;
+						}
+						else if (xDiff > 0 && yDiff >= 0)
+						{
+							rot = (16 - rot) % 16;
+						}
+
+						move_object(asteroid->asteroidObj, rot, asteroid->speed);
+					}
+
+					if (check_collision_player(&players[0], asteroid)) {
+						collision_player(&players[0], asteroid);
+						add_dirty_object(players[0].statusObj);
+					}
+
+					for (int j=0; j<laserMax; j++) {
+						laser_elem* laser = &lasers[j];
+						if (laser->laserObj->enable) {
+							int laserRot = get_rot(laser->laserObj);
+							int moved = move_object(laser->laserObj, laserRot, laserSpeed);
+							if (!moved) {
+								laser->laserObj->enable = 0;
+							}
+
+							if (check_collision_laser(laser, asteroid)) {
+								collision_laser(laser, asteroid);
+							}
+
+							add_dirty_object(laser->laserObj);
+						}
+					}
 				}
 			} else {
-				int xDiff = asteroid->asteroidObj->xPos - players[0].shipObj->xPos;
-				int yDiff = asteroid->asteroidObj->yPos - players[0].shipObj->yPos;
-				if (xDiff != 0 || yDiff != 0) {
-					int rot;
-					int xDiffAbs = abs(xDiff);
-					int yDiffAbs = abs(yDiff);
-					if (xDiffAbs < yDiffAbs)
-					{
-						float tmp = (float) xDiffAbs / yDiffAbs;
-						if (tmp < 0.25) {
-							rot = 0;
-						} else if (tmp > 0.75) {
-							rot = 2;
-						} else {
-							rot = 1;
-						}
-					}
-					else if(yDiffAbs < xDiffAbs)
-					{
-						float tmp = (float) yDiffAbs / xDiffAbs;
-						if (tmp < 0.25) {
-							rot = 4;
-						} else if (tmp > 0.75) {
-							rot = 2;
-						} else {
-							rot = 3;
-						}
-					}
-					else
-					{
-						rot = 2;
-					}
-
-					if (xDiff < 0 && yDiff <= 0)
-					{
-						rot = 8 - rot;
-					}
-					else if (xDiff >= 0 && yDiff <= 0)
-					{
-						rot += 8;
-					}
-					else if (xDiff > 0 && yDiff >= 0)
-					{
-						rot = (16 - rot) % 16;
-					}
-
-					move_object(asteroid->asteroidObj, rot, asteroid->speed);
-				}
-
-				if (check_collision_player(&players[0], asteroid)) {
-					collision_player(&players[0], asteroid);
-					add_dirty_object(players[0].statusObj);
-				}
-
-				for (int j=0; j<laserMax; j++) {
-					laser_elem* laser = &lasers[j];
-					if (laser->laserObj->enable) {
-						int laserRot = get_rot(laser->laserObj);
-						int moved = move_object(laser->laserObj, laserRot, laserSpeed);
-						if (!moved) {
-							laser->laserObj->enable = 0;
-						}
-
-						if (check_collision_laser(laser, asteroid)) {
-							collision_laser(laser, asteroid);
-						}
-
-						add_dirty_object(laser->laserObj);
+				asteroid->isHit = 0;
+				asteroid->asteroidObj->enable = 1;
+				asteroid->asteroidObj->localSpriteIdx = 0;
+				int xPos = 0;
+				int yPos = 0;
+				bool seek = 1;
+				int playerXPos = players[0].shipObj->xPos;
+				int playerYPos = players[0].shipObj->yPos;
+				while (seek) {
+					xPos = rand() % (WIDTH - 16);
+					yPos = rand() % (HEIGHT - 16);
+					if (xPos <= (playerXPos - 100) || xPos >= (playerXPos + 100) || yPos <= (playerYPos - 100) || yPos >= (playerYPos + 100)) {
+						seek = 0;
 					}
 				}
+				asteroid->asteroidObj->xPos = xPos;
+				asteroid->asteroidObj->yPos = yPos;
+				asteroidCnt++;
 			}
-		} else {
-			asteroid->isHit = 0;
-			asteroid->asteroidObj->enable = 1;
-			asteroid->asteroidObj->localSpriteIdx = 0;
-			int xPos = 0;
-			int yPos = 0;
-			bool seek = 1;
-			int playerXPos = players[0].shipObj->xPos;
-			int playerYPos = players[0].shipObj->yPos;
-			while (seek) {
-				xPos = rand() % (WIDTH - 16);
-				yPos = rand() % (HEIGHT - 16);
-				if (xPos <= (playerXPos - 100) || xPos >= (playerXPos + 100) || yPos <= (playerYPos - 100) || yPos >= (playerYPos + 100)) {
-					seek = 0;
-				}
-        	}
-			asteroid->asteroidObj->xPos = xPos;
-			asteroid->asteroidObj->yPos = yPos;
-			asteroidCnt++;
-		}
-		add_dirty_object(asteroid->asteroidObj);
-	}
-	
-	if (!game) {
-		for (int i=0; i<letterMax; i++) {
-			letter_elem* letter = &letters[i];
-			letter->letterObj->enable = 1;
-			add_dirty_object(letter->letterObj);
+			add_dirty_object(asteroid->asteroidObj);
 		}
 	}
 }
 
 void joystick_handler(int rot) {
-	int spriteIdx = rot == 4 ? rot : rot % 4;
-	players[0].shipObj->localSpriteIdx = spriteIdx;
+	if (game) {
+		object* shipObj = players[0].shipObj;
 
-	move_object(players[0].shipObj, rot, playerSpeed);
+		int dir = rot / 4;
+		int spriteIdx = rot % 4;
+		int xFlip = 0;
+		int yFlip = 0;
 
-	for (int i=0; i<asteroidMax; i++) {
-		asteroid_elem* asteroid = &asteroids[i];
-		if (asteroid->asteroidObj->enable) {
-			if (check_collision_player(&players[0], asteroid)) {
-				collision_player(&players[0], asteroid);
-				add_dirty_object(players[0].statusObj);
-				add_dirty_object(asteroid->asteroidObj);
+		switch(dir) {
+			case 1:
+				spriteIdx = 8 - rot;
+				xFlip = 1;
+				break;
+			case 2:
+				spriteIdx = rot - 8;
+				xFlip = 1;
+				yFlip = 1;
+				break;
+			case 3:
+				spriteIdx = 16 - rot;
+				yFlip = 1;
+				break;
+		}
+
+		shipObj->localSpriteIdx = spriteIdx;
+		shipObj->xFlip = xFlip;
+		shipObj->yFlip = yFlip;
+
+		add_dirty_object(shipObj);
+	}
+}
+
+void button_fuel_handler() {
+	if (game) {
+		object* shipObj = players[0].shipObj;
+		move_object(shipObj, get_rot(shipObj), playerSpeed);
+		add_dirty_object(shipObj);
+	}
+}
+
+void button_shoot_handler() {
+	if (game) {
+		if (laserCnt < laserMax) {
+			for (int i=0; i<laserMax; i++) {
+				laser_elem* laser = &lasers[i];
+				if (laser->laserObj->enable == 0) {
+					laserCnt++;
+					laser->laserObj->enable = 1;
+					laser->laserObj->localSpriteIdx = players[0].shipObj->localSpriteIdx;
+					laser->laserObj->xPos = players[0].shipObj->xPos;
+					laser->laserObj->yPos = players[0].shipObj->yPos;
+					laser->laserObj->xFlip = players[0].shipObj->xFlip;
+					laser->laserObj->yFlip = players[0].shipObj->yFlip;
+					add_dirty_object(laser->laserObj);
+					break;
+				}
 			}
 		}
 	}
-	
-	add_dirty_object(players[0].shipObj);
 }
 
-void button_handler() {
-	if (laserCnt < laserMax) {
-		for (int i=0; i<laserMax; i++) {
-			laser_elem* laser = &lasers[i];
-			if (laser->laserObj->enable == 0) {
-				laserCnt++;
-				laser->laserObj->enable = 1;
-				laser->laserObj->localSpriteIdx = players[0].shipObj->localSpriteIdx;
-				laser->laserObj->xPos = players[0].shipObj->xPos;
-				laser->laserObj->yPos = players[0].shipObj->yPos;
-				laser->laserObj->xFlip = players[0].shipObj->xFlip;
-				laser->laserObj->yFlip = players[0].shipObj->yFlip;
-				add_dirty_object(laser->laserObj);
-				break;
-			}
+void button_restart_handler() {
+	if (!game) {
+		game = 1;
+		for (int i=0; i<letterMax; i++) {
+			letter_elem* letter = &letters[i];
+			letter->letterObj->enable = 0;
+			add_dirty_object(letter->letterObj);
 		}
 	}
 }
@@ -246,7 +284,13 @@ bool check_collision_laser(laser_elem* laser, asteroid_elem* asteroid) {
 
 void collision_player(player_elem* player, asteroid_elem* asteroid) {
 	if (player->hp == 0) {
+		roundNo --;
 		game = 0;
+		for (int i=0; i<letterMax; i++) {
+			letter_elem* letter = &letters[i];
+			letter->letterObj->enable = 1;
+			add_dirty_object(letter->letterObj);
+		}
 	} else {
 		player->hp--;
 	}

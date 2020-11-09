@@ -17,7 +17,7 @@ void init_objects(void)
     objMax = 0;
     shipMax = 1;
     statusMax = 1;
-    asteroidMax = 7;
+    asteroidMax = 1;
     laserMax = 2;
     letterMax = 8;
     
@@ -61,7 +61,7 @@ void init_objects(void)
         int num = i - shipMax - statusMax - asteroidMax - laserMax;
         int xLetter = xLetterBase + 16 * (num % 4);
         int yLetter = yLetterBase + 16 * (num / 4);
-        objs[i] = (object) {objMax++, &letterType, num, xLetter, yLetter, 0, 0, 0, 0};
+        objs[i] = (object) {objMax++, &letterType, num, xLetter, yLetter, 0, 0, 0, 1};
     }
 }
 

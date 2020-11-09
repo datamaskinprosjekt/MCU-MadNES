@@ -24,6 +24,7 @@ typedef struct {
     object* letterObj;
 } letter_elem;
 
+int roundNo;
 bool game;
 int playerSpeed;
 int asteroidSpeed;
@@ -38,8 +39,10 @@ letter_elem* letters;
 
 void init_game();
 void time_handler();
-void button_handler();
 void joystick_handler(int rot);
+void button_fuel_handler();
+void button_shoot_handler();
+void button_restart_handler();
 bool check_collision_player(player_elem* player, asteroid_elem* asteroid);
 bool check_collision_laser(laser_elem* laser, asteroid_elem* asteroid);
 void collision_player(player_elem* player, asteroid_elem* asteroid);
