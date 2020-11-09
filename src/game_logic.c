@@ -9,7 +9,9 @@
 
 int main(void) {
 	srand(time(NULL));
+	// search for roundNo and remove all
 	roundNo = 3;
+	// move the if(game) to the interrupt calls to avoid unnecessary repeats
 	game = 1;
 
 	init_game();
@@ -19,6 +21,7 @@ int main(void) {
 	int tmp = roundNo + 1;
 	while (roundNo) {
 		if (roundNo < tmp) {
+			button_restart_handler();
 			tmp--;
 			printf("\nGAME ROUND %d\n\n", roundNo);
 		}
@@ -28,9 +31,6 @@ int main(void) {
 		}
 	}
 
-	test_print();
-	button_shoot_handler();
-	time_handler();
 	test_print();
 
 	end_game();
