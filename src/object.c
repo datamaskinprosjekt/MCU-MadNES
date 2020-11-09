@@ -12,7 +12,21 @@ void init_objects(void)
     asteroid3Type = (spriteType) {ASTEROID, 36, 16};
     laserType = (spriteType) {LASER, 52, 5};
     letterType = (spriteType) {LETTER, 57, 8};
+    starType = (spriteType) {STAR, 65, 6};
+
     spriteType* asteroidTypes[3] = {&asteroid1Type, &asteroid2Type, &asteroid3Type};
+    int star1Max = 7;
+    int star2Max = 5;
+    int star3Max = 6;
+    int star4Max = 5;
+    int star5Max = 3;
+    int star6Max = 4;
+    int star1Pos[2 * 7] = {62,136, 227,380, 283,174, 321,278, 408,88, 488,252, 582,174};
+    int star2Pos[2 * 5] = {122,112, 158,273, 392,113, 469,380, 527,262};
+    int star3Pos[2 * 6] = {85,331, 124,53, 329,93, 416,305, 477,128, 530,411};
+    int star4Pos[2 * 5] = {86,419, 107,205, 252,64, 408,224, 547,40};
+    int star5Pos[2 * 3] = {45,103, 230,146, 309,417};
+    int star6Pos[2 * 4] = {258,209, 355,235, 489,63, 535,311};
 
     objMax = 0;
     shipMax = 1;
@@ -20,13 +34,14 @@ void init_objects(void)
     asteroidMax = 1;
     laserMax = 2;
     letterMax = 8;
+    starMax = 30;
     
-    objs = (object *) malloc(sizeof(object) * (shipMax + statusMax + asteroidMax + laserMax + letterMax));
-    dirtyObjs = (int *) malloc(sizeof(int) * (shipMax + statusMax + asteroidMax + laserMax + letterMax));
+    objs = (object *) malloc(sizeof(object) * (shipMax + statusMax + asteroidMax + laserMax + letterMax + starMax));
+    dirtyObjs = (int *) malloc(sizeof(int) * (shipMax + statusMax + asteroidMax + laserMax + letterMax + starMax));
 
     int cnt = 0;
     for (int i=0; i<shipMax; i++) {
-        objs[i] = (object) {objMax++, &shipType, 0, 200, 400, 0, 0, 1, 0};
+        objs[i] = (object) {objMax++, &shipType, 0, 200, 400, 0, 0, 1, 1};
         add_dirty_object(&objs[i]);
     }
     cnt += shipMax;
@@ -46,12 +61,12 @@ void init_objects(void)
                 seek = 0;
             }
         }
-        objs[i] = (object) {objMax++, asteroidTypes[(i - shipMax - statusMax) % 3], 0, xPos, yPos, 0, 0, 1, 0};
+        objs[i] = (object) {objMax++, asteroidTypes[(i - shipMax - statusMax) % 3], 0, xPos, yPos, 0, 0, 1, 1};
         add_dirty_object(&objs[i]);
     }
     cnt += asteroidMax;
     for (int i=cnt; i<cnt + laserMax; i++) {
-        objs[i] = (object) {objMax++, &laserType, 0, 0, 0, 0, 0, 0, 0};
+        objs[i] = (object) {objMax++, &laserType, 0, 0, 0, 0, 0, 0, 1};
         add_dirty_object(&objs[i]);
     }
     cnt += laserMax;
@@ -62,6 +77,13 @@ void init_objects(void)
         int xLetter = xLetterBase + 16 * (num % 4);
         int yLetter = yLetterBase + 16 * (num / 4);
         objs[i] = (object) {objMax++, &letterType, num, xLetter, yLetter, 0, 0, 0, 1};
+        add_dirty_object(&objs[i]);
+    }
+    cnt += letterMax;
+    //TODO add correct position
+    for (int i=cnt; i<cnt + starMax; i++) {
+        objs[i] = (object) {objMax++, &starType, 0, 0, 0, 0, 0, 1, 0};
+        add_dirty_object(&objs[i]);
     }
 }
 

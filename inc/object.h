@@ -13,7 +13,8 @@ typedef enum {
     SHIP,
     LASER,
     STATUS,
-    LETTER
+    LETTER,
+    STAR
 } spriteName;
 
 typedef struct {
@@ -31,7 +32,7 @@ typedef struct {
     bool xFlip;
     bool yFlip;
     bool enable;
-    uint8_t priority; //0000 [flipY][flipX][priority][enable]
+    bool priority;
 } object;
 
 spriteType shipType;
@@ -41,6 +42,7 @@ spriteType asteroid2Type;
 spriteType asteroid3Type;
 spriteType laserType;
 spriteType letterType;
+spriteType starType;
 
 int objMax;
 int shipMax;
@@ -48,6 +50,7 @@ int statusMax;
 int asteroidMax;
 int laserMax;
 int letterMax;
+int starMax;
 
 object* objs;
 int* dirtyObjs;
