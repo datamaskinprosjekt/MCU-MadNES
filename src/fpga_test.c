@@ -59,15 +59,6 @@ void fpga_test() {
 
     write_sprite_sheet((uint16_t*) spriteSheet, NUM_SPRITES * 256);
     write_palette(palette, NUM_COLORS);
-    //write_object(&obj1);
-    //write_object(&obj2);
-
-    /*for (int i = 0; i < 64; i++) {
-        obj0.id = i;
-        write_object(&obj0);
-    }*/
-    
-    //uint32_t counter = 0;
     
     while (1) {
         write_object(&obj1);
@@ -78,25 +69,6 @@ void fpga_test() {
         write_object(&obj6);
         write_object(&obj7);
         write_object(&obj8);
-
-        /*obj1.id = 1;
-        write_object(&obj2);
-        obj1.id = 0;*/
-
-        /*uint16_t sprite_id;
-        while(1) {
-            counter++;
-
-            if(counter == 1 << 20) {
-                sprite_id = (sprite_id + 1) % 57;
-                obj1.localSpriteIdx = sprite_id;
-                write_object(&obj2);
-                counter = 0;
-            }
-        }*/
-        //write_object(&obj2);
-        //write_sprite_sheet((uint16_t*) spriteSheet, NUM_SPRITES * 256);
-        //write_palette(palette, NUM_COLORS);
     }
 
     free(spriteSheet);
