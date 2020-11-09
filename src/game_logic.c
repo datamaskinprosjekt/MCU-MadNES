@@ -19,6 +19,7 @@ int main(void) {
 	button_shoot_handler();
 
 	int tmp = roundNo + 1;
+	// should be while(1), but is limited due to testing
 	while (roundNo) {
 		if (roundNo < tmp) {
 			button_restart_handler();
