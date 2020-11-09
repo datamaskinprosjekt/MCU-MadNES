@@ -39,6 +39,8 @@ int ebi_main(void) {
     for(int i = 0; i < 255; i++)
         *(garbage + i) = i;
 
+
+
     int offset = 0;
     int offsetAddr = 0;
     int offsetData = 0;

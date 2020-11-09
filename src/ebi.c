@@ -110,7 +110,7 @@ void EBI_SetUp(void) {
 
 	EBI_Init(&ebiConfig);
 
-	/* Disable EBI_CS0 and clear all chip selecect lines */
+	/* Disable EBI_CS0 and clear all chip select lines */
 
 	EBI_ChipSelectEnable(EBI_CS0, false);
 

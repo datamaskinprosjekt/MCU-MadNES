@@ -8,8 +8,8 @@
 ####################################################################
 # Definitions                                                      #
 ####################################################################
-
-DEVICE = EFM32GG990F1024
+# 980/990
+DEVICE = EFM32GG980F1024
 PROJECTNAME = astroids
 
 OBJ_DIR = build
@@ -129,6 +129,7 @@ $(SRC)/ebi.c \
 $(SRC)/ebi_main.c \
 $(SRC)/fpga.c \
 $(SRC)/fpga_test.c \
+$(SRC)/interrupt_handlers.c \
 $(LIB)/EFM32GG/Source/system_efm32gg.c \
 $(LIB)/emlib/src/em_assert.c \
 $(LIB)/emlib/src/em_cmu.c \
