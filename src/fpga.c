@@ -37,7 +37,7 @@ void write_palette(Color* palette, int size) {
 void write_object(Object* obj) {
     fpgaAddr0 = (uint16_t *) EBI_BankAddress(EBI_BANK0);
 
-    uint32_t data = 0; //[1:enabled][1:priority][1:yFlip][1:xFlip][20:xyPos][8:spriteId]
+    uint32_t data = 0; // [1:enabled][1:priority][1:yFlip][1:xFlip][20:xyPos][8:spriteId]
     uint16_t* addr = (uint16_t*) fpgaAddr0 + 2 * obj->id;
 
     //SpriteId
@@ -46,13 +46,11 @@ void write_object(Object* obj) {
     data |= (uint32_t) spriteId;
 
     //xyPos
- 	//xyPos
 	data |= (uint32_t) obj->xPos << 8;
 	data &= ~(1 << 18);
 	data &= ~(1 << 19);
 	data &= ~(1 << 20);
 	data &= ~(1 << 21);
-
 
 	data |= (uint32_t) obj->yPos << 18;
 	data &= ~(1 << 28);
