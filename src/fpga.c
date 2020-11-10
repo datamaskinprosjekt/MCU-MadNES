@@ -1,7 +1,5 @@
 #include "fpga.h"
 
-#define FPGA_ADDR (uint16_t *) EBI_BankAddress(EBI_BANK0)
-
 /**************************************************************
  * Writes a sprite sheet to the SPRITE Memory Bank on the FPGA.
  * @param sprite_sheet A pointer to the first element of the sprite sheet to be written
@@ -10,17 +8,27 @@
  *************************************************************/
 void write_sprite_sheet(uint16_t* sprite_sheet, int size)
 {
-    for (int id = 0; id < size; id++) {
+    for (int i = 0; i < size; i++) {
         set_bank(SPRITE);
-        *(FPGA_ADDR + id) = *(sprite_sheet + id);
+        *(FPGA_ADDR + i) = *(sprite_sheet + i);
         clear_bank();
     }
 }
 
 
-void write_tile_sheet()
+/**************************************************************
+ * Writes a tile sheet to the TILE Memory Bank on the FPGA.
+ * @param tile_sheet A pointer to the first element of the tile sheet to be written
+ *                     to the FPGA.
+ * @param size         The number of elements in the Sprite Sheet.
+ *************************************************************/
+void write_tile_sheet(uint16_t* tile_sheet, int size)
 {
-    //TODO
+    for (int i = 0; i < size; i++) {
+        set_bank(TILE);
+        *(FPGA_ADDR + i) = *(tile_sheet + i);
+        clear_bank();
+    }
 }
 
 /*************************************************************
@@ -52,9 +60,9 @@ void write_palette(Color* palette, int size)
 
 
 /**************************************************************
- * Writes an Object to the OAM Bank of the FPGA
+ * Writes an Object to the OAM Bank of the FPGA.
  * 
- * @param obj The object to be written
+ * @param obj The Object to be written.
  **************************************************************/ 
 void write_object(Object* obj)
 {
@@ -102,4 +110,42 @@ void write_object(Object* obj)
     *(addr + 1) = *data2;
 
     clear_bank();
+}
+
+
+/**************************************************************
+ * Creates a palette of Colors from the palette data.
+ * 
+ * @param num_colors The number of colors in the palette.
+ **************************************************************/ 
+Color* create_palette()
+{
+	Color* palette;
+    int i, j;
+		
+	palette = (Color*) malloc(NUM_COLORS * sizeof(void*));
+	i = 0;
+	
+	for (j = 0; j < (NUM_COLORS * 3); j += 3) {
+		Color color = {.r = (uint8_t) palette_data[j], .g = (uint8_t) palette_data[j+1], .b = (uint8_t) palette_data[j+2]};
+		palette[i] = color;
+		i++;
+	}
+	
+	return palette;
+}
+
+
+/**************************************************************
+ * Sends initial data consisting of tile sheet, sprite sheet
+ * and palette to the FPGA.
+ **************************************************************/
+void send_initial_data()
+{
+    Color* palette;
+    palette = create_palette(NUM_COLORS);
+
+    // TODO: add tile sheet
+    write_sprite_sheet((uint16_t*) sprite_data, NUM_SPRITES * 256);
+    write_palette(palette, NUM_COLORS);
 }

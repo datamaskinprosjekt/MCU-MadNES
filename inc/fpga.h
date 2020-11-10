@@ -7,7 +7,12 @@
 #include "em_ebi.h"
 #include "em_gpio.h"
 #include "ebi.h"
+#include "data.h"
 
+
+#define FPGA_ADDR (uint16_t *) EBI_BankAddress(EBI_BANK0)
+
+// NOTE: SpriteName, SpriteType and Object will probably be removed
 
 typedef enum {
     ASTEROID,
@@ -43,10 +48,14 @@ typedef struct Color {
 
 void write_sprite_sheet(uint16_t* sprite_sheet, int size);
 
-void write_tile_sheet();
+void write_tile_sheet(uint16_t* tile_sheet, int size);
 
 void write_palette(Color* first_color, int size);
 
 void write_object(Object* obj);
+
+Color* create_palette();
+
+void send_initial_data();
 
 #endif // _FPGA_H_

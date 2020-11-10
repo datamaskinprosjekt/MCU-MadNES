@@ -3,10 +3,10 @@
 
 #include <stdint.h>
 
-volatile uint32_t msTicks;
 
-void SysTick_Handler(void);
+volatile uint32_t ticks;
 
-void Delay(uint32_t dlyTicks);
+void tick(void);
+void delay(uint32_t num_ticks);
 
 #endif // _TIME_H_

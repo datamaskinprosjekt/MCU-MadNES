@@ -1,9 +1,11 @@
 #ifndef _MAIN_H_
 #define _MAIN_H_
 
+#include "em_chip.h"
+
 #include "time.h"
-#include "fpga_test.h"
-#include "ebi_test.h"
+#include "ebi.h"
+#include "fpga.h"
 
 
 int main();
