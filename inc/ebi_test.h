@@ -16,4 +16,4 @@ void write_FPGA(uint16_t *addr, uint16_t data);
 
 int ebi_test();
 
-#endif
+#endif // _EBI_TEST_H_
