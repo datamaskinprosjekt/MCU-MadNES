@@ -11,9 +11,9 @@
 #include "em_cmu.h"
 #include "em_ebi.h"
 
-void readFPGA(uint16_t *addr, uint16_t *data);
-void writeFPGA(uint16_t *addr, uint16_t data);
+void read_FPGA(uint16_t *addr, uint16_t *data);
+void write_FPGA(uint16_t *addr, uint16_t data);
 
-int ebi_test(void);
+int ebi_test();
 
 #endif

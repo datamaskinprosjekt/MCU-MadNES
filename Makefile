@@ -9,7 +9,7 @@
 # Definitions                                                      #
 ####################################################################
 
-DEVICE = EFM32GG990F1024
+DEVICE = EFM32GG980F1024
 PROJECTNAME = astroids
 
 OBJ_DIR = build
@@ -28,7 +28,7 @@ DIR = .
 
 # Change path to the tools according to your system configuration
 # DO NOT add trailing whitespace chars, they do matter !
-#WINDOWSCS  ?= GNU Tools ARM Embedded\4.8 2013q4
+# WINDOWSCS  ?= GNU Tools ARM Embedded\4.8 2013q4
 LINUXCS    ?= /usr/local/Cellar/gcc-arm-none-eabi-49/20150925
 
 RMDIRS	   := rm -rf
@@ -76,12 +76,12 @@ ifeq (clean,$(findstring clean, $(MAKECMDGOALS)))
     $(shell $(RMFILES) $(LST_DIR)$(ALLFILES)>$(NULLDEVICE) 2>&1)
   endif
 endif
-
-CC	= $(QUOTE)$(TOOLDIR)/bin/arm-none-eabi-gcc$(QUOTE)
-LD	= $(QUOTE)$(TOOLDIR)/bin/arm-none-eabi-ld$(QUOTE)
-AR	= $(QUOTE)$(TOOLDIR)/bin/arm-none-eabi-ar$(QUOTE)
-OBJCOPY = $(QUOTE)$(TOOLDIR)/bin/arm-none-eabi-objcopy$(QUOTE)
-DUMP	= $(QUOTE)$(TOOLDIR)/bin/arm-none-eabi-objdump$(QUOTE)
+#$(QUOTE)$(TOOLDIR)/bin/
+CC	= arm-none-eabi-gcc
+LD	= arm-none-eabi-ld
+AR	= arm-none-eabi-ar
+OBJCOPY = arm-none-eabi-objcopy
+DUMP	= arm-none-eabi-objdump
 
 ####################################################################
 # Flags                                                            #
@@ -128,6 +128,9 @@ $(SRC)/main.c \
 $(SRC)/time.c \
 $(SRC)/ebi.c \
 $(SRC)/ebi_test.c \
+$(SRC)/fpga.c \
+$(SRC)/fpga_test.c \
+$(SRC)/interrupt_handlers.c \
 $(LIB)/EFM32GG/Source/system_efm32gg.c \
 $(LIB)/emlib/src/em_assert.c \
 $(LIB)/emlib/src/em_cmu.c \
@@ -167,7 +170,7 @@ vpath %.S $(S_PATHS)
 # Default build is release build
 all:      release
 
-debug:    CFLAGS += -DDEBUG -O0 -g3
+debug:    CFLAGS += -DDEBUG -O0 -g 
 debug:    $(EXE_DIR)/$(PROJECTNAME).bin
 
 release:  CFLAGS += -DNDEBUG -O0 -g3

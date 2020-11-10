@@ -1,11 +1,8 @@
 #include "main.h"
 
-int main() {
-    
-    /*SysTick_Config(CMU_ClockFreqGet(cmuClock_CORE) / 1000) {
-        while (1) ;
-    }*/
+int main()
+{
+    fpga_test();
 
-    ebi_test();
-    
+    return 0;
 }

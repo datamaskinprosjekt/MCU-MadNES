@@ -1,7 +1,10 @@
 #include "ebi.h"
 
-void EBI_SetUp(void) {
-
+/**************************************************************
+ * Enables and configures the EBI for the FPGA
+ **************************************************************/ 
+void setup_EBI()
+{
 	/******************************
 	 * Turn on EBI and GPIO clock *
 	 ******************************/
@@ -47,6 +50,9 @@ void EBI_SetUp(void) {
 	 * Set EBI configurations *
 	 **************************/
 
+	//------------------------------------------------------------
+	// DO NOT DELETE!!!
+	//------------------------------------------------------------
 	// EBI_Init_TypeDef = EBI_INIT_DEFAULT {                                                            
 	// 	ebiModeD8A8,    /* mode */           
 	// 	ebiActiveLow,   /* ardyPolarity */
@@ -83,26 +89,24 @@ void EBI_SetUp(void) {
 
 	EBI_Init_TypeDef ebiConfig = EBI_INIT_DEFAULT;
 
-	/* FPGA (all banks) */
+	/* FPGA */
 	ebiConfig.mode = ebiModeD16A16ALE;
-	ebiConfig.banks = EBI_BANK0 | EBI_BANK1 | EBI_BANK2 | EBI_BANK3;
-	ebiConfig.csLines = EBI_CS0 | EBI_CS1 | EBI_CS2 | EBI_CS3;
 
-	ebiConfig.addrHoldCycles  = 3;
-	ebiConfig.addrSetupCycles = 3;
+	ebiConfig.addrHoldCycles  = 1;
+	ebiConfig.addrSetupCycles = 1;
 
-	ebiConfig.readStrobeCycles = 7;
-	ebiConfig.readHoldCycles   = 3;
-	ebiConfig.readSetupCycles  = 3;
+	ebiConfig.readStrobeCycles = 1;
+	ebiConfig.readHoldCycles   = 1;
+	ebiConfig.readSetupCycles  = 1;
 
-	ebiConfig.writeStrobeCycles = 7;
-	ebiConfig.writeHoldCycles   = 3;
-	ebiConfig.writeSetupCycles  = 3;
+	ebiConfig.writeStrobeCycles = 1;
+	ebiConfig.writeHoldCycles   = 1;
+	ebiConfig.writeSetupCycles  = 1;
 
 	ebiConfig.alePolarity = ebiActiveLow;
 	ebiConfig.wePolarity = ebiActiveLow;
 	ebiConfig.rePolarity = ebiActiveLow;
-	ebiConfig.csPolarity = ebiActiveLow;
+	ebiConfig.csPolarity = ebiActiveHigh;
 
 	ebiConfig.location = ebiLocation1;
 	
@@ -112,10 +116,22 @@ void EBI_SetUp(void) {
 
 	EBI_Init(&ebiConfig);
 
+	/* Disable EBI_CS0 and clear all chip select lines */
+
+	EBI_ChipSelectEnable(EBI_CS0, false);
+
+	GPIO_PinOutClear(gpioPortD, 9);
+	GPIO_PinOutClear(gpioPortD, 10);
+	GPIO_PinOutClear(gpioPortD, 11);
+	GPIO_PinOutClear(gpioPortD, 12);
 }
 
-void EBI_TearDown(void) {
 
+/**************************************************************
+ * Disables the EBI for the FPGA
+ **************************************************************/ 
+void teardown_EBI()
+{
 	/******************************
 	 * Disable GPIO pins *
 	 ******************************/
@@ -162,5 +178,40 @@ void EBI_TearDown(void) {
 	 **********************/
 
 	CMU_ClockEnable(cmuClock_EBI, false);
+}
 
+
+/**************************************************************
+ * Configures the chip select to write to the correct FPGA memory bank
+ * 
+ * @param bank The bank enum corresponding to the FPGA memory bank
+ **************************************************************/ 
+void set_bank(BANKSELECT bank)
+{
+	switch (bank) {
+		case OAM:
+			GPIO_PortOutSetVal(gpioPortD, OAM_BANK_VAL, CS_MASK);
+			break;
+		case SPRITE:
+			GPIO_PortOutSetVal(gpioPortD, SPRITE_BANK_VAL, CS_MASK);
+			break;
+		case TILE:
+			GPIO_PortOutSetVal(gpioPortD, TILE_BANK_VAL, CS_MASK);
+			break;
+		case PALETTE:
+			GPIO_PortOutSetVal(gpioPortD, PALETTE_BANK_VAL, CS_MASK);
+			break;
+		case TAM:
+			GPIO_PortOutSetVal(gpioPortD, TAM_BANK_VAL, CS_MASK);
+			break;
+	}
+}
+
+
+/**************************************************************
+ * Resets the chip select for the FPGA
+ **************************************************************/ 
+void clear_bank()
+{
+	GPIO_PortOutClear(gpioPortD, CS_MASK);
 }
