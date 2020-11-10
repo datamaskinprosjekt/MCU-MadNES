@@ -82,10 +82,46 @@ void init_objects(void)
         add_dirty_object(&objects[i]);
     }
     cnt += letterMax;
-    //TODO add correct position
-    for (int i=cnt; i<cnt + starMax; i++) {
-        objects[i] = (Object) {objMax++, &starType, 0, 0, 0, 0, 0, 1, 0};
-        add_dirty_object(&objects[i]);
+    int starIdx = 0;
+    for (int i=cnt; i<cnt + star1Max; i++) {
+        objs[i] = (object) {objMax++, &starType, 0, star1Pos[2*starIdx], star1Pos[2*starIdx + 1], 0, 0, 1, 0};
+        starIdx++;
+        add_dirty_object(&objs[i]);
+    }
+    cnt += star1Max;
+    starIdx = 0;
+    for (int i=cnt; i<cnt + star2Max; i++) {
+        objs[i] = (object) {objMax++, &starType, 1, star2Pos[2*starIdx], star2Pos[2*starIdx + 1], 0, 0, 1, 0};
+        starIdx++;
+        add_dirty_object(&objs[i]);
+    }
+    cnt += star2Max;
+    starIdx = 0;
+    for (int i=cnt; i<cnt + star3Max; i++) {
+        objs[i] = (object) {objMax++, &starType, 2, star3Pos[2*starIdx], star3Pos[2*starIdx + 1], 0, 0, 1, 0};
+        starIdx++;
+        add_dirty_object(&objs[i]);
+    }
+    cnt += star3Max;
+    starIdx = 0;
+    for (int i=cnt; i<cnt + star4Max; i++) {
+        objs[i] = (object) {objMax++, &starType, 3, star4Pos[2*starIdx], star4Pos[2*starIdx + 1], 0, 0, 1, 0};
+        starIdx++;
+        add_dirty_object(&objs[i]);
+    }
+    cnt += star4Max;
+    starIdx = 0;
+    for (int i=cnt; i<cnt + star5Max; i++) {
+        objs[i] = (object) {objMax++, &starType, 4, star5Pos[2*starIdx], star5Pos[2*starIdx + 1], 0, 0, 1, 0};
+        starIdx++;
+        add_dirty_object(&objs[i]);
+    }
+    cnt += star5Max;
+    starIdx = 0;
+    for (int i=cnt; i<cnt + star6Max; i++) {
+        objs[i] = (object) {objMax++, &starType, 5, star6Pos[2*starIdx], star6Pos[2*starIdx + 1], 0, 0, 1, 0};
+        starIdx++;
+        add_dirty_object(&objs[i]);
     }
 }
 
