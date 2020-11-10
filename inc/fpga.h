@@ -8,6 +8,7 @@
 #include "em_gpio.h"
 #include "ebi.h"
 
+
 typedef enum {
     ASTEROID,
     SHIP,
@@ -39,14 +40,13 @@ typedef struct Color {
     uint8_t b;
 } Color;
 
-extern uint16_t* fpgaAddr0;
 
-void write_sprite_sheet(uint16_t* spriteSheet, int size);
+void write_sprite_sheet(uint16_t* sprite_sheet, int size);
 
 void write_tile_sheet();
 
-void write_palette(Color* firstColor, int size);
+void write_palette(Color* first_color, int size);
 
 void write_object(Object* obj);
 
-#endif
+#endif // _FPGA_H_

@@ -5,6 +5,7 @@
 #include <stdlib.h>
 
 char* read_data(char* fileName);
+
 char** parse_data(char* data, int size);
 
-#endif
+#endif // _FILE_HANDLING_H_

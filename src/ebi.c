@@ -1,7 +1,10 @@
 #include "ebi.h"
 
-void setup_EBI(void) {
-
+/**************************************************************
+ * Enables and configures the EBI for the FPGA
+ **************************************************************/ 
+void setup_EBI()
+{
 	/******************************
 	 * Turn on EBI and GPIO clock *
 	 ******************************/
@@ -47,6 +50,9 @@ void setup_EBI(void) {
 	 * Set EBI configurations *
 	 **************************/
 
+	//------------------------------------------------------------
+	// DO NOT DELETE!!!
+	//------------------------------------------------------------
 	// EBI_Init_TypeDef = EBI_INIT_DEFAULT {                                                            
 	// 	ebiModeD8A8,    /* mode */           
 	// 	ebiActiveLow,   /* ardyPolarity */
@@ -121,8 +127,11 @@ void setup_EBI(void) {
 }
 
 
-void teardown_EBI(void) {
-
+/**************************************************************
+ * Disables the EBI for the FPGA
+ **************************************************************/ 
+void teardown_EBI()
+{
 	/******************************
 	 * Disable GPIO pins *
 	 ******************************/
@@ -172,7 +181,13 @@ void teardown_EBI(void) {
 }
 
 
-void set_bank(BANKSELECT bank) {
+/**************************************************************
+ * Configures the chip select to write to the correct FPGA memory bank
+ * 
+ * @param bank The bank enum corresponding to the FPGA memory bank
+ **************************************************************/ 
+void set_bank(BANKSELECT bank)
+{
 	switch (bank) {
 		case OAM:
 			GPIO_PortOutSetVal(gpioPortD, OAM_BANK_VAL, CS_MASK);
@@ -193,6 +208,10 @@ void set_bank(BANKSELECT bank) {
 }
 
 
-void clear_bank() {
+/**************************************************************
+ * Resets the chip select for the FPGA
+ **************************************************************/ 
+void clear_bank()
+{
 	GPIO_PortOutClear(gpioPortD, CS_MASK);
 }

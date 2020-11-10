@@ -2,12 +2,17 @@
 
 #define FPGA_ADDR (uint16_t *) EBI_BankAddress(EBI_BANK0)
 
-
-void write_sprite_sheet(uint16_t* spriteSheet, int size)
+/**************************************************************
+ * Writes a sprite sheet to the SPRITE Memory Bank on the FPGA.
+ * @param sprite_sheet A pointer to the first element of the sprite sheet to be written
+ *                     to the FPGA.
+ * @param size         The number of elements in the Sprite Sheet.
+ *************************************************************/
+void write_sprite_sheet(uint16_t* sprite_sheet, int size)
 {
     for (int id = 0; id < size; id++) {
         set_bank(SPRITE);
-        *(FPGA_ADDR + id) = *(spriteSheet + id);
+        *(FPGA_ADDR + id) = *(sprite_sheet + id);
         clear_bank();
     }
 }
@@ -18,6 +23,12 @@ void write_tile_sheet()
     //TODO
 }
 
+/*************************************************************
+ * Writes a color palette to the FPGA.
+ * 
+ * @param palette A pointer to the first `Color` element of the palette.
+ * @param size    The number of `Color` elements to be written to the FPGA.
+ *************************************************************/
 void write_palette(Color* palette, int size)
 {
     uint16_t* addr = FPGA_ADDR;
@@ -40,6 +51,11 @@ void write_palette(Color* palette, int size)
 }
 
 
+/**************************************************************
+ * Writes an Object to the OAM Bank of the FPGA
+ * 
+ * @param obj The object to be written
+ **************************************************************/ 
 void write_object(Object* obj)
 {
     uint32_t data = 0; // [1:enabled][1:priority][1:yFlip][1:xFlip][20:xyPos][8:spriteId]
@@ -86,5 +102,4 @@ void write_object(Object* obj)
     *(addr + 1) = *data2;
 
     clear_bank();
-
 }

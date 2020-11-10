@@ -3,10 +3,12 @@
 // TEMPORARY
 extern Object obj1;
 
+
 /**
  * setupNVIC()
  * ============================================================
  * Sets up interrupt pin(s) and registers their callbacks.
+ * TODO: Desribe which interrupts are being set up
  */
 void setup_NVIC()
 {
@@ -56,7 +58,6 @@ void setup_NVIC()
  * When this handler is called, the FPGA has entered the vertical blank phase.
  * Use this function to write the state / data changes to the FPGA
  */ 
-
 void blanking_interrupt()
 {
     write_object(&obj1);

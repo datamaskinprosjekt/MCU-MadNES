@@ -1,17 +1,20 @@
 #include "ebi_test.h"
 
-void readFPGA(uint16_t *addr, uint16_t *data) {
+
+void read_FPGA(uint16_t *addr, uint16_t *data)
+{
     *data = *addr;
 }
 
 
-void writeFPGA(uint16_t *addr, uint16_t data) {
+void write_FPGA(uint16_t *addr, uint16_t data)
+{
     *addr = data;
 }
 
 
-int ebi_main(void) {
-    
+int ebi_test(void)
+{
     uint16_t *fpgaAddr0;
     uint16_t *fpgaAddr1;
     uint16_t *fpgaAddr2;
@@ -23,7 +26,7 @@ int ebi_main(void) {
     CMU_ClockSelectSet(cmuClock_HF, cmuSelect_HFXO);
     CMU_ClockDivSet(cmuClock_HF, cmuClkDiv_256);
 
-    EBI_SetUp();
+    setup_EBI();
 
     /* Memory bank 0: 0x80000000 -> 0x83ffffff */
     fpgaAddr0 = (uint16_t *) EBI_BankAddress(EBI_BANK0);
@@ -34,25 +37,25 @@ int ebi_main(void) {
     /* Memory bank 3: 0x8c000000 -> 0x8fffffff */
     fpgaAddr3 = (uint16_t *) EBI_BankAddress(EBI_BANK3);
 
-
     /* Write garbage to FPGA */
     char* garbage = malloc(sizeof(char) * 255);
 
     for(int i = 0; i < 255; i++)
         *(garbage + i) = i;
 
-
-
     int offset = 0;
-    int offsetAddr = 0;
-    int offsetData = 0;
+    int offset_addr = 0;
+    int offset_data = 0;
 
     while(1) {
         offset ++;
-        offsetData = offset % 255;
-	    offsetAddr = offset % 640;
+        offset_data = offset % 255;
+	    offset_addr = offset % 640;
+
         set_bank(OAM);
-        writeFPGA(fpgaAddr0 + offsetAddr, *(garbage + offsetData));
+
+        writeFPGA(fpgaAddr0 + offset_addr, *(garbage + offset_data));
+        
         clear_bank();
     }
 }

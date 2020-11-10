@@ -1,6 +1,5 @@
 #include "file_handling.h"
 
-
 ///////////////////////////////////////////////////////////////
 /// read_data
 /// -----------------------------------------------------------
@@ -8,7 +7,8 @@
 /// and store it as a C-style string
 ///////////////////////////////////////////////////////////////
 
-char* read_data(char* fileName) {
+char* read_data(char* fileName)
+{
 	// Declare a FILE handler and open the file
 	FILE* fptr;
 	fptr = fopen(fileName, "r");
@@ -40,12 +40,14 @@ char* read_data(char* fileName) {
     return data;
 }
 
+
 ///////////////////////////////////////////////////////////////
 /// parse_data
 /// -----------------------------------------------------------
 /// Separates substrings
 ///////////////////////////////////////////////////////////////
-char** parse_data(char* data, int size) {
+char** parse_data(char* data, int size)
+{
 	char** parsedData;
 	
 	int i;

@@ -1,6 +1,7 @@
 #include "fpga_test.h"
 
-char spriteData[NUM_SPRITES * 256] = {
+
+char sprite_data[NUM_SPRITES * 256] = {
 7, 3, 2, 3, 3, 3, 3, 1, 1, 7, 7, 7, 3, 5, 4, 11, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 2, 2, 3, 0, 0, 0, 0, 0, 0, 0, 0,
 0, 0, 0, 3, 1, 4, 5, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 4, 6, 6, 5, 2, 0, 1, 0, 0, 0, 0, 0, 1, 7, 1, 3, 1, 7, 7, 2, 1, 1, 7, 1, 0, 0, 0, 0, 7, 7,
 7, 1, 7, 7, 7, 7, 1, 7, 7, 7, 0, 0, 0, 0, 4, 6, 5, 3, 7, 7, 7, 7, 1, 4, 6, 5, 0, 0, 0, 0, 7, 7, 7, 1, 7, 7, 7, 7, 3, 7, 7, 7, 0, 0, 0, 8, 7, 7, 7, 1,
@@ -298,6 +299,7 @@ char spriteData[NUM_SPRITES * 256] = {
 // Format: Tuples of three color-channels (R, G, B).
 char paletteData[NUM_COLORS * 3] = {0, 0, 0, 147, 147, 147, 171, 171, 171, 111, 111, 111, 69, 113, 145, 93, 127, 152, 48, 96, 130, 199, 199, 199, 122, 122, 122, 255, 193, 7, 255, 153, 0, 255, 86, 34, 117, 117, 117, 217, 217, 217, 184, 184, 184, 145, 145, 145, 151, 150, 153, 130, 130, 130, 138, 138, 138, 141, 140, 143, 120, 120, 120, 97, 97, 97, 88, 88, 88, 133, 132, 135, 204, 204, 204, 119, 119, 120, 112, 111, 112, 113, 112, 115, 161, 161, 161, 196, 196, 196, 95, 185, 216, 83, 182, 216, 71, 177, 214, 77, 76, 76, 10, 19, 26, 74, 122, 156, 36, 80, 110, 55, 55, 55, 34, 34, 34, 67, 66, 66, 255, 214, 89, 255, 230, 152, 48, 48, 48, 18, 18, 18, 23, 23, 23, 10, 10, 10, 255, 238, 186, 255, 247, 224, 255, 132, 38};
 
+
 /////////////////////////////////////////////////////////////// 
 /// create_palette
 /// -----------------------------------------------------------
@@ -327,8 +329,7 @@ extern Object obj1 = {.id = 0, .type = &st0, .localSpriteIdx = 0, .xPos = 320, .
 
 void fpga_test()
 {
-
-    char* spriteSheet;
+    char* sprite_sheet;
     Color* palette;
 
 	SpriteType st1 = {.name = ASTEROID, .globalSpriteIdx = 0};
@@ -363,10 +364,10 @@ void fpga_test()
 
     GPIO_PortOutSetVal(gpioPortA, FPGA_RESET_VALUE, FPGA_RESET_MASK);
 
-    spriteSheet = spriteData;
+    sprite_sheet = sprite_data;
     palette = create_palette(NUM_COLORS);
 
-    write_sprite_sheet((uint16_t*) spriteSheet, NUM_SPRITES * 256);
+    write_sprite_sheet((uint16_t*) sprite_sheet, NUM_SPRITES * 256);
     write_palette(palette, NUM_COLORS);
 
     for (int i = 0; i < 64; i++) {
@@ -379,9 +380,9 @@ void fpga_test()
     write_object(&obj1);
 
     while (1) {
-        if (count == 1 << 16) {
+        if (count == 1 << 18) {
             obj1.yPos = pos;
-            pos = (pos + 10) % 480;
+            pos = (pos + 1) % 480;
 
             count = 0;
         }
