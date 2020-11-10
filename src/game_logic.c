@@ -350,6 +350,12 @@ void test_print() {
 	printf("letters\n");
 	for (int i=0; i<letterMax; i++) {
 		print_object(letters[i].letterObj);
-	}
+	}/*
+	printf("\n");
+
+	printf("stars\n");
+	for (int i=objMax-30; i<objMax; i++) {
+		print_object(&objs[i]);
+	}*/
 	printf("\n\n");
 }
