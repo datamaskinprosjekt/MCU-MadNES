@@ -7,10 +7,10 @@
 #include "em_ebi.h"
 #include "em_gpio.h"
 
-// Bits 9-12
+/* Bits 9-12 */
 #define CS_MASK 0b111 << 9
 
-// Bank Selects
+/* Bank Selects */
 #define OAM_BANK_VAL     0 << 9
 #define SPRITE_BANK_VAL  1 << 9
 #define TILE_BANK_VAL    2 << 9
@@ -25,8 +25,8 @@ typedef enum BANKSELECT {
     TAM
 } BANKSELECT;
 
-void EBI_Setup(void);
-void EBI_TearDown(void);
+void setup_EBI(void);
+void teardown_EBI(void);
 
 void set_bank(BANKSELECT bank);
 void clear_bank();

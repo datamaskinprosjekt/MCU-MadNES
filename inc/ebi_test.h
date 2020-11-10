@@ -1,5 +1,5 @@
-#ifndef _EBI_MAIN_H_
-#define _EBI_MAIN_H_
+#ifndef _EBI_TEST_H_
+#define _EBI_TEST_H_
 
 #include <stdio.h>
 #include <stdint.h>

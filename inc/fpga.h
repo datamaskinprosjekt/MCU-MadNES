@@ -8,31 +8,22 @@
 #include "em_gpio.h"
 #include "ebi.h"
 
-/* Memory bank 0: 0x80000000 -> 0x83ffffff */
-//#define fpgaAddr0 0x80000000
-/* Memory bank 1: 0x84000000 -> 0x87ffffff */
-//#define fpgaAddr1 0x84000000
-/* Memory bank 2: 0x88000000 -> 0x8bffffff */
-//#define fpgaAddr2 0x88000000
-/* Memory bank 3: 0x8c000000 -> 0x8fffffff */
-//#define fpgaAddr3 0x8c000000
-
 typedef enum {
     ASTEROID,
     SHIP,
     LASER,
     STATUS_BAR
-} spriteName;
+} SpriteName;
 
 typedef struct {
-    spriteName name;
+    SpriteName name;
     uint8_t globalSpriteIdx;
     uint8_t length;
-} spriteType;
+} SpriteType;
 
 typedef struct {
     uint16_t id;
-    spriteType* type;
+    SpriteType* type;
     uint8_t localSpriteIdx;
     uint16_t xPos;
     uint16_t yPos;
@@ -43,12 +34,12 @@ typedef struct {
 } Object;
 
 typedef struct Color {
-    unsigned char r;
-    unsigned char g;
-    unsigned char b;
+    uint8_t r;
+    uint8_t g;
+    uint8_t b;
 } Color;
 
-uint16_t* fpgaAddr0;
+extern uint16_t* fpgaAddr0;
 
 void write_sprite_sheet(uint16_t* spriteSheet, int size);
 

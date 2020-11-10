@@ -1,10 +1,5 @@
 #include "interrupt_handlers.h"
 
-#include <stdbool.h>
-#include "fpga.h"
-#include "ebi.h"
-#include "em_gpio.h"
-
 // TEMPORARY
 extern Object obj1;
 
@@ -13,24 +8,24 @@ extern Object obj1;
  * ============================================================
  * Sets up interrupt pin(s) and registers their callbacks.
  */
-void setupNVIC()
+void setup_NVIC()
 {
     // Port of the interrupt pin
-    int  const interruptPort = gpioPortB;
+    int  const interrupt_port = gpioPortB;
 
     // Pin number
-    int  const interruptPin  = 4;
+    int  const interrupt_pin  = 4;
 
     // Interrupt number to trigger
-    int const interruptNum = 4;
+    int const interrupt_num = 4;
 
     // Trigger interrupt on rising edge?
-    bool const risingEdge    = true;
+    bool const trigger_on_rising_edge    = true;
 
     // Trigger interrupt on falling edge?
-    bool const fallingEdge   = false;
+    bool const trigger_on_falling_edge   = false;
 
-    GPIO_PinModeSet(interruptPort, interruptPin, gpioModeInputPull, 1);
+    GPIO_PinModeSet(interrupt_port, interrupt_pin, gpioModeInputPull, 1);
     
     // Clear interrupts before enable
     GPIO_IntClear(ISER0_GPIO_ODD | ISER0_GPIO_EVEN);
@@ -41,11 +36,11 @@ void setupNVIC()
     // When the interrupt pin sees a positive edge, the NVIC Interrupt handler will be called on the 
     // GPIO_IRQ_EVEN and GPIO_IRQ_ODD channels
     GPIO_ExtIntConfig(
-        interruptPort,      // Which port is the pin we want to enable interrupts for on?
-        interruptPin,       // Which pin to enable interrupts on?
-        interruptNum,       // The interrupt number to trigger
-        risingEdge,         // Trigger on rising edge?
-        fallingEdge,        // Trigger on falling edge?
+        interrupt_port,      // Which port is the pin we want to enable interrupts for on?
+        interrupt_pin,       // Which pin to enable interrupts on?
+        interrupt_num,       // The interrupt number to trigger
+        trigger_on_rising_edge,         // Trigger on rising edge?
+        trigger_on_falling_edge,        // Trigger on falling edge?
         true                // Enable
     );
 
@@ -62,24 +57,31 @@ void setupNVIC()
  * Use this function to write the state / data changes to the FPGA
  */ 
 
-void Blanking_Interrupt()
+void blanking_interrupt()
 {
     write_object(&obj1);
 }
 
+
+/**
+ * Definition of the EVEN and ODD Interrupt Handler
+ * Declared in the EFM32GG EMLIB Source Code *
+ */
 void __attribute__ ((interrupt)) GPIO_EVEN_IRQHandler()
 {
-    uint32_t pendingInterrupts = GPIO_IntGet();
+    uint32_t pending_interrupts = GPIO_IntGet();
 
-    Blanking_Interrupt();
+    blanking_interrupt();
 
-    GPIO_IntClear(pendingInterrupts);
+    GPIO_IntClear(pending_interrupts);
 }
+
+
 void __attribute__ ((interrupt)) GPIO_ODD_IRQHandler()
 {
-    uint32_t pendingInterrupts = GPIO_IntGet();
+    uint32_t pending_interrupts = GPIO_IntGet();
 
-    Blanking_Interrupt();
+    blanking_interrupt();
 
-    GPIO_IntClear(pendingInterrupts);
+    GPIO_IntClear(pending_interrupts);
 }

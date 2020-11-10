@@ -2,6 +2,11 @@
 #define INTERRUPT_HANDLERS_H
 
 #include <stdint.h>
+#include <stdbool.h>
+
+#include "em_gpio.h"
+#include "fpga.h"
+#include "ebi.h"
 
 
 // NOTE: SDK Method to interface with ISER?
@@ -41,6 +46,6 @@ void setupNVIC();
 void __attribute__ ((interrupt)) GPIO_EVEN_IRQHandler();
 void __attribute__ ((interrupt)) GPIO_ODD_IRQHandler();
 
-void Blanking_Interrupt();
+void blanking_interrupt();
 
 #endif // INTERRUPT_HANDLERS_H

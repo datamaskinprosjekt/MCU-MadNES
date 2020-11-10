@@ -1,21 +1,26 @@
 #include "fpga.h"
 
-void write_sprite_sheet(uint16_t* spriteSheet, int size) {
-    fpgaAddr0 = (uint16_t *) EBI_BankAddress(EBI_BANK0);
+#define FPGA_ADDR (uint16_t *) EBI_BankAddress(EBI_BANK0)
+
+
+void write_sprite_sheet(uint16_t* spriteSheet, int size)
+{
     for (int id = 0; id < size; id++) {
         set_bank(SPRITE);
-        *(fpgaAddr0 + id) = *(spriteSheet + id);
+        *(FPGA_ADDR + id) = *(spriteSheet + id);
         clear_bank();
     }
 }
 
-void write_tile_sheet() {
+
+void write_tile_sheet()
+{
     //TODO
 }
 
-void write_palette(Color* palette, int size) {
-    fpgaAddr0 = (uint16_t *) EBI_BankAddress(EBI_BANK0);
-    uint16_t* addr = fpgaAddr0;
+void write_palette(Color* palette, int size)
+{
+    uint16_t* addr = FPGA_ADDR;
     
     for (int id = 0; id < size; id++) {
         addr += sizeof(uint16_t) * id;
@@ -34,46 +39,40 @@ void write_palette(Color* palette, int size) {
     }
 }
 
-void write_object(Object* obj) {
-    fpgaAddr0 = (uint16_t *) EBI_BankAddress(EBI_BANK0);
 
+void write_object(Object* obj)
+{
     uint32_t data = 0; // [1:enabled][1:priority][1:yFlip][1:xFlip][20:xyPos][8:spriteId]
-    uint16_t* addr = (uint16_t*) fpgaAddr0 + 2 * obj->id;
+    uint16_t* addr = FPGA_ADDR + 2 * obj->id;
 
-    //SpriteId
+    // SpriteId
     uint8_t spriteId = obj->type->globalSpriteIdx + obj->localSpriteIdx;
 
     data |= (uint32_t) spriteId;
 
-    //xyPos
+    // xyPos
 	data |= (uint32_t) obj->xPos << 8;
-	data &= ~(1 << 18);
-	data &= ~(1 << 19);
-	data &= ~(1 << 20);
-	data &= ~(1 << 21);
+    data &= ~(0b1111 << 18);
 
 	data |= (uint32_t) obj->yPos << 18;
-	data &= ~(1 << 28);
-	data &= ~(1 << 29);
-	data &= ~(1 << 30);
-	data &= ~(1 << 31);
+    data &= ~(0b1111 << 28);
 
-    //xFlip
+    // xFlip
     if (obj->xFlip) {
         data |= 1 << 28;
     }
 
-    //yFlip
+    // yFlip
     if (obj->yFlip) {
         data |= 1 << 29;
     }
 
-    //Priority
+    // Priority
     if (obj->priority) {
         data |= 1 << 30;
     }
 
-    //Enabled
+    // Enabled
     if (obj->enabled) {
         data |= 1 << 31;
     }

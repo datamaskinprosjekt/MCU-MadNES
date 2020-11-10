@@ -1,12 +1,14 @@
-#include "ebi_main.h"
+#include "ebi_test.h"
 
 void readFPGA(uint16_t *addr, uint16_t *data) {
     *data = *addr;
 }
 
+
 void writeFPGA(uint16_t *addr, uint16_t data) {
     *addr = data;
 }
+
 
 int ebi_main(void) {
     

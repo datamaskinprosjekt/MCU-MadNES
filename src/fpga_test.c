@@ -1,5 +1,4 @@
 #include "fpga_test.h"
-#include "interrupt_handlers.h"
 
 char spriteData[NUM_SPRITES * 256] = {
 7, 3, 2, 3, 3, 3, 3, 1, 1, 7, 7, 7, 3, 5, 4, 11, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 2, 2, 3, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -305,7 +304,8 @@ char paletteData[NUM_COLORS * 3] = {0, 0, 0, 147, 147, 147, 171, 171, 171, 111, 
 /// Sets up the palette struct. Populates the palette with the colors
 /// defined in paletteData.
 ///////////////////////////////////////////////////////////////
-Color* create_palette(int num_colors) {
+Color* create_palette(int num_colors)
+{
 	Color* palette;
     int i, j;
 		
@@ -321,15 +321,17 @@ Color* create_palette(int num_colors) {
 	return palette;
 }
 
-extern spriteType st0 = {.name = ASTEROID, .globalSpriteIdx = 0};
+
+extern SpriteType st0 = {.name = ASTEROID, .globalSpriteIdx = 0};
 extern Object obj1 = {.id = 0, .type = &st0, .localSpriteIdx = 0, .xPos = 320, .yPos = 240, .xFlip = false, .yFlip = false, .priority = 0, .enabled = true};
 
-void fpga_test() {
+void fpga_test()
+{
 
     char* spriteSheet;
     Color* palette;
 
-	spriteType st1 = {.name = ASTEROID, .globalSpriteIdx = 0};
+	SpriteType st1 = {.name = ASTEROID, .globalSpriteIdx = 0};
 
     Object obj0 = {.id = 0, .type = &st1, .localSpriteIdx = 0, .xPos = 0, .yPos = 0, .xFlip = false, .yFlip = false, .priority = 0, .enabled = false};
 
@@ -355,9 +357,9 @@ void fpga_test() {
     CMU_ClockSelectSet(cmuClock_HF, cmuSelect_HFXO);
     CMU_ClockDivSet(cmuClock_HF, cmuClkDiv_4);
 
-    EBI_SetUp();
+    setup_EBI();
 
-    setupNVIC();
+    setup_NVIC();
 
     GPIO_PortOutSetVal(gpioPortA, FPGA_RESET_VALUE, FPGA_RESET_MASK);
 

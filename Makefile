@@ -8,7 +8,7 @@
 ####################################################################
 # Definitions                                                      #
 ####################################################################
-# 980/990
+
 DEVICE = EFM32GG980F1024
 PROJECTNAME = astroids
 
@@ -28,7 +28,7 @@ DIR = .
 
 # Change path to the tools according to your system configuration
 # DO NOT add trailing whitespace chars, they do matter !
-#WINDOWSCS  ?= GNU Tools ARM Embedded\4.8 2013q4
+# WINDOWSCS  ?= GNU Tools ARM Embedded\4.8 2013q4
 LINUXCS    ?= /usr/local/Cellar/gcc-arm-none-eabi-49/20150925
 
 RMDIRS	   := rm -rf
@@ -126,7 +126,7 @@ INCLUDEPATHS += \
 C_SRC +=  \
 $(SRC)/main.c \
 $(SRC)/ebi.c \
-$(SRC)/ebi_main.c \
+$(SRC)/ebi_test.c \
 $(SRC)/fpga.c \
 $(SRC)/fpga_test.c \
 $(SRC)/interrupt_handlers.c \

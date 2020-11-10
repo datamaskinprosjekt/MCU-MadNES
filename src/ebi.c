@@ -1,6 +1,6 @@
 #include "ebi.h"
 
-void EBI_SetUp(void) {
+void setup_EBI(void) {
 
 	/******************************
 	 * Turn on EBI and GPIO clock *
@@ -86,16 +86,16 @@ void EBI_SetUp(void) {
 	/* FPGA */
 	ebiConfig.mode = ebiModeD16A16ALE;
 
-	ebiConfig.addrHoldCycles  = 1; //3
-	ebiConfig.addrSetupCycles = 1; //3
+	ebiConfig.addrHoldCycles  = 1;
+	ebiConfig.addrSetupCycles = 1;
 
-	ebiConfig.readStrobeCycles = 1; //7
-	ebiConfig.readHoldCycles   = 1; //3
-	ebiConfig.readSetupCycles  = 1; //3
+	ebiConfig.readStrobeCycles = 1;
+	ebiConfig.readHoldCycles   = 1;
+	ebiConfig.readSetupCycles  = 1;
 
-	ebiConfig.writeStrobeCycles = 1; //7
-	ebiConfig.writeHoldCycles   = 1; //3
-	ebiConfig.writeSetupCycles  = 1; //3
+	ebiConfig.writeStrobeCycles = 1;
+	ebiConfig.writeHoldCycles   = 1;
+	ebiConfig.writeSetupCycles  = 1;
 
 	ebiConfig.alePolarity = ebiActiveLow;
 	ebiConfig.wePolarity = ebiActiveLow;
@@ -120,7 +120,8 @@ void EBI_SetUp(void) {
 	GPIO_PinOutClear(gpioPortD, 12);
 }
 
-void EBI_TearDown(void) {
+
+void teardown_EBI(void) {
 
 	/******************************
 	 * Disable GPIO pins *
@@ -170,6 +171,7 @@ void EBI_TearDown(void) {
 	CMU_ClockEnable(cmuClock_EBI, false);
 }
 
+
 void set_bank(BANKSELECT bank) {
 	switch (bank) {
 		case OAM:
@@ -189,6 +191,7 @@ void set_bank(BANKSELECT bank) {
 			break;
 	}
 }
+
 
 void clear_bank() {
 	GPIO_PortOutClear(gpioPortD, CS_MASK);
