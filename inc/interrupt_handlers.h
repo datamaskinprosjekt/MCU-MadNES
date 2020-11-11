@@ -5,8 +5,8 @@
 #include <stdbool.h>
 
 #include "em_gpio.h"
-#include "fpga.h"
 #include "ebi.h"
+#include "fpga.h"
 
 
 // NOTE: SDK Method to interface with ISER?

@@ -1,4 +1,6 @@
 #include "fpga_test.h"
+#include <math.h>
+#define M_PI 3.14159265358979323846
 
 
 char sprite_data[NUM_SPRITES * 256] = {
@@ -296,43 +298,35 @@ char sprite_data[NUM_SPRITES * 256] = {
 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 };
 
+
 // Format: Tuples of three color-channels (R, G, B).
-char palette_data[NUM_COLORS * 3] = {0, 0, 0, 147, 147, 147, 171, 171, 171, 111, 111, 111, 69, 113, 145, 93, 127, 152, 48, 96, 130, 199, 199, 199, 122, 122, 122, 255, 193, 7, 255, 153, 0, 255, 86, 34, 117, 117, 117, 217, 217, 217, 184, 184, 184, 145, 145, 145, 151, 150, 153, 130, 130, 130, 138, 138, 138, 141, 140, 143, 120, 120, 120, 97, 97, 97, 88, 88, 88, 133, 132, 135, 204, 204, 204, 119, 119, 120, 112, 111, 112, 113, 112, 115, 161, 161, 161, 196, 196, 196, 95, 185, 216, 83, 182, 216, 71, 177, 214, 77, 76, 76, 10, 19, 26, 74, 122, 156, 36, 80, 110, 55, 55, 55, 34, 34, 34, 67, 66, 66, 255, 214, 89, 255, 230, 152, 48, 48, 48, 18, 18, 18, 23, 23, 23, 10, 10, 10, 255, 238, 186, 255, 247, 224, 255, 132, 38};
+char palette_data[NUM_COLORS * 3] = { 0, 0, 0, 147, 147, 147, 171, 171, 171, 111, 111, 111, 69, 113, 145, 93, 127, 152, 48, 96, 130, 199, 199, 199, 122, 122, 122, 255, 193, 7, 255, 153, 0, 255, 86, 34, 117, 117, 117, 217, 217, 217, 184, 184, 184, 145, 145, 145, 151, 150, 153, 130, 130, 130, 138, 138, 138, 141, 140, 143, 120, 120, 120, 97, 97, 97, 88, 88, 88, 133, 132, 135, 204, 204, 204, 119, 119, 120, 112, 111, 112, 113, 112, 115, 161, 161, 161, 196, 196, 196, 95, 185, 216, 83, 182, 216, 71, 177, 214, 77, 76, 76, 10, 19, 26, 74, 122, 156, 36, 80, 110, 55, 55, 55, 34, 34, 34, 67, 66, 66, 255, 214, 89, 255, 230, 152, 48, 48, 48, 18, 18, 18, 23, 23, 23, 10, 10, 10, 255, 238, 186, 255, 247, 224, 255, 132, 38};
 
 
-extern SpriteType st0 = {.name = ASTEROID, .globalSpriteIdx = 0};
-extern Object obj1 = {.id = 0, .type = &st0, .localSpriteIdx = 0, .xPos = 320, .yPos = 240, .xFlip = false, .yFlip = false, .priority = 0, .enabled = true};
+SpriteType st0 = {.name = ASTEROID, .globalSpriteIdx = 0};
 
 void fpga_test()
 {
+
+Object obj0 = (Object) {.id = 0, .type = 0, .localSpriteIdx = 0, .xPos = 70, .yPos = 0, .xFlip = false, .yFlip = false, .priority = 0, .enabled = false};
+obj1 = (Object) {.id = 0, .type = &st0, .localSpriteIdx = 0, .xPos = 100, .yPos = 270, .xFlip = false, .yFlip = false, .priority = 0, .enabled = true};
+obj2 = (Object) {.id = 1, .type = &st0, .localSpriteIdx = 0, .xPos = 130, .yPos = 240, .xFlip = false, .yFlip = false, .priority = 0, .enabled = true};
+obj3 = (Object) {.id = 2, .type = &st0, .localSpriteIdx = 0, .xPos = 160, .yPos = 240, .xFlip = false, .yFlip = false, .priority = 0, .enabled = true};
+obj4 = (Object) {.id = 3, .type = &st0, .localSpriteIdx = 0, .xPos = 190, .yPos = 240, .xFlip = false, .yFlip = false, .priority = 0, .enabled = true};
+obj5 = (Object) {.id = 4, .type = &st0, .localSpriteIdx = 0, .xPos = 220, .yPos = 240, .xFlip = false, .yFlip = false, .priority = 0, .enabled = true};
+obj6 = (Object) {.id = 5, .type = &st0, .localSpriteIdx = 0, .xPos = 250, .yPos = 240, .xFlip = false, .yFlip = false, .priority = 0, .enabled = true};
+obj7 = (Object) {.id = 6, .type = &st0, .localSpriteIdx = 0, .xPos = 280, .yPos = 240, .xFlip = false, .yFlip = false, .priority = 0, .enabled = true};   
+
     char* sprite_sheet;
     Color* palette;
 
 	SpriteType st1 = {.name = ASTEROID, .globalSpriteIdx = 0};
 
-    Object obj0 = {.id = 0, .type = &st1, .localSpriteIdx = 0, .xPos = 0, .yPos = 0, .xFlip = false, .yFlip = false, .priority = 0, .enabled = false};
-
-    // Object obj1 -- Moved to global scope
-
-    Object obj2 = {.id = 2, .type = &st1, .localSpriteIdx = 1, .xPos = 240, .yPos = 250, .xFlip = true, .yFlip = false, .priority = 0, .enabled = true};
-
-    Object obj3 = {.id = 3, .type = &st1, .localSpriteIdx = 1, .xPos = 260, .yPos = 270, .xFlip = true, .yFlip = true, .priority = 0, .enabled = true};
-
-    Object obj4 = {.id = 4, .type = &st1, .localSpriteIdx = 1, .xPos = 280, .yPos = 290, .xFlip = false, .yFlip = false, .priority = 0, .enabled = true};
-
-    Object obj5 = {.id = 5, .type = &st1, .localSpriteIdx = 1, .xPos = 300, .yPos = 310, .xFlip = false, .yFlip = true, .priority = 0, .enabled = true};
-
-    Object obj6 = {.id = 6, .type = &st1, .localSpriteIdx = 1, .xPos = 320, .yPos = 330, .xFlip = true, .yFlip = false, .priority = 0, .enabled = true};
-
-    Object obj7 = {.id = 7, .type = &st1, .localSpriteIdx = 1, .xPos = 340, .yPos = 350, .xFlip = true, .yFlip = true, .priority = 0, .enabled = true};
-
-    Object obj8 = {.id = 8, .type = &st1, .localSpriteIdx = 1, .xPos = 360, .yPos = 370, .xFlip = false, .yFlip = false, .priority = 0, .enabled = true};
-
     CHIP_Init();
 
     /* Configure core clock to 48 MHz high frequency crystal oscillator*/
     CMU_ClockSelectSet(cmuClock_HF, cmuSelect_HFXO);
-    CMU_ClockDivSet(cmuClock_HF, cmuClkDiv_4);
+    CMU_ClockDivSet(cmuClock_HF, cmuClkDiv_512);
 
     setup_EBI();
 
@@ -353,16 +347,35 @@ void fpga_test()
 
     uint16_t pos = 0;
     int count = 0;
+    int innerCount = 0;
+
     write_object(&obj1);
+    write_object(&obj2);
+    write_object(&obj3);
+    write_object(&obj4);
+    write_object(&obj5);
+    write_object(&obj6);
+    write_object(&obj7);
+
+    Object* objects[] = {&obj1, &obj2, &obj3, &obj4, &obj5, &obj6, &obj7};
 
     while (1) {
-        if (count == 1 << 18) {
-            obj1.yPos = pos;
-            pos = (pos + 1) % 480;
+        count++;
 
+        innerCount++;
+        if(innerCount >= 491) innerCount = 0;
+        if(count >= (1 << 16) ) {
+            for(int i = 0; i < 7; i++)
+            {
+                int yPos = 240 + sin((double) (innerCount + 4*i) / (M_PI))*30;
+                objects[i]->yPos = yPos;
+
+                objects[i]->xFlip = (innerCount + i) % 2 == 0;
+                objects[i]->yFlip = (innerCount + i) % 3 == 0;
+
+                write_object(objects[i]);
+            }
             count = 0;
         }
-
-        count++;
     }
 }

@@ -2,12 +2,11 @@
 #define _MAIN_H_
 
 #include "em_chip.h"
+#include "em_cmu.h"
 
 #include "time.h"
 #include "ebi.h"
 #include "fpga.h"
-
-
-int main();
+#include "fpga_test.h"
 
 #endif // _MAIN_H_

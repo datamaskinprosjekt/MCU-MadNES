@@ -1,7 +1,13 @@
 #include "interrupt_handlers.h"
 
-// TEMPORARY
+
 extern Object obj1;
+extern Object obj2;
+extern Object obj3;
+extern Object obj4;
+extern Object obj5;
+extern Object obj6;
+extern Object obj7;
 
 
 /**
@@ -48,7 +54,6 @@ void setup_NVIC()
 
     NVIC_ClearPendingIRQ(GPIO_EVEN_IRQn);
     NVIC_EnableIRQ(GPIO_EVEN_IRQn);
-
 }
 
 
@@ -61,6 +66,12 @@ void setup_NVIC()
 void blanking_interrupt()
 {
     write_object(&obj1);
+    write_object(&obj2);
+    write_object(&obj3);
+    write_object(&obj4);
+    write_object(&obj5);
+    write_object(&obj6);
+    write_object(&obj7);
 }
 
 

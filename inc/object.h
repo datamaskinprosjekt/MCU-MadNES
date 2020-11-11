@@ -55,7 +55,7 @@ typedef struct {
 } CollisionBox2D_ObjectObjectPair;
 
 bool CB2D_Check_Collision(CollisionBox2D* first, CollisionBox2D* second);
-vec2d CB2D_Check_Force_Collision(CollisionBox2D* first, CollisionBox2D* second);
+vec2d CB2D_Check_Force_Collision(CollisionBox2D* first, CollisionBox2D* second)
 
 CollisionBox2D_ObjectObjectPair* CB2D_Get_All_Collisions();
 CollisionBox2D_ObjectObjectForcePair* CB2D_Get_All_Force_Collisions();

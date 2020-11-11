@@ -12,6 +12,8 @@
 
 #define FPGA_ADDR (uint16_t *) EBI_BankAddress(EBI_BANK0)
 
+
+
 // NOTE: SpriteName, SpriteType and Object will probably be removed
 
 typedef enum {
@@ -57,5 +59,14 @@ void write_object(Object* obj);
 Color* create_palette();
 
 void send_initial_data();
+
+Object obj1;
+Object obj2;
+Object obj3;
+Object obj4;
+Object obj5;
+Object obj6;
+Object obj7;
+
 
 #endif // _FPGA_H_

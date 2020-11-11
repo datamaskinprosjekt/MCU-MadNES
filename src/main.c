@@ -3,7 +3,7 @@
 // Counts 1ms ticks
 volatile uint32_t ticks;
 
-int main()
+int main_alt()
 {
     // Object dirty_objects
 
@@ -37,5 +37,11 @@ int main()
 
     /* RESET */
 
+    return 0;
+}
+
+int main()
+{
+    fpga_test();
     return 0;
 }

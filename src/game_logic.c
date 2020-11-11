@@ -183,7 +183,7 @@ void time_handler() {
 
 void joystick_handler(int rot) {
 	if (game) {
-		object* shipObj = players[0].shipObj;
+		Object* shipObj = players[0].shipObj;
 
 		int dir = rot / 4;
 		int spriteIdx = rot % 4;
@@ -216,7 +216,7 @@ void joystick_handler(int rot) {
 
 void button_fuel_handler() {
 	if (game) {
-		object* shipObj = players[0].shipObj;
+		Object* shipObj = players[0].shipObj;
 		move_object(shipObj, get_rot(shipObj), playerSpeed);
 		add_dirty_object(shipObj);
 	}
@@ -317,11 +317,11 @@ void end_game() {
 void test_game_print() {
 	printf("player - statusIdx %d - hp %d - pos (%d, %d)\n", players[0].statusObj->localSpriteIdx, players[0].hp, players[0].shipObj->xPos, players[0].shipObj->yPos);
 	for (int i=0; i<asteroidMax; i++) {
-		object* asteroidObj = asteroids[i].asteroidObj;
+		Object* asteroidObj = asteroids[i].asteroidObj;
 		printf("asteroid %d - idx %d - hit %d - pos(%d, %d) - enable %d\n", asteroidObj->id, asteroidObj->localSpriteIdx, asteroids[i].isHit, asteroidObj->xPos, asteroidObj->yPos, asteroidObj->enable);
 	}
 	for (int i=0; i<laserMax; i++) {
-		object* laserObj = lasers[i].laserObj;
+		Object* laserObj = lasers[i].laserObj;
 		printf("laser %d - pos (%d, %d) - enable %d\n", laserObj->id, laserObj->xPos, laserObj->yPos, laserObj->enable);
 	}
 	printf("\n");
@@ -350,12 +350,6 @@ void test_print() {
 	printf("letters\n");
 	for (int i=0; i<letterMax; i++) {
 		print_object(letters[i].letterObj);
-	}/*
-	printf("\n");
-
-	printf("stars\n");
-	for (int i=objMax-30; i<objMax; i++) {
-		print_object(&objs[i]);
-	}*/
+	}
 	printf("\n\n");
 }

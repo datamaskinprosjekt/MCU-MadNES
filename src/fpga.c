@@ -1,4 +1,5 @@
 #include "fpga.h"
+#include "data.h"
 
 /**************************************************************
  * Writes a sprite sheet to the SPRITE Memory Bank on the FPGA.

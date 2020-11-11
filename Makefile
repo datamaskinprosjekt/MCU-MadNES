@@ -109,13 +109,21 @@ override LDFLAGS += -Xlinker -Map=$(LST_DIR)/$(PROJECTNAME).map -mcpu=cortex-m3 
 -mthumb -T$(LIB)/EFM32GG/Source/GCC/efm32gg.ld --specs=nano.specs \
 -Wl,--gc-sections
 
-LIBS = -Wl,--start-group -lgcc -lc -lnosys -Wl,--end-group
+LIBS = -Wl,--start-group -lgcc -lm -lc -lnosys -Wl,--end-group
 
 INCLUDEPATHS += \
 -I. \
 -I$(LIB)/CMSIS/Include \
 -I$(LIB)/EFM32GG/Include \
 -I$(LIB)/emlib/inc \
+-I$(LIB)/emdrv/spidrv/inc \
+-I$(LIB)/emdrv/spidrv/config \
+-I$(LIB)/emdrv/dmadrv/inc \
+-I$(LIB)/emdrv/dmadrv/config \
+-I$(LIB)/emdrv/common/inc \
+-I$(LIB)/service/sleeptimer/inc \
+-I$(LIB)/service/sleeptimer/config \
+-I$(LIB)/common/inc \
 -I$(INC)\
 
 
@@ -128,7 +136,10 @@ $(SRC)/main.c \
 $(SRC)/time.c \
 $(SRC)/ebi.c \
 $(SRC)/fpga.c \
+$(SRC)/fpga_test.c \
+$(SRC)/spi.c \
 $(SRC)/interrupt_handlers.c \
+$(SRC)/controllers.c \
 $(LIB)/EFM32GG/Source/system_efm32gg.c \
 $(LIB)/emlib/src/em_assert.c \
 $(LIB)/emlib/src/em_cmu.c \
@@ -168,7 +179,7 @@ vpath %.S $(S_PATHS)
 # Default build is release build
 all:      release
 
-debug:    CFLAGS += -DDEBUG -O0 -g 
+debug:    CFLAGS += -DDEBUG -O0 -g
 debug:    $(EXE_DIR)/$(PROJECTNAME).bin
 
 release:  CFLAGS += -DNDEBUG -O0 -g3

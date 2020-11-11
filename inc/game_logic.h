@@ -6,22 +6,22 @@
 
 typedef struct {
     uint8_t hp;
-    object* shipObj;
-    object* statusObj;
+    Object* shipObj;
+    Object* statusObj;
 } player_elem;
 
 typedef struct {
     uint8_t speed;
     bool isHit;
-    object* asteroidObj;
+    Object* asteroidObj;
 } asteroid_elem;
 
 typedef struct {
-    object* laserObj;
+    Object* laserObj;
 } laser_elem;
 
 typedef struct {
-    object* letterObj;
+    Object* letterObj;
 } letter_elem;
 
 int roundNo;
