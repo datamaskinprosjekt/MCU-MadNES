@@ -5,7 +5,8 @@
 
 void init_objects(void)
 {
-    shipType = (spriteType) {SHIP, 0, 5};
+    ship1Type = (spriteType) {SHIP, 0, 5};
+    ship2Type = (spriteType) {SHIP, 5, 5};
     statusType = (spriteType) {STATUS, 10, 4};
     asteroid1Type = (spriteType) {ASTEROID, 14, 11};
     asteroid2Type = (spriteType) {ASTEROID, 25, 11};
@@ -14,6 +15,7 @@ void init_objects(void)
     letterType = (spriteType) {LETTER, 57, 8};
     starType = (spriteType) {STAR, 65, 6};
 
+    spriteType* shipTypes[2] = {&ship1Type, &ship2Type};
     spriteType* asteroidTypes[3] = {&asteroid1Type, &asteroid2Type, &asteroid3Type};
     int star1Max = 7;
     int star2Max = 5;
@@ -29,97 +31,74 @@ void init_objects(void)
     int star6Pos[2 * 4] = {258,209, 355,235, 489,63, 535,311};
 
     objMax = 0;
-    shipMax = 1;
-    statusMax = 1;
-    asteroidMax = 1;
-    laserMax = 2;
+    shipMax = 2;
+    statusMax = shipMax;
+    asteroidMax = 2;
+    laserMax = 3 * shipMax;
     letterMax = 8;
     starMax = 30;
     
     objs = (object *) malloc(sizeof(object) * (shipMax + statusMax + asteroidMax + laserMax + letterMax + starMax));
     dirtyObjs = (int *) malloc(sizeof(int) * (shipMax + statusMax + asteroidMax + laserMax + letterMax + starMax));
 
-    int cnt = 0;
     for (int i=0; i<shipMax; i++) {
-        objs[i] = (object) {objMax++, &shipType, 0, 200, 400, 0, 0, 1, 1};
-        add_dirty_object(&objs[i]);
+        objs[objMax] = (object) {objMax, shipTypes[i % 2], 0, 150 + 50*i, 400, 0, 0, 1, 1};
+        add_dirty_object(&objs[objMax]);
+        objMax++;
     }
-    cnt += shipMax;
-    for (int i=cnt; i<cnt + statusMax; i++) {
-        objs[i] = (object) {objMax++, &statusType, 0, WIDTH - 16, 0, 0, 0, 1, 1};
-        add_dirty_object(&objs[i]);
+    for (int i=0; i<statusMax; i++) {
+        objs[objMax] = (object) {objMax, &statusType, 0, WIDTH - 16*(i+1), 0, 0, 0, 1, 1};
+        add_dirty_object(&objs[objMax]);
+        objMax++;
     }
-    cnt += statusMax;
-    for (int i=cnt; i<cnt + asteroidMax; i++) {
-        bool seek = 1;
-        int xPos = 0;
-        int yPos = 0;
-        while (seek) {
-            xPos = rand() % (WIDTH - 16);
-            yPos = rand() % (HEIGHT - 16);
-            if (xPos <= 100 || xPos >= 300 || yPos <= 300 || yPos >= 500) {
-                seek = 0;
-            }
-        }
-        objs[i] = (object) {objMax++, asteroidTypes[(i - shipMax - statusMax) % 3], 0, xPos, yPos, 0, 0, 1, 1};
-        add_dirty_object(&objs[i]);
+    for (int i=0; i<asteroidMax; i++) {
+        objs[objMax] = (object) {objMax, asteroidTypes[i % 3], 0, 0, 0, 0, 0, 1, 1};
+        add_dirty_object(&objs[objMax]);
+        objMax++;
     }
-    cnt += asteroidMax;
-    for (int i=cnt; i<cnt + laserMax; i++) {
-        objs[i] = (object) {objMax++, &laserType, 0, 0, 0, 0, 0, 0, 1};
-        add_dirty_object(&objs[i]);
+    for (int i=0; i<laserMax; i++) {
+        objs[objMax] = (object) {objMax, &laserType, 0, 0, 0, 0, 0, 0, 1};
+        add_dirty_object(&objs[objMax]);
+        objMax++;
     }
-    cnt += laserMax;
     int xLetterBase = WIDTH / 2 - 32;
     int yLetterBase = HEIGHT / 2 - 16;
-    for (int i=cnt; i<cnt + letterMax; i++) {
-        int num = i - shipMax - statusMax - asteroidMax - laserMax;
-        int xLetter = xLetterBase + 16 * (num % 4);
-        int yLetter = yLetterBase + 16 * (num / 4);
-        objs[i] = (object) {objMax++, &letterType, num, xLetter, yLetter, 0, 0, 0, 1};
-        add_dirty_object(&objs[i]);
+    for (int i=0; i<letterMax; i++) {
+        int xLetter = xLetterBase + 16 * (i % 4);
+        int yLetter = yLetterBase + 16 * (i / 4);
+        objs[objMax] = (object) {objMax, &letterType, i, xLetter, yLetter, 0, 0, 0, 1};
+        add_dirty_object(&objs[objMax]);
+        objMax++;
     }
-    cnt += letterMax;
-    int starIdx = 0;
-    for (int i=cnt; i<cnt + star1Max; i++) {
-        objs[i] = (object) {objMax++, &starType, 0, star1Pos[2*starIdx], star1Pos[2*starIdx + 1], 0, 0, 1, 0};
-        starIdx++;
-        add_dirty_object(&objs[i]);
+    for (int i=0; i<star1Max; i++) {
+        objs[objMax] = (object) {objMax, &starType, 0, star1Pos[2*i], star1Pos[2*i + 1], 0, 0, 1, 0};
+        add_dirty_object(&objs[objMax]);
+        objMax++;
     }
-    cnt += star1Max;
-    starIdx = 0;
-    for (int i=cnt; i<cnt + star2Max; i++) {
-        objs[i] = (object) {objMax++, &starType, 1, star2Pos[2*starIdx], star2Pos[2*starIdx + 1], 0, 0, 1, 0};
-        starIdx++;
-        add_dirty_object(&objs[i]);
+    for (int i=0; i<star2Max; i++) {
+        objs[objMax] = (object) {objMax, &starType, 1, star2Pos[2*i], star2Pos[2*i + 1], 0, 0, 1, 0};
+        add_dirty_object(&objs[objMax]);
+        objMax++;
     }
-    cnt += star2Max;
-    starIdx = 0;
-    for (int i=cnt; i<cnt + star3Max; i++) {
-        objs[i] = (object) {objMax++, &starType, 2, star3Pos[2*starIdx], star3Pos[2*starIdx + 1], 0, 0, 1, 0};
-        starIdx++;
-        add_dirty_object(&objs[i]);
+    for (int i=0; i<star3Max; i++) {
+        objs[objMax] = (object) {objMax, &starType, 2, star3Pos[2*i], star3Pos[2*i + 1], 0, 0, 1, 0};
+        add_dirty_object(&objs[objMax]);
+        objMax++;
     }
-    cnt += star3Max;
-    starIdx = 0;
-    for (int i=cnt; i<cnt + star4Max; i++) {
-        objs[i] = (object) {objMax++, &starType, 3, star4Pos[2*starIdx], star4Pos[2*starIdx + 1], 0, 0, 1, 0};
-        starIdx++;
-        add_dirty_object(&objs[i]);
+    for (int i=0; i<star4Max; i++) {
+        objs[objMax] = (object) {objMax, &starType, 3, star4Pos[2*i], star4Pos[2*i + 1], 0, 0, 1, 0};
+        add_dirty_object(&objs[objMax]);
+        objMax++;
     }
-    cnt += star4Max;
-    starIdx = 0;
-    for (int i=cnt; i<cnt + star5Max; i++) {
-        objs[i] = (object) {objMax++, &starType, 4, star5Pos[2*starIdx], star5Pos[2*starIdx + 1], 0, 0, 1, 0};
-        starIdx++;
-        add_dirty_object(&objs[i]);
+    for (int i=0; i<star5Max; i++) {
+        objs[objMax] = (object) {objMax, &starType, 4, star5Pos[2*i], star5Pos[2*i + 1], 0, 0, 1, 0};
+        add_dirty_object(&objs[objMax]);
+        objMax++;
     }
-    cnt += star5Max;
-    starIdx = 0;
-    for (int i=cnt; i<cnt + star6Max; i++) {
-        objs[i] = (object) {objMax++, &starType, 5, star6Pos[2*starIdx], star6Pos[2*starIdx + 1], 0, 0, 1, 0};
-        starIdx++;
-        add_dirty_object(&objs[i]);
+    for (int i=0; i<star6Max; i++) {
+        objs[objMax] = (object) {objMax, &starType, 5, star6Pos[2*i], star6Pos[2*i + 1], 0, 0, 1, 0};
+        add_dirty_object(&objs[objMax]);
+        objMax++;
     }
 }
 

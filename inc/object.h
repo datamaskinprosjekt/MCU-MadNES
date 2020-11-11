@@ -35,7 +35,8 @@ typedef struct {
     bool priority;
 } object;
 
-spriteType shipType;
+spriteType ship1Type;
+spriteType ship2Type;
 spriteType statusType;
 spriteType asteroid1Type;
 spriteType asteroid2Type;
