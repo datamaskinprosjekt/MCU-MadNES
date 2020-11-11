@@ -5,6 +5,7 @@
 #include <stdbool.h>
 
 #include "em_gpio.h"
+#include "spi.h"
 
 
 /// Mask for pins 9-12 on PORT B
@@ -61,10 +62,44 @@ void setup_controller_gpio();
 int get_controllers();
 
 
+/**************************************************************
+ * Sets up the Chip Select line corresponding to the controller
+ * 
+ * @param id The ID of the controller to select
+ **************************************************************/ 
+void select_controller(int id);
+
+
 /*************************************************************
  * Initializes Controller structs for all active controllers.
  *************************************************************/
 void initialize_controllers();
+
+
+/*************************************************************
+ * Decodes the 8 bit data frame received by a controller
+ * to get information on potentiometer, joystick and the two
+ * buttons.
+ * 
+ * @param frame The 8 bit frame to decode.
+ * @returns A Controller struct.
+ *************************************************************/
+Controller decode_controller_frame(uint8_t frame);
+
+
+/*************************************************************
+ * Polls all connected controllers in turn.
+ *************************************************************/
+void poll_controllers();
+
+
+/*************************************************************
+ * Polls a single controller connected and stores the
+ * input data in the corresponding Controller struct.
+ * 
+ * @param id The identifier of the controller to poll.
+ *************************************************************/
+void poll_single_controller(int id);
 
 
 #endif

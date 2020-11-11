@@ -1,6 +1,6 @@
 #include "controllers.h"
 
-extern Controller* CONTROLLER_INPUTS;
+Controller* CONTROLLER_INPUTS;
 
 
 void setup_controller_gpio()
@@ -23,14 +23,13 @@ void setup_controller_gpio()
     GPIO_PinModeSet(gpioPortB, 1, gpioModePushPull, 0);
     GPIO_PinModeSet(gpioPortB, 0, gpioModePushPull, 0);
 
-    /// Set CS pins on board A as output
+    /// Set CS pins on port A as output
     GPIO_PinModeSet(gpioPortA, 13, gpioModePushPull, 0);
     GPIO_PinModeSet(gpioPortA, 12, gpioModePushPull, 0);
     GPIO_PinModeSet(gpioPortA, 11, gpioModePushPull, 0);
     GPIO_PinModeSet(gpioPortA, 10, gpioModePushPull, 0);
     GPIO_PinModeSet(gpioPortA, 9, gpioModePushPull, 0);
     GPIO_PinModeSet(gpioPortA, 8, gpioModePushPull, 0);
-
 }
 
 
@@ -66,4 +65,61 @@ void initialize_controllers()
             };
         }
     }
+}
+
+
+void select_controller(int id)
+{
+    if (id <= 2) {
+        GPIO_PortOutSetVal(gpioPortB, 1 << (2 - id), 0b0000000000000111); // Set correct port
+        GPIO_PortOutSetVal(gpioPortA, 0, 0b0000000111111000); // Clear other port
+    } else {
+        GPIO_PortOutSetVal(gpioPortA, 1 << (16 - id), 0b0000000111111000); // Set correct port
+        GPIO_PortOutSetVal(gpioPortB, 0, 0b0000000000000111); // Clear other port
+    }
+}
+
+
+void poll_controllers()
+{
+    for (int i = 0; i < 9; i++) {
+        if(CONTROLLER_INPUTS[i].enabled) {
+            poll_single_controller(i);
+        }
+    }
+}
+
+Controller decode_controller_frame(uint8_t frame)
+{
+    Controller inputs;
+
+    // Frame format:
+    // Bits 0-4: Potentiometer 
+    // Bit  5: Joy Btn
+    // Bit  6: Btn 1
+    // Bit  7: Btn 2
+
+    inputs.joyDir = (frame & 0b00011111);
+    inputs.joyBtn = (frame & 0b00100000) > 0;
+    inputs.btn1   = (frame & 0b01000000) > 0;
+    inputs.btn2   = (frame & 0b10000000) > 0;
+
+    return inputs;
+}
+
+void poll_single_controller(int id)
+{
+    Controller* ctrl = &CONTROLLER_INPUTS[id];
+
+    select_controller(id);
+
+    uint8_t buffer = 0;
+    receive_ctrl_SPI(&buffer);
+
+    Controller decoded_inputs = decode_controller_frame(buffer);
+
+    decoded_inputs.id = id;
+    decoded_inputs.enabled = true;
+
+    *ctrl = decoded_inputs;
 }

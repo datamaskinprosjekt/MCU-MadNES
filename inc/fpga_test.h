@@ -9,6 +9,7 @@
 #include "ebi.h"
 #include "fpga.h"
 #include "interrupt_handlers.h"
+#include "time.h"
 
 
 #define NUM_SPRITES 57

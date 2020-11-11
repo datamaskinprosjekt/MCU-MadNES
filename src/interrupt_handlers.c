@@ -72,6 +72,19 @@ void blanking_interrupt()
     write_object(&obj5);
     write_object(&obj6);
     write_object(&obj7);
+    write_object(&obj8);
+    write_object(&obj9);
+    write_object(&obj10);
+    write_object(&obj11);
+    write_object(&obj12);
+    write_object(&obj13);
+    write_object(&obj14);
+    write_object(&obj15);
+    write_object(&obj16);
+    write_object(&obj17);
+    write_object(&obj18);
+    write_object(&obj19);
+    write_object(&obj20);
 }
 
 
