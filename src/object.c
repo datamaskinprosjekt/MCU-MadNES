@@ -33,7 +33,7 @@ void init_objects(void)
     objMax = 0;
     shipMax = 2;
     statusMax = shipMax;
-    asteroidMax = 2;
+    asteroidMax = 1 * shipMax;
     laserMax = 3 * shipMax;
     letterMax = 8;
     starMax = 30;
@@ -47,7 +47,7 @@ void init_objects(void)
         objMax++;
     }
     for (int i=0; i<statusMax; i++) {
-        objs[objMax] = (object) {objMax, &statusType, 0, WIDTH - 16*(i+1), 0, 0, 0, 1, 1};
+        objs[objMax] = (object) {objMax, &statusType, 0, WIDTH - 16*(shipMax-i), 0, 0, 0, 1, 1};
         add_dirty_object(&objs[objMax]);
         objMax++;
     }

@@ -5,8 +5,10 @@
 #include <stdlib.h>
 
 typedef struct {
+    uint8_t id;
     uint8_t hp;
-    uint8_t laserCnt;
+    uint8_t laserIdx;
+    uint8_t laserActiveCnt;
     object* shipObj;
     object* statusObj;
 } player_elem;
@@ -47,6 +49,7 @@ void button_fuel_handler(int playerIdx);
 void button_shoot_handler(int playerIdx);
 void button_restart_handler();
 void set_asteroid_pos(asteroid_elem* asteroid);
+void set_asteroid_new_player(player_elem* oldPlayer);
 int get_asteroid_rotation(asteroid_elem* asteroid);
 bool check_collision_player(player_elem* player, asteroid_elem* asteroid);
 bool check_collision_laser(laser_elem* laser, asteroid_elem* asteroid);

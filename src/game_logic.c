@@ -21,13 +21,13 @@ int main(void) {
 	int tmp = roundNo + 1;
 	// should be while(1), but is limited due to testing
 	while (roundNo) {
-		if (roundNo == 1) {
-			//test_game_print();
-		}
 		if (roundNo < tmp) {
 			button_restart_handler();
 			tmp--;
 			printf("\nGAME ROUND %d\n\n", roundNo);
+		}
+		if (roundNo == 1) {
+			test_game_print();
 		}
 		time_handler();
 	}
@@ -40,12 +40,13 @@ int main(void) {
 }
 
 void init_game() {
+	init_objects();
+
 	playerSpeed = 2;
 	asteroidSpeed = 2;
 	laserSpeed = 5;
-	laserCnt = 3;
-
-	init_objects();
+	asteroidCnt = asteroidMax / shipMax;
+	laserCnt = laserMax / shipMax;
 
 	players = (player_elem *) malloc(sizeof(player_elem) * shipMax);
 	asteroids = (asteroid_elem *) malloc(sizeof(asteroid_elem) * asteroidMax);
@@ -54,17 +55,17 @@ void init_game() {
 
 	int objIdx = 0;
 	for (int i=0; i<shipMax; i++) {
-		players[i] = (player_elem) {3, laserCnt, &objs[i], &objs[shipMax + i]};
+		players[i] = (player_elem) {i, 3, laserCnt * i, 0, &objs[i], &objs[shipMax + i]};
 		objIdx += 2;
 	}
 	for (int i=0; i<asteroidMax; i++) {
-		asteroids[i] = (asteroid_elem) {asteroidSpeed, 0, i % shipMax, &objs[objIdx]};
+		asteroids[i] = (asteroid_elem) {asteroidSpeed, 0, i / asteroidCnt, &objs[objIdx]};
 		set_asteroid_pos(&asteroids[i]);
 		add_dirty_object(asteroids[i].asteroidObj);
 		objIdx++;
 	}
 	for (int i=0; i<laserMax; i++) {
-		lasers[i] = (laser_elem) {i % shipMax, &objs[objIdx]};
+		lasers[i] = (laser_elem) {i / laserCnt, &objs[objIdx]};
 		objIdx++;
 	}
 	for (int i=0; i<letterMax; i++) {
@@ -102,7 +103,7 @@ void time_handler() {
 							int moved = move_object(laser->laserObj, laserRot, laserSpeed);
 							if (!moved) {
 								laser->laserObj->enable = 0;
-								players[laser->playerIdx].laserCnt--;
+								players[laser->playerIdx].laserActiveCnt--;
 							}
 
 							if (check_collision_laser(laser, asteroid)) {
@@ -177,11 +178,11 @@ void button_shoot_handler(int playerIdx) {
 		if (!player->hp) {
 			return;
 		}
-		if (player->laserCnt < laserMax) {
-			for (int i=0; i<laserMax; i++) {
+		if (player->laserActiveCnt < laserCnt) {
+			for (int i=player->laserIdx; i<player->laserIdx+laserCnt; i++) {
 				laser_elem* laser = &lasers[i];
-				if (laser->playerIdx == playerIdx && laser->laserObj->enable == 0) {
-					player->laserCnt++;
+				if (laser->laserObj->enable == 0) {
+					player->laserActiveCnt++;
 					laser->laserObj->enable = 1;
 					laser->laserObj->localSpriteIdx = player->shipObj->localSpriteIdx;
 					laser->laserObj->xPos = player->shipObj->xPos;
@@ -207,7 +208,7 @@ void button_restart_handler() {
 		for (int i=0; i<shipMax; i++) {
 			player_elem* player = &players[i];
 			player->hp = 3;
-			player->laserCnt = laserCnt;
+			player->laserActiveCnt = 0;
 			player->shipObj->enable = 1;
 			player->shipObj->localSpriteIdx = 0;
 			player->shipObj->xPos = 150 + 50*i;
@@ -219,12 +220,18 @@ void button_restart_handler() {
 			add_dirty_object(player->statusObj);
 		}
 		for (int i=0; i<asteroidMax; i++) {
-			set_asteroid_pos(&asteroids[i]);
-			add_dirty_object(asteroids[i].asteroidObj);
+			asteroid_elem* asteroid = &asteroids[i];
+			set_asteroid_pos(asteroid);
+			asteroid->isHit = 0;
+			asteroid->playerIdx = i / asteroidCnt;
+			asteroid->asteroidObj->enable = 1;
+			asteroid->asteroidObj->localSpriteIdx = 0;
+			add_dirty_object(asteroid->asteroidObj);
 		}
 		for (int i=0; i<laserMax; i++) {
-			lasers[i].laserObj->enable = 0;
-			add_dirty_object(lasers[i].laserObj);
+			laser_elem* laser = &lasers[i];
+			laser->laserObj->enable = 0;
+			add_dirty_object(lasers->laserObj);
 		}
 	}
 }
@@ -239,9 +246,10 @@ void set_asteroid_pos(asteroid_elem* asteroid) {
         yPos = rand() % (HEIGHT - 16);
 		bool invalid = 0;
 		for (int i=0; i<shipMax; i++) {
-			int playerXPos = players[i].shipObj->xPos;
-			int playerYPos = players[i].shipObj->yPos;
-			if (xPos >= (playerXPos - 100) && xPos <= (playerXPos + 100) && yPos >= (playerYPos - 100) && yPos <= (playerYPos + 100)) {
+			player_elem* player = &players[i];
+			int playerXPos = player->shipObj->xPos;
+			int playerYPos = player->shipObj->yPos;
+			if (player->hp && xPos >= (playerXPos - 100) && xPos <= (playerXPos + 100) && yPos >= (playerYPos - 100) && yPos <= (playerYPos + 100)) {
 				invalid = 1;
 			}
 		}
@@ -251,6 +259,30 @@ void set_asteroid_pos(asteroid_elem* asteroid) {
     }
     asteroid->asteroidObj->xPos = xPos;
     asteroid->asteroidObj->yPos = yPos;
+}
+
+void set_asteroid_new_player(player_elem* oldPlayer) {
+	int oldPlayerIdx = oldPlayer->id;
+	int nextPlayerIdx = 0;
+	player_elem* nextPlayer = &players[nextPlayerIdx];
+
+	for (int i=0; i<asteroidMax; i++) {
+		asteroid_elem* asteroid = &asteroids[i];
+		if (asteroid->playerIdx == oldPlayerIdx) {
+			bool seek = 1;
+			while (seek) {
+				if (nextPlayer->hp) {
+					seek = 0;
+				} else {
+					nextPlayerIdx = (nextPlayerIdx + 1) % shipMax;
+					nextPlayer = &players[nextPlayerIdx];
+				}
+			}
+			asteroid->playerIdx = nextPlayerIdx;
+			nextPlayerIdx = (nextPlayerIdx + 1) % shipMax;
+			nextPlayer = &players[nextPlayerIdx];
+		}
+	}
 }
 
 int get_asteroid_rotation(asteroid_elem* asteroid) {
@@ -344,17 +376,18 @@ void collision_player(player_elem* player, asteroid_elem* asteroid) {
 		player->shipObj->enable = 0;
 		if (check_game_over()) {
 			game_over();
+		} else {
+			set_asteroid_new_player(player);
 		}
 	}
-	asteroid->asteroidObj->enable = 0;
+	asteroid->isHit = 1;
 	player->statusObj->localSpriteIdx++;
 }
 
 void collision_laser(laser_elem* laser, asteroid_elem* asteroid) {
 	laser->laserObj->enable = 0;
 	asteroid->isHit = 1;
-	asteroid->asteroidObj->localSpriteIdx++;
-	players[laser->playerIdx].laserCnt--;
+	players[laser->playerIdx].laserActiveCnt--;
 }
 
 bool check_game_over() {
@@ -386,15 +419,20 @@ void clear_all() {
 
 void test_game_print() {
 	for (int i=0; i<shipMax; i++) {
-		printf("player - statusIdx %d - hp %d - pos (%d, %d)\n", players[i].statusObj->localSpriteIdx, players[i].hp, players[i].shipObj->xPos, players[i].shipObj->yPos);
+		object* shipObj = players[i].shipObj;
+		object* statusObj = players[i].statusObj;
+		printf("player - statusIdx %d - hp %d - pos (%d, %d) - laserIdx %d - laserCnt %d - enable %d\n",
+		statusObj->localSpriteIdx, players[i].hp, shipObj->xPos, shipObj->yPos, players[i].laserIdx, players[i].laserActiveCnt, shipObj->enable);
 	}
 	for (int i=0; i<asteroidMax; i++) {
 		object* asteroidObj = asteroids[i].asteroidObj;
-		printf("asteroid %d - idx %d - hit %d - pos(%d, %d) - enable %d\n", asteroidObj->id, asteroidObj->localSpriteIdx, asteroids[i].isHit, asteroidObj->xPos, asteroidObj->yPos, asteroidObj->enable);
+		printf("asteroid %d - idx %d - hit %d - pos(%d, %d) - playerIdx %d - enable %d\n",
+		asteroidObj->id, asteroidObj->localSpriteIdx, asteroids[i].isHit, asteroidObj->xPos, asteroidObj->yPos, asteroids[i].playerIdx, asteroidObj->enable);
 	}
 	for (int i=0; i<laserMax; i++) {
 		object* laserObj = lasers[i].laserObj;
-		printf("laser %d - pos (%d, %d) - enable %d\n", laserObj->id, laserObj->xPos, laserObj->yPos, laserObj->enable);
+		printf("laser %d - pos (%d, %d) - playerIdx %d - enable %d\n",
+		laserObj->id, laserObj->xPos, laserObj->yPos, lasers[i].playerIdx, laserObj->enable);
 	}
 	printf("\n");
 }
