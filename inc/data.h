@@ -1,9 +1,7 @@
 #ifndef _DATA_H_
 #define _DATA_H_
 
-#define NUM_TILES 0
-#define NUM_SPRITES 57
-#define NUM_COLORS 49
+#include "meta_data.h"
 
 char sprite_data[NUM_SPRITES * 256];
 char palette_data[NUM_COLORS * 3];

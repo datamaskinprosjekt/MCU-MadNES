@@ -75,10 +75,10 @@ void time_handler() {
 	if (game) {
 		for (int i=0; i<asteroidMax; i++) {
 			asteroid_elem* asteroid = &asteroids[i];
-			if (asteroid->asteroidObj->enable) {
+			if (asteroid->asteroidObj->enabled) {
 				if (asteroid->isHit) {
 					if (asteroid->asteroidObj->localSpriteIdx + 1 >= asteroid->asteroidObj->type->length) {
-						asteroid->asteroidObj->enable = 0;
+						asteroid->asteroidObj->enabled = 0;
 						asteroidCnt--;
 					} else {
 						asteroid->asteroidObj->localSpriteIdx++;
@@ -140,11 +140,11 @@ void time_handler() {
 
 					for (int j=0; j<laserMax; j++) {
 						laser_elem* laser = &lasers[j];
-						if (laser->laserObj->enable) {
+						if (laser->laserObj->enabled) {
 							int laserRot = get_rot(laser->laserObj);
 							int moved = move_object(laser->laserObj, laserRot, laserSpeed);
 							if (!moved) {
-								laser->laserObj->enable = 0;
+								laser->laserObj->enabled = 0;
 								laserCnt--;
 							}
 
@@ -158,7 +158,7 @@ void time_handler() {
 				}
 			} else {
 				asteroid->isHit = 0;
-				asteroid->asteroidObj->enable = 1;
+				asteroid->asteroidObj->enabled = 1;
 				asteroid->asteroidObj->localSpriteIdx = 0;
 				int xPos = 0;
 				int yPos = 0;
@@ -227,9 +227,9 @@ void button_shoot_handler() {
 		if (laserCnt < laserMax) {
 			for (int i=0; i<laserMax; i++) {
 				laser_elem* laser = &lasers[i];
-				if (laser->laserObj->enable == 0) {
+				if (laser->laserObj->enabled == 0) {
 					laserCnt++;
-					laser->laserObj->enable = 1;
+					laser->laserObj->enabled = 1;
 					laser->laserObj->localSpriteIdx = players[0].shipObj->localSpriteIdx;
 					laser->laserObj->xPos = players[0].shipObj->xPos;
 					laser->laserObj->yPos = players[0].shipObj->yPos;
@@ -248,7 +248,7 @@ void button_restart_handler() {
 		game = 1;
 		for (int i=0; i<letterMax; i++) {
 			letter_elem* letter = &letters[i];
-			letter->letterObj->enable = 0;
+			letter->letterObj->enabled = 0;
 			add_dirty_object(letter->letterObj);
 		}
 	}
@@ -289,18 +289,18 @@ void collision_player(player_elem* player, asteroid_elem* asteroid) {
 		game = 0;
 		for (int i=0; i<letterMax; i++) {
 			letter_elem* letter = &letters[i];
-			letter->letterObj->enable = 1;
+			letter->letterObj->enabled = 1;
 			add_dirty_object(letter->letterObj);
 		}
 	} else {
 		player->hp--;
 	}
-	asteroid->asteroidObj->enable = 0;
+	asteroid->asteroidObj->enabled = 0;
 	player->statusObj->localSpriteIdx++;
 }
 
 void collision_laser(laser_elem* laser, asteroid_elem* asteroid) {
-	laser->laserObj->enable = 0;
+	laser->laserObj->enabled = 0;
 	asteroid->isHit = 1;
 	asteroid->asteroidObj->localSpriteIdx++;
 	laserCnt--;

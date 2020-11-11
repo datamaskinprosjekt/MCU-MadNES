@@ -149,6 +149,17 @@ $(LIB)/emlib/src/em_emu.c \
 $(LIB)/emlib/src/em_gpio.c \
 $(LIB)/emlib/src/em_system.c \
 $(LIB)/emlib/src/em_usart.c \
+$(LIB)/emlib/src/em_dma.c \
+$(LIB)/emlib/src/em_rtc.c \
+$(LIB)/emdrv/spidrv/src/spidrv.c \
+$(LIB)/emdrv/dmadrv/src/dmadrv.c \
+$(LIB)/emdrv/dmadrv/src/dmactrl.c \
+$(LIB)/service/sleeptimer/src/sl_sleeptimer.c \
+$(LIB)/service/sleeptimer/src/sl_sleeptimer_hal_burtc.c \
+$(LIB)/service/sleeptimer/src/sl_sleeptimer_hal_prortc.c \
+$(LIB)/service/sleeptimer/src/sl_sleeptimer_hal_rtc.c \
+$(LIB)/service/sleeptimer/src/sl_sleeptimer_hal_rtcc.c \
+
 
 s_SRC +=
 

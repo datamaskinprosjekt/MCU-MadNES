@@ -7,39 +7,12 @@
 #include "em_ebi.h"
 #include "em_gpio.h"
 #include "ebi.h"
+#include "object.h"
 #include "data.h"
 
 
 #define FPGA_ADDR (uint16_t *) EBI_BankAddress(EBI_BANK0)
 
-
-
-// NOTE: SpriteName, SpriteType and Object will probably be removed
-
-typedef enum {
-    ASTEROID,
-    SHIP,
-    LASER,
-    STATUS_BAR
-} SpriteName;
-
-typedef struct {
-    SpriteName name;
-    uint8_t globalSpriteIdx;
-    uint8_t length;
-} SpriteType;
-
-typedef struct {
-    uint16_t id;
-    SpriteType* type;
-    uint8_t localSpriteIdx;
-    uint16_t xPos;
-    uint16_t yPos;
-    bool xFlip;
-    bool yFlip;
-    uint8_t priority;
-    bool enabled;
-} Object;
 
 typedef struct Color {
     uint8_t r;

@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include "meta_data.h"
 
 #define WIDTH 640
 #define HEIGHT 480
@@ -15,10 +16,10 @@ typedef enum {
     STATUS,
     LETTER,
     STAR
-} spriteName;
+} SpriteName;
 
 typedef struct {
-    spriteName name;
+    SpriteName name;
     uint8_t globalSpriteIdx;
     uint8_t length;
 } SpriteType;
@@ -31,8 +32,8 @@ typedef struct {
     uint16_t yPos;
     bool xFlip;
     bool yFlip;
-    bool enable;
     bool priority;
+    bool enabled;
 } Object;
 
 // TODO: Move to own utility file
@@ -40,25 +41,6 @@ typedef struct {
     uint16_t x;
     uint16_t y;
 } vec2d;
-
-// TODO: Move to own Module
-typedef struct {
-    uint16_t width;
-    uint16_t height;
-    Object* boundObject; 
-    vec2d anchor;
-} CollisionBox2D;
-
-typedef struct {
-    Object* first;
-    Object* second;
-} CollisionBox2D_ObjectObjectPair;
-
-bool CB2D_Check_Collision(CollisionBox2D* first, CollisionBox2D* second);
-vec2d CB2D_Check_Force_Collision(CollisionBox2D* first, CollisionBox2D* second)
-
-CollisionBox2D_ObjectObjectPair* CB2D_Get_All_Collisions();
-CollisionBox2D_ObjectObjectForcePair* CB2D_Get_All_Force_Collisions();
 
 
 SpriteType shipType;
@@ -78,8 +60,9 @@ int laserMax;
 int letterMax;
 int starMax;
 
-Object* objects;
-int* dirty_objects;
+Object objects[MAX_OBJS];
+//int* dirty_objects;
+int dirty_objects[MAX_OBJS];
 
 void init_objects();
 void add_dirty_object(Object* obj);

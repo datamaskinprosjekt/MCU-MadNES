@@ -15,28 +15,28 @@ volatile uint32_t ticks;
 void fpga_test()
 {
 
-Object obj0 = (Object) {.id = 0, .type = 0, .localSpriteIdx = 0, .xPos = 0, .yPos = 0, .xFlip = false, .yFlip = false, .priority = 0, .enabled = false};
-obj1 = (Object) {.id = 0, .type = &st0, .localSpriteIdx = 0, .xPos = 0, .yPos = 270, .xFlip = false, .yFlip = false, .priority = 0, .enabled = true};
-obj2 = (Object) {.id = 1, .type = &st0, .localSpriteIdx = 1, .xPos = 30, .yPos = 240, .xFlip = false, .yFlip = false, .priority = 0, .enabled = true};
-obj3 = (Object) {.id = 2, .type = &st0, .localSpriteIdx = 2, .xPos = 60, .yPos = 240, .xFlip = false, .yFlip = false, .priority = 0, .enabled = true};
-obj4 = (Object) {.id = 3, .type = &st0, .localSpriteIdx = 3, .xPos = 90, .yPos = 240, .xFlip = false, .yFlip = false, .priority = 0, .enabled = true};
-obj5 = (Object) {.id = 4, .type = &st0, .localSpriteIdx = 4, .xPos = 120, .yPos = 240, .xFlip = false, .yFlip = false, .priority = 0, .enabled = true};
-obj6 = (Object) {.id = 5, .type = &st0, .localSpriteIdx = 0, .xPos = 150, .yPos = 240, .xFlip = false, .yFlip = false, .priority = 0, .enabled = true};
-obj7 = (Object) {.id = 6, .type = &st0, .localSpriteIdx = 0, .xPos = 180, .yPos = 240, .xFlip = false, .yFlip = false, .priority = 0, .enabled = true};   
-obj8 = (Object) {.id = 7, .type = &st0, .localSpriteIdx = 0, .xPos = 210, .yPos = 240, .xFlip = false, .yFlip = false, .priority = 0, .enabled = true};   
-obj9 = (Object) {.id = 8, .type = &st0, .localSpriteIdx = 0, .xPos = 240, .yPos = 240, .xFlip = false, .yFlip = false, .priority = 0, .enabled = true};   
-obj10 = (Object) {.id = 9, .type = &st0, .localSpriteIdx = 0, .xPos = 270, .yPos = 240, .xFlip = false, .yFlip = false, .priority = 0, .enabled = true};   
-obj11 = (Object) {.id = 10, .type = &st0, .localSpriteIdx = 0, .xPos = 315, .yPos = 240, .xFlip = false, .yFlip = false, .priority = 0, .enabled = true};   
-obj12 = (Object) {.id = 12, .type = &st0, .localSpriteIdx = 0, .xPos = 330, .yPos = 240, .xFlip = false, .yFlip = false, .priority = 0, .enabled = true};
-obj12 = (Object) {.id = 13, .type = &st0, .localSpriteIdx = 0, .xPos = 360, .yPos = 240, .xFlip = false, .yFlip = false, .priority = 0, .enabled = true};   
-obj13 = (Object) {.id = 14, .type = &st0, .localSpriteIdx = 0, .xPos = 390, .yPos = 240, .xFlip = false, .yFlip = false, .priority = 0, .enabled = true};   
-obj14 = (Object) {.id = 15, .type = &st0, .localSpriteIdx = 0, .xPos = 420, .yPos = 240, .xFlip = false, .yFlip = false, .priority = 0, .enabled = true};   
-obj15 = (Object) {.id = 16, .type = &st0, .localSpriteIdx = 0, .xPos = 450, .yPos = 240, .xFlip = false, .yFlip = false, .priority = 0, .enabled = true};   
-obj16 = (Object) {.id = 17, .type = &st0, .localSpriteIdx = 0, .xPos = 480, .yPos = 240, .xFlip = false, .yFlip = false, .priority = 0, .enabled = true};   
-obj17 = (Object) {.id = 18, .type = &st0, .localSpriteIdx = 0, .xPos = 510, .yPos = 240, .xFlip = false, .yFlip = false, .priority = 0, .enabled = true};   
-obj18 = (Object) {.id = 19, .type = &st0, .localSpriteIdx = 0, .xPos = 540, .yPos = 240, .xFlip = false, .yFlip = false, .priority = 0, .enabled = true};   
-obj19 = (Object) {.id = 20, .type = &st0, .localSpriteIdx = 0, .xPos = 570, .yPos = 240, .xFlip = false, .yFlip = false, .priority = 0, .enabled = true};   
-obj20 = (Object) {.id = 21, .type = &st0, .localSpriteIdx = 0, .xPos = 600, .yPos = 240, .xFlip = false, .yFlip = false, .priority = 0, .enabled = true};   
+    Object obj0 = (Object) {.id = 0, .type = 0, .localSpriteIdx = 0, .xPos = 0, .yPos = 0, .xFlip = false, .yFlip = false, .priority = 0, .enabled = false};
+    objects[0] = (Object) {.id = 0, .type = &st0, .localSpriteIdx = 0, .xPos = 0, .yPos = 270, .xFlip = false, .yFlip = false, .priority = 0, .enabled = true};
+    objects[1] = (Object) {.id = 1, .type = &st0, .localSpriteIdx = 1, .xPos = 30, .yPos = 240, .xFlip = false, .yFlip = false, .priority = 0, .enabled = true};
+    objects[2] = (Object) {.id = 2, .type = &st0, .localSpriteIdx = 2, .xPos = 60, .yPos = 240, .xFlip = false, .yFlip = false, .priority = 0, .enabled = true};
+    objects[3] = (Object) {.id = 3, .type = &st0, .localSpriteIdx = 3, .xPos = 90, .yPos = 240, .xFlip = false, .yFlip = false, .priority = 0, .enabled = true};
+    objects[4] = (Object) {.id = 4, .type = &st0, .localSpriteIdx = 4, .xPos = 120, .yPos = 240, .xFlip = false, .yFlip = false, .priority = 0, .enabled = true};
+    objects[5] = (Object) {.id = 5, .type = &st0, .localSpriteIdx = 0, .xPos = 150, .yPos = 240, .xFlip = false, .yFlip = false, .priority = 0, .enabled = true};
+    objects[6] = (Object) {.id = 6, .type = &st0, .localSpriteIdx = 0, .xPos = 180, .yPos = 240, .xFlip = false, .yFlip = false, .priority = 0, .enabled = true};   
+    objects[7] = (Object) {.id = 7, .type = &st0, .localSpriteIdx = 0, .xPos = 210, .yPos = 240, .xFlip = false, .yFlip = false, .priority = 0, .enabled = true};   
+    objects[8] = (Object) {.id = 8, .type = &st0, .localSpriteIdx = 0, .xPos = 240, .yPos = 240, .xFlip = false, .yFlip = false, .priority = 0, .enabled = true};   
+    objects[9] = (Object) {.id = 9, .type = &st0, .localSpriteIdx = 0, .xPos = 270, .yPos = 240, .xFlip = false, .yFlip = false, .priority = 0, .enabled = true};   
+    objects[10] = (Object) {.id = 10, .type = &st0, .localSpriteIdx = 0, .xPos = 315, .yPos = 240, .xFlip = false, .yFlip = false, .priority = 0, .enabled = true};   
+    objects[11] = (Object) {.id = 12, .type = &st0, .localSpriteIdx = 0, .xPos = 330, .yPos = 240, .xFlip = false, .yFlip = false, .priority = 0, .enabled = true};
+    objects[11] = (Object) {.id = 13, .type = &st0, .localSpriteIdx = 0, .xPos = 360, .yPos = 240, .xFlip = false, .yFlip = false, .priority = 0, .enabled = true};   
+    objects[12] = (Object) {.id = 14, .type = &st0, .localSpriteIdx = 0, .xPos = 390, .yPos = 240, .xFlip = false, .yFlip = false, .priority = 0, .enabled = true};   
+    objects[13] = (Object) {.id = 15, .type = &st0, .localSpriteIdx = 0, .xPos = 420, .yPos = 240, .xFlip = false, .yFlip = false, .priority = 0, .enabled = true};   
+    objects[14] = (Object) {.id = 16, .type = &st0, .localSpriteIdx = 0, .xPos = 450, .yPos = 240, .xFlip = false, .yFlip = false, .priority = 0, .enabled = true};   
+    objects[15] = (Object) {.id = 17, .type = &st0, .localSpriteIdx = 0, .xPos = 480, .yPos = 240, .xFlip = false, .yFlip = false, .priority = 0, .enabled = true};   
+    objects[16] = (Object) {.id = 18, .type = &st0, .localSpriteIdx = 0, .xPos = 510, .yPos = 240, .xFlip = false, .yFlip = false, .priority = 0, .enabled = true};   
+    objects[17] = (Object) {.id = 19, .type = &st0, .localSpriteIdx = 0, .xPos = 540, .yPos = 240, .xFlip = false, .yFlip = false, .priority = 0, .enabled = true};   
+    objects[18] = (Object) {.id = 20, .type = &st0, .localSpriteIdx = 0, .xPos = 570, .yPos = 240, .xFlip = false, .yFlip = false, .priority = 0, .enabled = true};   
+    objects[19] = (Object) {.id = 21, .type = &st0, .localSpriteIdx = 0, .xPos = 600, .yPos = 240, .xFlip = false, .yFlip = false, .priority = 0, .enabled = true};   
 
     char* sprite_sheet;
     Color* palette;
@@ -96,7 +96,7 @@ obj20 = (Object) {.id = 21, .type = &st0, .localSpriteIdx = 0, .xPos = 600, .yPo
     write_object(&obj19);    
     write_object(&obj20);
 
-    Object* objects[] = {&obj1, &obj2, &obj3, &obj4, &obj5, &obj6, &obj7, &obj8, &obj9, &obj10, &obj11, &obj12, &obj13, &obj14, &obj15, &obj16, &obj17, &obj18, &obj19, &obj20};
+    memset(&dirty_objects, 0, sizeof(int)*MAX_OBJS);
 
     uint32_t lastTick = ticks;
     uint32_t currentTick = ticks;
@@ -112,13 +112,15 @@ obj20 = (Object) {.id = 21, .type = &st0, .localSpriteIdx = 0, .xPos = 600, .yPo
 
             for(int i = 0; i < 20; i++)
             {
-                int yPos = 240 + sin((double) (currentTick + 300*i) / (250*M_PI))*30;
-                objects[i]->yPos = yPos;
+                int yPos = 240 + sin((double) (currentTick + 300*i) / (250*M_PI))*120;
+                objects[i].yPos = yPos;
 
-                objects[i]->xFlip = (currentTick + i) % 100 == 0;
-                objects[i]->yFlip = (currentTick + i) % 150 == 0;
+                objects[i].xFlip = (currentTick + i) % 100 < 50;
+                objects[i].yFlip = (currentTick + i) % 150 < 100;
 
-                //write_object(objects[i]);
+                dirty_objects[i] = 1;
+
+
             }
             count = 0;
         }

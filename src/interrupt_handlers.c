@@ -1,15 +1,5 @@
 #include "interrupt_handlers.h"
 
-
-extern Object obj1;
-extern Object obj2;
-extern Object obj3;
-extern Object obj4;
-extern Object obj5;
-extern Object obj6;
-extern Object obj7;
-
-
 /**
  * setupNVIC()
  * ============================================================
@@ -65,26 +55,16 @@ void setup_NVIC()
  */ 
 void blanking_interrupt()
 {
-    write_object(&obj1);
-    write_object(&obj2);
-    write_object(&obj3);
-    write_object(&obj4);
-    write_object(&obj5);
-    write_object(&obj6);
-    write_object(&obj7);
-    write_object(&obj8);
-    write_object(&obj9);
-    write_object(&obj10);
-    write_object(&obj11);
-    write_object(&obj12);
-    write_object(&obj13);
-    write_object(&obj14);
-    write_object(&obj15);
-    write_object(&obj16);
-    write_object(&obj17);
-    write_object(&obj18);
-    write_object(&obj19);
-    write_object(&obj20);
+    Object* dirty_obj;
+
+    for (int i = 0; i < MAX_OBJS; i++) {
+       if (dirty_objects[i]) {
+           dirty_obj = &objects[i];
+           write_object(dirty_obj);
+       }
+    }
+
+    memset(dirty_objects, 0, sizeof(int) * MAX_OBJS);
 }
 
 

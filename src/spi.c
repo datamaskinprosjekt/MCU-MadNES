@@ -20,6 +20,9 @@
 void setup_SPI()
 {
     SPIDRV_Init_t init_data = SPIDRV_MASTER_USART0;
+    init_data.csControl = spidrvCsControlApplication;
+    init_data.bitRate = 1000000 * 4;
+    
     handle = &handle_data;
 
     SPIDRV_Init(handle, &init_data);
@@ -42,5 +45,16 @@ void teardown_SPI()
 void receive_ctrl_SPI(uint8_t* buffer)
 {
     handle = &handle_data;
-    SPIDRV_SReceiveB(handle, buffer, count_ctrl, timeout_ms_ctrl);
+    SPIDRV_MReceiveB(handle, buffer, count_ctrl);
+}
+
+
+/************************************************************
+ * @brief Helper function to send controller output
+ * @returns void
+ ***********************************************************/
+void send_ctrl_SPI(uint8_t* buffer)
+{
+    handle = &handle_data;
+    SPIDRV_MReceiveB(handle, &buffer, count_ctrl);
 }

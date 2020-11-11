@@ -10,6 +10,7 @@
 #include "fpga.h"
 #include "interrupt_handlers.h"
 #include "time.h"
+#include "meta_data.h"
 
 
 #define NUM_SPRITES 57

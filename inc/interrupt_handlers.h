@@ -7,6 +7,8 @@
 #include "em_gpio.h"
 #include "ebi.h"
 #include "fpga.h"
+#include "object.h"
+#include "meta_data.h"
 
 
 // NOTE: SDK Method to interface with ISER?

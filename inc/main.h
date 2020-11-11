@@ -9,5 +9,6 @@
 #include "fpga.h"
 #include "fpga_test.h"
 #include "spi.h"
+#include "controllers.h"
 
 #endif // _MAIN_H_

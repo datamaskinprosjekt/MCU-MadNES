@@ -6,6 +6,7 @@
 
 #include "em_gpio.h"
 #include "spi.h"
+#include "spidrv.h"
 
 
 /// Mask for pins 9-12 on PORT B
@@ -86,6 +87,9 @@ void initialize_controllers();
  *************************************************************/
 Controller decode_controller_frame(uint8_t frame);
 
+
+/// For testing purposes
+void send_to_controller(int id);
 
 /*************************************************************
  * Polls all connected controllers in turn.
