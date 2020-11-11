@@ -61,7 +61,8 @@ void fpga_test()
     //wait_for_fpga_ready();
 
 
-    GPIO_PortOutSetVal(gpioPortA, FPGA_RESET_VALUE, FPGA_RESET_MASK);
+
+    //GPIO_PortOutSetVal(gpioPortA, FPGA_RESET_VALUE, FPGA_RESET_MASK);
 
     sprite_sheet = sprite_data;
     palette = create_palette(NUM_COLORS);

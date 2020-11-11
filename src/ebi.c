@@ -92,16 +92,16 @@ void setup_EBI()
 	/* FPGA */
 	ebiConfig.mode = ebiModeD16A16ALE;
 
-	ebiConfig.addrHoldCycles  = 4;
-	ebiConfig.addrSetupCycles = 4;
+	ebiConfig.addrHoldCycles  = 1;
+	ebiConfig.addrSetupCycles = 1;
 
-	ebiConfig.readStrobeCycles = 4;
-	ebiConfig.readHoldCycles   = 4;
-	ebiConfig.readSetupCycles  = 4;
+	ebiConfig.readStrobeCycles = 1;
+	ebiConfig.readHoldCycles   = 1;
+	ebiConfig.readSetupCycles  = 1;
 
-	ebiConfig.writeStrobeCycles = 4;
-	ebiConfig.writeHoldCycles   = 4;
-	ebiConfig.writeSetupCycles  = 4;
+	ebiConfig.writeStrobeCycles = 1;
+	ebiConfig.writeHoldCycles   = 1;
+	ebiConfig.writeSetupCycles  = 1;
 
 	ebiConfig.alePolarity = ebiActiveLow;
 	ebiConfig.wePolarity = ebiActiveLow;
