@@ -8,5 +8,6 @@
 #include "ebi.h"
 #include "fpga.h"
 #include "fpga_test.h"
+#include "spi.h"
 
 #endif // _MAIN_H_

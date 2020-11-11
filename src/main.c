@@ -22,12 +22,14 @@ int main_alt()
 
     // Setup SysTick Timer for 1 msec interrupts
     if (SysTick_Config(CMU_ClockFreqGet(cmuClock_CORE) / 1000)) {
-        while (1) ;
+        while (1);
     }
 
     setup_EBI();
 
     setup_NVIC();
+
+    setup_SPI();
 
     send_initial_data();
 
