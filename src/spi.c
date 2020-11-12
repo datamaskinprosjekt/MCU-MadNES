@@ -6,6 +6,9 @@
  * on the EFM32GG.
  ***************************************************************/
 
+SPIDRV_HandleData_t handle_data;
+SPIDRV_Handle_t handle = &handle_data;
+
 /**************************************************************
  * Initializes the SPI Driver with the predefined configuration
  * SPIDRV_MASTER_USART0.
@@ -19,11 +22,12 @@
  **************************************************************/
 void setup_SPI()
 {
+    //USART_Enable(USART0, true);
     SPIDRV_Init_t init_data = SPIDRV_MASTER_USART0;
     init_data.csControl = spidrvCsControlApplication;
-    init_data.bitRate = 1000000 * 4;
+    init_data.bitRate = 10000;
     
-    handle = &handle_data;
+    //handle = &handle_data;
 
     SPIDRV_Init(handle, &init_data);
 }
@@ -34,7 +38,7 @@ void setup_SPI()
  ***********************************************************/
 void teardown_SPI()
 {
-    handle = &handle_data;
+    //handle = &handle_data;
     SPIDRV_DeInit(handle);
 }
 
@@ -44,9 +48,10 @@ void teardown_SPI()
  ***********************************************************/
 void receive_ctrl_SPI(uint8_t* buffer)
 {
-    handle = &handle_data;
+    //handle = &handle_data;
     SPIDRV_MReceiveB(handle, buffer, count_ctrl);
 }
+
 
 
 /************************************************************
@@ -55,6 +60,6 @@ void receive_ctrl_SPI(uint8_t* buffer)
  ***********************************************************/
 void send_ctrl_SPI(uint8_t* buffer)
 {
-    handle = &handle_data;
-    SPIDRV_MReceiveB(handle, &buffer, count_ctrl);
+    //handle = &handle_data;
+    SPIDRV_MTransmitB(handle, buffer, 1);
 }

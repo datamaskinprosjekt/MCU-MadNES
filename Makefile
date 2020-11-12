@@ -96,7 +96,7 @@ DEPFLAGS = -MMD -MP -MF $(@:.o=.d)
 # Add -Wa,-ahld=$(LST_DIR)/$(@F:.o=.lst) to CFLAGS to produce assembly list files
 #
 override CFLAGS += -D$(DEVICE) -std=c99 -Wall -Wextra -mcpu=cortex-m3 -mthumb \
- -ffunction-sections -fdata-sections -fomit-frame-pointer \
+ -ffunction-sections -fdata-sections -fomit-frame-pointer -g \
 $(DEPFLAGS)
 
 override ASMFLAGS += -x assembler-with-cpp -D$(DEVICE) -Wall -Wextra -mcpu=cortex-m3 -mthumb 

@@ -25,12 +25,12 @@ int main()
         while (1);
     }
 
-    setup_EBI();
+    //setup_EBI();
 
-    setup_NVIC();
+    //setup_NVIC();
 
-    setup_controller_gpio();
     setup_SPI();
+    setup_controller_gpio();
 
     //GPIO_PinModeSet(gpioPortC, 0, gpioModePushPull, 1);
     //GPIO_PinModeSet(gpioPortC, 1, gpioModePushPull, 1);
@@ -55,11 +55,16 @@ int main()
     //GPIO_PortOutSet(gpioPortE, 0xFFFF);
     //GPIO_PortOutSet(gpioPortC, 0xFFFF);
 
-    send_initial_data();
+    //send_initial_data();
+
+    //int transferCount = 0;
+
+    send_to_controller(8);
 
     while(1)
-        poll_single_controller(8);
-        //send_to_controller(8);
+        //poll_single_controller(8);
+        send_to_controller(8);
+        //transferCount++;
 
     /* GAME LOOP */
 

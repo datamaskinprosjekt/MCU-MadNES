@@ -6,19 +6,20 @@ Controller* CONTROLLER_INPUTS;
 void setup_controller_gpio()
 {
     /// Set CA pins on port E as input
-    GPIO_PinModeSet(gpioPortE, 4, gpioModeInputPull, 1);//CA_1
-    GPIO_PinModeSet(gpioPortE, 3, gpioModeInputPull, 1); //CA_2
-    GPIO_PinModeSet(gpioPortE, 2, gpioModeInputPull, 1); //CA_3
-    GPIO_PinModeSet(gpioPortE, 1, gpioModeInputPull, 1); //CA_4
-    GPIO_PinModeSet(gpioPortE, 0, gpioModeInputPull, 1); //CA_5
+    GPIO_PinModeSet(gpioPortE, 4, gpioModeInput, 1);//CA_1
+    GPIO_PinModeSet(gpioPortE, 3, gpioModeInput, 1); //CA_2
+    GPIO_PinModeSet(gpioPortE, 2, gpioModeInput, 1); //CA_3
+    GPIO_PinModeSet(gpioPortE, 1, gpioModeInput, 1); //CA_4
+    GPIO_PinModeSet(gpioPortE, 0, gpioModeInput, 1); //CA_5
 
     /// Set CA pins on port B as input
-    GPIO_PinModeSet(gpioPortB, 10, gpioModeInputPull, 1); //CA_6
-    GPIO_PinModeSet(gpioPortB, 9, gpioModeInputPull, 1); //CA_7
-    GPIO_PinModeSet(gpioPortB, 12, gpioModeInputPull, 1); //CA_8
-    GPIO_PinModeSet(gpioPortB, 11, gpioModeInputPull, 1); //CA_9
+    GPIO_PinModeSet(gpioPortB, 10, gpioModeInput, 1); //CA_6
+    GPIO_PinModeSet(gpioPortB, 9 , gpioModeInput, 1); //CA_7
+    GPIO_PinModeSet(gpioPortB, 12, gpioModeInput, 1); //CA_8
+    GPIO_PinModeSet(gpioPortB, 11, gpioModeInput, 1); //CA_9
 
     /// Set CS pins on port B as output
+    //GPIO_DriveModeSet(gpioPortB, gpioDriveModeLow);
     GPIO_PinModeSet(gpioPortB, 2, gpioModePushPull, 1); //CS_1
     GPIO_PinModeSet(gpioPortB, 1, gpioModePushPull, 1); //CS_2
     GPIO_PinModeSet(gpioPortB, 0, gpioModePushPull, 1); //CS_3
@@ -28,12 +29,13 @@ void setup_controller_gpio()
     GPIO_PinModeSet(gpioPortA, 12, gpioModePushPull, 1); //CS_5
     GPIO_PinModeSet(gpioPortA, 11, gpioModePushPull, 1); //CS_6
     GPIO_PinModeSet(gpioPortA, 10, gpioModePushPull, 1); //CS_7
-    GPIO_PinModeSet(gpioPortA, 9, gpioModePushPull, 1); //CS_8
-    GPIO_PinModeSet(gpioPortA, 8, gpioModePushPull, 1); //CS_9
+    GPIO_PinModeSet(gpioPortA, 9, gpioModePushPull,  1); //CS_8
+    GPIO_PinModeSet(gpioPortA, 8, gpioModePushPull,  1); //CS_9
 
-    //GPIO_PinModeSet(gpioPortE, 5, gpioModePushPull, 1); //CLCK
-    //GPIO_PinModeSet(gpioPortE, 6, gpioModePushPull, 1); //MISO
-    //GPIO_PinModeSet(gpioPortE, 7, gpioModePushPull, 1); //MOSI
+    //GPIO_DriveModeSet(gpioPortE, gpioDriveModeLow);
+    //GPIO_PinModeSet(gpioPortE, 5, gpioModePushPull, 0); //CLCK
+    //GPIO_PinModeSet(gpioPortE, 6, gpioModeInput, 0); //MISO
+    //GPIO_PinModeSet(gpioPortE, 7, gpioModePushPull, 0); //MOSI
 
 }
 
@@ -121,8 +123,10 @@ void send_to_controller(int id)
 {
     select_controller(id);
 
-    uint8_t buffer = 0b10101010;
+    uint8_t buffer = 0;
     send_ctrl_SPI(&buffer);
+
+    //select_controller(-1);
 }
 
 void poll_single_controller(int id)
