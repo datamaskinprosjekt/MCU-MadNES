@@ -53,6 +53,7 @@ void button_restart_handler();
 void set_asteroid_pos(asteroid_elem* asteroid);
 void set_asteroid_new_player(player_elem* oldPlayer);
 int get_asteroid_rotation(asteroid_elem* asteroid);
+void flicker_player(player_elem* player);
 bool check_collision_player(player_elem* player, asteroid_elem* asteroid);
 bool check_collision_laser(laser_elem* laser, asteroid_elem* asteroid);
 void collision_player(player_elem* player, asteroid_elem* asteroid);
