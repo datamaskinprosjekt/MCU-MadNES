@@ -1,19 +1,18 @@
 #ifndef _SPI_H_
 #define _SPI_H_
 
-#include "spidrv.h"
 
+#include "em_cmu.h"
+#include "em_gpio.h"
+#include "em_usart.h"
 
-#define count_ctrl 1 ///< The number of bytes to receive from a controller.
-#define timeout_ms_ctrl 1 ///< NOTE: Should not time out even after 1ms.
-                          /// Increase this definition if any problems arise.
-
-
-SPIDRV_HandleData_t handle_data;
-SPIDRV_Handle_t handle;
 
 void setup_SPI();
 void teardown_SPI();
+
+
+void usart_transfer_spi(uint8_t* inBuf, uint8_t* outBuf);
+void usart_receive_single_spi(uint8_t* inBuf);
 
 
 /*************************************************************

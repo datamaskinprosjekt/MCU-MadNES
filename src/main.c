@@ -4,7 +4,7 @@
 // Counts 1ms ticks
 volatile uint32_t ticks;
 
-int main_alt()
+int main()
 {
     // Object dirty_objects
 
@@ -30,31 +30,28 @@ int main_alt()
 
     //setup_NVIC();
 
-    GPIO_PinModeSet(gpioPortD, 1, gpioModeInput, 0);
-    while(GPIO_PinInGet(gpioPortD, 1) == 0);
+    //GPIO_PinModeSet(gpioPortD, 1, gpioModeInput, 0);
+    //while(GPIO_PinInGet(gpioPortD, 1) == 0);
 
     //delay(1000);
 
     setup_SPI();
-    setup_controller_gpio();
 
-    //send_initial_data();
-
-    //int transferCount = 0;
-
-    send_to_controller(8);
-
-    while(1)
-        //poll_single_controller(8);
-        send_to_controller(8);
-        //transferCount++;
-
+    uint8_t outBuf = 0b01010101;
+    uint8_t inBuf = 0;
     while(1) {
-        //poll_single_controller(8);
-        send_to_controller(8);
-        //GPIO_PinOutSet(gpioPortE, 7);
+        select_controller(8);
+
+        outBuf = 0b01010111;
+        inBuf = 0;
+
+        //send_to_controller(8);
+        inBuf = USART_SpiTransfer(USART0, outBuf);
+        select_controller(-1);
+        delay(16.7);
     }
 
+    //send_initial_data();
 
     //fpga_test();
     /* GAME LOOP */
@@ -66,7 +63,7 @@ int main_alt()
     return 0;
 }
 
-int main()
+int main_alt()
 {
     fpga_test();
     //while(1);

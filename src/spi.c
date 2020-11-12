@@ -1,4 +1,7 @@
 #include "spi.h"
+#include <stdint.h>
+
+
 /**************************************************************
  * Main file for SPI Functionality
  * ------------------------------------------------------------
@@ -6,8 +9,6 @@
  * on the EFM32GG.
  ***************************************************************/
 
-SPIDRV_HandleData_t handle_data;
-SPIDRV_Handle_t handle = &handle_data;
 
 /**************************************************************
  * Initializes the SPI Driver with the predefined configuration
@@ -22,16 +23,51 @@ SPIDRV_Handle_t handle = &handle_data;
  **************************************************************/
 void setup_SPI()
 {
+    CMU_ClockEnable(cmuClock_HFPER, true);
+    CMU_ClockEnable(cmuClock_USART0, true);
     CMU_ClockEnable(cmuClock_GPIO, true);
-    SPIDRV_Init_t init_data = SPIDRV_MASTER_USART0;
-    init_data.csControl = spidrvCsControlApplication;
-    //init_data.portLocation = _USART_ROUTE_LOCATION_LOC1;
-    init_data.bitRate = 1000000 * 4;
 
-    handle = &handle_data;
+    USART_InitSync_TypeDef spi = USART_INITSYNC_DEFAULT;
+    spi.msbf = true;
+    spi.master = true;
+    spi.autoCsEnable = false;
+    spi.baudrate = 9600;
+    
+    USART_InitSync(USART0, &spi);
 
-    SPIDRV_Init(handle, &init_data);
+    USART0->ROUTE = USART_ROUTE_RXPEN | USART_ROUTE_TXPEN | USART_ROUTE_CLKPEN | USART_ROUTE_LOCATION_LOC1;
+
+    GPIO_PinModeSet(gpioPortE, 7, gpioModePushPull, 0);  /* MOSI */ 
+    GPIO_PinModeSet(gpioPortE, 6, gpioModeInput, 0);     /* MISO */
+    GPIO_PinModeSet(gpioPortE, 5, gpioModePushPull, 0);  /* Clock */
+
+    /// Set CA pins on port E as input
+    GPIO_PinModeSet(gpioPortE, 4, gpioModeInput, 1);//CA_1
+    GPIO_PinModeSet(gpioPortE, 3, gpioModeInput, 1); //CA_2
+    GPIO_PinModeSet(gpioPortE, 2, gpioModeInput, 1); //CA_3
+    GPIO_PinModeSet(gpioPortE, 1, gpioModeInput, 1); //CA_4
+    GPIO_PinModeSet(gpioPortE, 0, gpioModeInput, 1); //CA_5
+
+    /// Set CA pins on port B as input
+    GPIO_PinModeSet(gpioPortB, 10, gpioModeInput, 1); //CA_6
+    GPIO_PinModeSet(gpioPortB, 9 , gpioModeInput, 1); //CA_7
+    GPIO_PinModeSet(gpioPortB, 12, gpioModeInput, 1); //CA_8
+    GPIO_PinModeSet(gpioPortB, 11, gpioModeInput, 1); //CA_9
+
+    /// Set CS pins on port B as output
+    GPIO_PinModeSet(gpioPortB, 2, gpioModePushPull, 0); //CS_1
+    GPIO_PinModeSet(gpioPortB, 1, gpioModePushPull, 0); //CS_2
+    GPIO_PinModeSet(gpioPortB, 0, gpioModePushPull, 0); //CS_3
+
+    /// Set CS pins on port A as output
+    GPIO_PinModeSet(gpioPortA, 13, gpioModePushPull, 0); //CS_4
+    GPIO_PinModeSet(gpioPortA, 12, gpioModePushPull, 0); //CS_5
+    GPIO_PinModeSet(gpioPortA, 11, gpioModePushPull, 0); //CS_6
+    GPIO_PinModeSet(gpioPortA, 10, gpioModePushPull, 0); //CS_7
+    GPIO_PinModeSet(gpioPortA, 9, gpioModePushPull,  0); //CS_8
+    GPIO_PinModeSet(gpioPortA, 8, gpioModePushPull,  0); //CS_9
 }
+
 
 /***********************************************************
  * @brief Tears down the SPI Driver
@@ -39,9 +75,9 @@ void setup_SPI()
  ***********************************************************/
 void teardown_SPI()
 {
-    //handle = &handle_data;
-    SPIDRV_DeInit(handle);
+    //TODO
 }
+
 
 /************************************************************
  * @brief Helper function to receive controller input
@@ -49,10 +85,8 @@ void teardown_SPI()
  ***********************************************************/
 void receive_ctrl_SPI(uint8_t* buffer)
 {
-    //handle = &handle_data;
-    SPIDRV_MReceiveB(handle, buffer, count_ctrl);
+    *buffer = USART_SpiTransfer(USART0, 0);
 }
-
 
 
 /************************************************************
@@ -61,6 +95,6 @@ void receive_ctrl_SPI(uint8_t* buffer)
  ***********************************************************/
 void send_ctrl_SPI(uint8_t* buffer)
 {
-    handle = &handle_data;
-    SPIDRV_MTransmitB(handle, buffer, count_ctrl);
+    uint8_t inBuf = 0;
+    inBuf = USART_SpiTransfer(USART0, *buffer);
 }

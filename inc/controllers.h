@@ -6,7 +6,6 @@
 
 #include "em_gpio.h"
 #include "spi.h"
-#include "spidrv.h"
 
 
 /// Mask for pins 9-12 on PORT B
@@ -19,7 +18,7 @@
 typedef struct {
     int id;
     bool enabled;
-    uint8_t joyDir;
+    int8_t joyDir;
     bool joyBtn;
     bool btn1;
     bool btn2;
@@ -27,8 +26,8 @@ typedef struct {
 
 
 /**************************************************************
- * Enables the controller gpio pins for input.
- * 
+ * Chip Active Pins
+ * ------------------------------------------------------------
  * CA1 = PE4
  * CA2 = PE3
  * CA3 = PE2
@@ -39,8 +38,6 @@ typedef struct {
  * CA8 = PB12
  * CA9 = PB11
  **************************************************************/
-void setup_controller_gpio();
-
 
 /**************************************************************
  * Chip Select Pins 
@@ -56,6 +53,7 @@ void setup_controller_gpio();
  * CS8 = PA9
  * CS9 = PA8
  **************************************************************/
+
 
 /*************************************************************
  * Gets the active controllers.
@@ -88,8 +86,15 @@ void initialize_controllers();
 Controller decode_controller_frame(uint8_t frame);
 
 
-/// For testing purposes
-void send_to_controller(int id);
+/*************************************************************
+ * For testing purposes.
+ * Transmits data to a single controller connected.
+ * 
+ * @param id The identifier of the controller to transmit to.
+ * @param data The data to transmit.
+ *************************************************************/
+void send_to_controller(int id, uint8_t data);
+
 
 /*************************************************************
  * Polls all connected controllers in turn.
