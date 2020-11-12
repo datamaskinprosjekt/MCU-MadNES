@@ -31,9 +31,11 @@ void setup_controller_gpio()
     GPIO_PinModeSet(gpioPortA, 9, gpioModePushPull, 1); //CS_8
     GPIO_PinModeSet(gpioPortA, 8, gpioModePushPull, 1); //CS_9
 
-    //GPIO_PinModeSet(gpioPortE, 5, gpioModePushPull, 1); //CLCK
-    //GPIO_PinModeSet(gpioPortE, 6, gpioModePushPull, 1); //MISO
-    //GPIO_PinModeSet(gpioPortE, 7, gpioModePushPull, 1); //MOSI
+
+    GPIO_DriveModeSet(gpioPortE, gpioDriveModeLow);
+    GPIO_PinModeSet(gpioPortE, 5, gpioModePushPull, 1); //CLCK
+    GPIO_PinModeSet(gpioPortE, 6, gpioModePushPullDrive, 1); //MISO
+    GPIO_PinModeSet(gpioPortE, 7, gpioModePushPullDrive, 1); //MOSI
 
 }
 
@@ -133,6 +135,8 @@ void poll_single_controller(int id)
 
     uint8_t buffer = 0;
     receive_ctrl_SPI(&buffer);
+
+    select_controller(-1);
 
     Controller decoded_inputs = decode_controller_frame(buffer);
 

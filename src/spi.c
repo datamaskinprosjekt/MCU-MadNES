@@ -19,10 +19,12 @@
  **************************************************************/
 void setup_SPI()
 {
+    CMU_ClockEnable(cmuClock_GPIO, true);
     SPIDRV_Init_t init_data = SPIDRV_MASTER_USART0;
     init_data.csControl = spidrvCsControlApplication;
+    //init_data.portLocation = _USART_ROUTE_LOCATION_LOC1;
     init_data.bitRate = 1000000 * 4;
-    
+
     handle = &handle_data;
 
     SPIDRV_Init(handle, &init_data);
@@ -56,5 +58,5 @@ void receive_ctrl_SPI(uint8_t* buffer)
 void send_ctrl_SPI(uint8_t* buffer)
 {
     handle = &handle_data;
-    SPIDRV_MReceiveB(handle, &buffer, count_ctrl);
+    SPIDRV_MTransmitB(handle, buffer, count_ctrl);
 }

@@ -19,7 +19,7 @@ int main_alt()
 
     // Configure core clock to 48 MHz high frequency crystal oscillator*/
     CMU_ClockSelectSet(cmuClock_HF, cmuSelect_HFXO);
-    //CMU_ClockDivSet(cmuClock_HF, cmuClkDiv_4);
+    CMU_ClockDivSet(cmuClock_HF, cmuClkDiv_4);
 
     // Setup SysTick Timer for 1 msec interrupts
     if (SysTick_Config(CMU_ClockFreqGet(cmuClock_CORE) / 1000)) {
@@ -31,22 +31,25 @@ int main_alt()
     setup_NVIC();
 
     GPIO_PinModeSet(gpioPortD, 1, gpioModeInput, 0);
-
     while(GPIO_PinInGet(gpioPortD, 1) == 0);
 
-    delay(1000);
+    //delay(1000);
 
-    setup_controller_gpio();
     setup_SPI();
+    setup_controller_gpio();
 
     send_initial_data();
 
-    //while(1)
-    //    poll_single_controller(8);
-        //send_to_controller(8);
+    //GPIO_PinOutSet(gpioPortE, 7);
+
+    while(1) {
+        //poll_single_controller(8);
+        send_to_controller(8);
+        //GPIO_PinOutSet(gpioPortE, 7);
+    }
 
 
-    fpga_test();
+    //fpga_test();
     /* GAME LOOP */
 
     /* END GAME */
