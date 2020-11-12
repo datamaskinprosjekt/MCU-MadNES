@@ -7,6 +7,8 @@
 typedef struct {
     uint8_t id;
     uint8_t hp;
+    bool isHit;
+    uint8_t flickerDownCnt;
     uint8_t laserIdx;
     uint8_t laserActiveCnt;
     object* shipObj;
@@ -14,7 +16,6 @@ typedef struct {
 } player_elem;
 
 typedef struct {
-    uint8_t speed;
     bool isHit;
     int playerIdx;
     object* asteroidObj;
@@ -35,6 +36,7 @@ int playerSpeed;
 int asteroidSpeed;
 int laserSpeed;
 int asteroidCnt;
+int flickerCnt;
 int laserCnt;
 
 player_elem* players;
@@ -43,7 +45,7 @@ laser_elem* lasers;
 letter_elem* letters;
 
 void init_game();
-void time_handler();
+void time_handler(int ticks);
 void joystick_handler(int playerIdx, int rot);
 void button_fuel_handler(int playerIdx);
 void button_shoot_handler(int playerIdx);

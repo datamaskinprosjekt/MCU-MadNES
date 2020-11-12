@@ -11,7 +11,7 @@ int main(void) {
 	srand(time(NULL));
 	// search for roundNo and remove all
 	roundNo = 3;
-	// move the if(game) to the interrupt calls to avoid unnecessary repeats
+	// move the if (game) to the interrupt calls to avoid unnecessary repeats
 	game = 1;
 
 	init_game();
@@ -29,7 +29,7 @@ int main(void) {
 		if (roundNo == 1) {
 			test_game_print();
 		}
-		time_handler();
+		time_handler(100);
 	}
 	test_game_print();
 	test_print();
@@ -46,6 +46,7 @@ void init_game() {
 	asteroidSpeed = 2;
 	laserSpeed = 5;
 	asteroidCnt = asteroidMax / shipMax;
+	flickerCnt = 6;
 	laserCnt = laserMax / shipMax;
 
 	players = (player_elem *) malloc(sizeof(player_elem) * shipMax);
@@ -55,11 +56,11 @@ void init_game() {
 
 	int objIdx = 0;
 	for (int i=0; i<shipMax; i++) {
-		players[i] = (player_elem) {i, 3, laserCnt * i, 0, &objs[i], &objs[shipMax + i]};
+		players[i] = (player_elem) {i, 3, 0, flickerCnt, laserCnt * i, 0, &objs[i], &objs[shipMax + i]};
 		objIdx += 2;
 	}
 	for (int i=0; i<asteroidMax; i++) {
-		asteroids[i] = (asteroid_elem) {asteroidSpeed, 0, i / asteroidCnt, &objs[objIdx]};
+		asteroids[i] = (asteroid_elem) {0, i / asteroidCnt, &objs[objIdx]};
 		set_asteroid_pos(&asteroids[i]);
 		add_dirty_object(asteroids[i].asteroidObj);
 		objIdx++;
@@ -74,7 +75,7 @@ void init_game() {
 	}
 }
 
-void time_handler() {	
+void time_handler(int ticks) {
 	if (game) {
 		for (int i=0; i<asteroidMax; i++) {
 			asteroid_elem* asteroid = &asteroids[i];
@@ -87,7 +88,7 @@ void time_handler() {
 					}
 				} else {
 					int rot = get_asteroid_rotation(asteroid);
-					move_object(asteroid->asteroidObj, rot, asteroid->speed);
+					move_object(asteroid->asteroidObj, rot, asteroidSpeed);
 
 					for (int j=0; j<shipMax; j++) {
 						if (check_collision_player(&players[j], asteroid)) {
@@ -121,6 +122,31 @@ void time_handler() {
 				set_asteroid_pos(asteroid);
 			}
 			add_dirty_object(asteroid->asteroidObj);
+		}
+		for (int i=0; i<shipMax; i++) {
+			player_elem* player = &players[i];
+			if (player->isHit) {
+				if (player->flickerDownCnt) {
+					player->flickerDownCnt--;
+					player->shipObj->enable = !player->shipObj->enable;
+				}
+				else {
+					player->isHit = 0;
+					if (player->hp) {
+						player->flickerDownCnt = flickerCnt;
+						player->shipObj->enable = 1;
+					}
+					else {
+						player->shipObj->enable = 0;
+						if (check_game_over()) {
+							game_over();
+						} else {
+							set_asteroid_new_player(player);
+						}
+					}
+				}
+				add_dirty_object(player->shipObj);
+			}
 		}
 	}
 }
@@ -208,6 +234,8 @@ void button_restart_handler() {
 		for (int i=0; i<shipMax; i++) {
 			player_elem* player = &players[i];
 			player->hp = 3;
+			player->isHit = 0;
+			player->flickerDownCnt = flickerCnt;
 			player->laserActiveCnt = 0;
 			player->shipObj->enable = 1;
 			player->shipObj->localSpriteIdx = 0;
@@ -304,7 +332,7 @@ int get_asteroid_rotation(asteroid_elem* asteroid) {
 				rot = 1;
 			}
 		}
-		else if(yDiffAbs < xDiffAbs)
+		else if (yDiffAbs < xDiffAbs)
 		{
 			float tmp = (float) yDiffAbs / xDiffAbs;
 			if (tmp < 0.25) {
@@ -339,7 +367,7 @@ int get_asteroid_rotation(asteroid_elem* asteroid) {
 }
 
 bool check_collision_player(player_elem* player, asteroid_elem* asteroid) {
-	if (!player->hp) {
+	if (!player->hp || player->isHit) {
 		return 0;
 	}
 	int playerLeft = player->shipObj->xPos;
@@ -372,16 +400,9 @@ bool check_collision_laser(laser_elem* laser, asteroid_elem* asteroid) {
 
 void collision_player(player_elem* player, asteroid_elem* asteroid) {
 	player->hp--;
-	if (player->hp == 0) {
-		player->shipObj->enable = 0;
-		if (check_game_over()) {
-			game_over();
-		} else {
-			set_asteroid_new_player(player);
-		}
-	}
-	asteroid->isHit = 1;
+	player->isHit = 1;
 	player->statusObj->localSpriteIdx++;
+	asteroid->isHit = 1;
 }
 
 void collision_laser(laser_elem* laser, asteroid_elem* asteroid) {
@@ -392,7 +413,7 @@ void collision_laser(laser_elem* laser, asteroid_elem* asteroid) {
 
 bool check_game_over() {
 	for (int i=0; i<shipMax; i++) {
-		if (players[i].hp) {
+		if (players[i].hp || players[i].flickerDownCnt) {
 			return 0;
 		}
 	}
