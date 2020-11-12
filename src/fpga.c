@@ -17,6 +17,13 @@ void write_sprite_sheet(uint16_t* sprite_sheet, int size)
 }
 
 
+void wait_for_fpga_ready()
+{
+    GPIO_PinModeSet(gpioPortD, 1, gpioModeInput, 0);
+    while(GPIO_PinInGet(gpioPortD, 1) == 0);
+}
+
+
 /**************************************************************
  * Writes a tile sheet to the TILE Memory Bank on the FPGA.
  * @param tile_sheet A pointer to the first element of the tile sheet to be written

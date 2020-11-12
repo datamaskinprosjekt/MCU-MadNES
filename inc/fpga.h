@@ -21,6 +21,8 @@ typedef struct Color {
 } Color;
 
 
+void wait_for_fpga_ready();
+
 void write_sprite_sheet(uint16_t* sprite_sheet, int size);
 
 void write_tile_sheet(uint16_t* tile_sheet, int size);

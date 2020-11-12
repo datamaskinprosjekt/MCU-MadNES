@@ -3,6 +3,7 @@
 
 #include "em_chip.h"
 #include "em_cmu.h"
+#include "em_gpio.h"
 
 #include "time.h"
 #include "ebi.h"

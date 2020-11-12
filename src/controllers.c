@@ -138,6 +138,8 @@ void poll_single_controller(int id)
     uint8_t buffer = 0;
     receive_ctrl_SPI(&buffer);
 
+    select_controller(-1);
+
     Controller decoded_inputs = decode_controller_frame(buffer);
 
     decoded_inputs.id = id;
