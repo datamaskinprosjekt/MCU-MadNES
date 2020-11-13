@@ -131,6 +131,7 @@ INCLUDEPATHS += \
 C_SRC +=  \
 $(SRC)/main.c \
 $(SRC)/time.c \
+$(SRC)/debug_output.c \
 $(SRC)/ebi.c \
 $(SRC)/fpga.c \
 $(SRC)/spi.c \
