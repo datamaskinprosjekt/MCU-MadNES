@@ -13,8 +13,8 @@ typedef struct {
     int laserActiveCnt;
     int pixelTicksCnt;
     int flickerTicksCnt;
-    object* shipObj;
-    object* statusObj;
+    Object* shipObj;
+    Object* statusObj;
 } player_elem;
 
 typedef struct {
@@ -22,19 +22,20 @@ typedef struct {
     int playerIdx;
     int pixelTicksCnt;
     int explodeTicksCnt;
-    object* asteroidObj;
+    Object* asteroidObj;
 } asteroid_elem;
 
 typedef struct {
     int playerIdx;
     int pixelTicksCnt;
-    object* laserObj;
+    Object* laserObj;
 } laser_elem;
 
 typedef struct {
-    object* letterObj;
+    Object* letterObj;
 } letter_elem;
 
+//remove rounNo, it's for testing
 int roundNo;
 bool game;
 int playerPixelTicks;

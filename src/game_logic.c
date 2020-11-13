@@ -8,7 +8,9 @@
 #include "game_logic.h"
 
 int main(void) {
-	srand(time(NULL));
+	// TODO seed with actual time
+	srand(0);
+	//srand(time(NULL));
 	// search for roundNo and remove all
 	roundNo = 3;
 	// move the if (game) to the interrupt calls to avoid unnecessary repeats
@@ -43,7 +45,7 @@ int main(void) {
 // When true, proceed
 // When false, wait
 bool sem_game = true;
-uint32_t ticks = 0;
+uint32_t currentTicks = 0;
 
 void main_logic() {
 	init_game();
@@ -63,7 +65,7 @@ void run_logic() {
 	static uint32_t deltaTicks;
 
 	// Ticks should be predefined by the SysClk module
-	deltaTicks = ticks - lastTickCount;
+	deltaTicks = currentTicks - lastTickCount;
 	// check buttons and joystick
 	for (int i=0; i<shipMax; i++) {
 		int fuelButton = 0;
@@ -102,21 +104,21 @@ void init_game() {
 
 	int objIdx = 0;
 	for (int i=0; i<shipMax; i++) {
-		players[i] = (player_elem) {i, 3, 0, flickerCnt, laserCnt * i, 0, 0, 0, &objs[i], &objs[shipMax + i]};
+		players[i] = (player_elem) {i, 3, 0, flickerCnt, laserCnt * i, 0, 0, 0, &objects[i], &objects[shipMax + i]};
 		objIdx += 2;
 	}
 	for (int i=0; i<asteroidMax; i++) {
-		asteroids[i] = (asteroid_elem) {0, i / asteroidCnt, 0, 0, &objs[objIdx]};
+		asteroids[i] = (asteroid_elem) {0, i / asteroidCnt, 0, 0, &objects[objIdx]};
 		set_asteroid_pos(&asteroids[i]);
 		add_dirty_object(asteroids[i].asteroidObj);
 		objIdx++;
 	}
 	for (int i=0; i<laserMax; i++) {
-		lasers[i] = (laser_elem) {i / laserCnt, 0, &objs[objIdx]};
+		lasers[i] = (laser_elem) {i / laserCnt, 0, &objects[objIdx]};
 		objIdx++;
 	}
 	for (int i=0; i<letterMax; i++) {
-		letters[i] = (letter_elem) {&objs[objIdx]};
+		letters[i] = (letter_elem) {&objects[objIdx]};
 		objIdx++;
 	}
 }
@@ -125,14 +127,14 @@ void time_handler(int ticks) {
 	if (game) {
 		for (int i=0; i<asteroidMax; i++) {
 			asteroid_elem* asteroid = &asteroids[i];
-			if (asteroid->asteroidObj->enable) {
+			if (asteroid->asteroidObj->enabled) {
 				if (asteroid->isHit) {
 					int currentExplodeTicks = asteroid->explodeTicksCnt + ticks;
 					int explodeNum = currentExplodeTicks / explodeTicks;
 					asteroid->explodeTicksCnt = currentExplodeTicks % explodeTicks;
 					if (explodeNum) {
 						if (asteroid->asteroidObj->localSpriteIdx + 1 >= asteroid->asteroidObj->type->length) {
-							asteroid->asteroidObj->enable = 0;
+							asteroid->asteroidObj->enabled = 0;
 						} else {
 							asteroid->asteroidObj->localSpriteIdx++;
 						}
@@ -155,7 +157,7 @@ void time_handler(int ticks) {
 
 					for (int j=0; j<laserMax; j++) {
 						laser_elem* laser = &lasers[j];
-						if (laser->laserObj->enable) {
+						if (laser->laserObj->enabled) {
 							if (check_collision_laser(laser, asteroid)) {
 								collision_laser(laser, asteroid);
 								add_dirty_object(laser->laserObj);
@@ -167,7 +169,7 @@ void time_handler(int ticks) {
 				asteroid->isHit = 0;
 				asteroid->pixelTicksCnt = 0;
 				asteroid->explodeTicksCnt = 0;
-				asteroid->asteroidObj->enable = 1;
+				asteroid->asteroidObj->enabled = 1;
 				asteroid->asteroidObj->localSpriteIdx = 0;
 				set_asteroid_pos(asteroid);
 			}
@@ -175,7 +177,7 @@ void time_handler(int ticks) {
 		}
 		for (int i=0; i<laserMax; i++) {
 			laser_elem* laser = &lasers[i];
-			if (laser->laserObj->enable) {
+			if (laser->laserObj->enabled) {
 				int laserRot = get_rot(laser->laserObj);
 				int currentPixelTicks = laser->pixelTicksCnt + ticks;
 				int pixelNum = currentPixelTicks / laserPixelTicks;
@@ -183,7 +185,7 @@ void time_handler(int ticks) {
 				if (pixelNum) {
 					int moved = move_object(laser->laserObj, laserRot, pixelNum);
 					if (!moved) {
-						laser->laserObj->enable = 0;
+						laser->laserObj->enabled = 0;
 						players[laser->playerIdx].laserActiveCnt--;
 					}
 					add_dirty_object(laser->laserObj);
@@ -201,7 +203,7 @@ void joystick_handler(int playerIdx, int rot) {
 		if (!players[playerIdx].hp) {
 			return;
 		}
-		object* shipObj = players[playerIdx].shipObj;
+		Object* shipObj = players[playerIdx].shipObj;
 
 		int dir = rot / 4;
 		int spriteIdx = rot % 4;
@@ -257,10 +259,10 @@ void button_shoot_handler(int playerIdx) {
 		if (player->laserActiveCnt < laserCnt) {
 			for (int i=player->laserIdx; i<player->laserIdx+laserCnt; i++) {
 				laser_elem* laser = &lasers[i];
-				if (laser->laserObj->enable == 0) {
+				if (laser->laserObj->enabled == 0) {
 					player->laserActiveCnt++;
 					laser->pixelTicksCnt = 0;
-					laser->laserObj->enable = 1;
+					laser->laserObj->enabled = 1;
 					laser->laserObj->localSpriteIdx = player->shipObj->localSpriteIdx;
 					laser->laserObj->xPos = player->shipObj->xPos;
 					laser->laserObj->yPos = player->shipObj->yPos;
@@ -279,7 +281,7 @@ void button_restart_handler() {
 		game = 1;
 		for (int i=0; i<letterMax; i++) {
 			letter_elem* letter = &letters[i];
-			letter->letterObj->enable = 0;
+			letter->letterObj->enabled = 0;
 			add_dirty_object(letter->letterObj);
 		}
 		for (int i=0; i<shipMax; i++) {
@@ -290,7 +292,7 @@ void button_restart_handler() {
 			player->laserActiveCnt = 0;
 			player->pixelTicksCnt = 0;
 			player->flickerTicksCnt = 0;
-			player->shipObj->enable = 1;
+			player->shipObj->enabled = 1;
 			player->shipObj->localSpriteIdx = 0;
 			player->shipObj->xPos = 150 + 50*i;
 			player->shipObj->yPos = 400;
@@ -307,14 +309,14 @@ void button_restart_handler() {
 			asteroid->playerIdx = i / asteroidCnt;
 			asteroid->pixelTicksCnt = 0;
 			asteroid->explodeTicksCnt = 0;
-			asteroid->asteroidObj->enable = 1;
+			asteroid->asteroidObj->enabled = 1;
 			asteroid->asteroidObj->localSpriteIdx = 0;
 			add_dirty_object(asteroid->asteroidObj);
 		}
 		for (int i=0; i<laserMax; i++) {
 			laser_elem* laser = &lasers[i];
 			laser->pixelTicksCnt = 0;
-			laser->laserObj->enable = 0;
+			laser->laserObj->enabled = 0;
 			add_dirty_object(lasers->laserObj);
 		}
 	}
@@ -430,17 +432,17 @@ void flicker_player(int ticks, player_elem* player) {
 		if (flickerNum) {
 			if (player->flickerDownCnt) {
 				player->flickerDownCnt--;
-				player->shipObj->enable = !player->shipObj->enable;
+				player->shipObj->enabled = !player->shipObj->enabled;
 			}
 			else {
 				player->isHit = 0;
 				player->flickerTicksCnt = 0;
 				if (player->hp) {
 					player->flickerDownCnt = flickerCnt;
-					player->shipObj->enable = 1;
+					player->shipObj->enabled = 1;
 				}
 				else {
-					player->shipObj->enable = 0;
+					player->shipObj->enabled = 0;
 					if (check_game_over()) {
 						game_over();
 					} else {
@@ -493,7 +495,7 @@ void collision_player(player_elem* player, asteroid_elem* asteroid) {
 }
 
 void collision_laser(laser_elem* laser, asteroid_elem* asteroid) {
-	laser->laserObj->enable = 0;
+	laser->laserObj->enabled = 0;
 	asteroid->isHit = 1;
 	players[laser->playerIdx].laserActiveCnt--;
 }
@@ -512,7 +514,7 @@ void game_over() {
 	game = 0;
 	for (int i=0; i<letterMax; i++) {
 		letter_elem* letter = &letters[i];
-		letter->letterObj->enable = 1;
+		letter->letterObj->enabled = 1;
 		add_dirty_object(letter->letterObj);
 	}
 }
@@ -527,20 +529,20 @@ void clear_all() {
 
 void test_game_print() {
 	for (int i=0; i<shipMax; i++) {
-		object* shipObj = players[i].shipObj;
-		object* statusObj = players[i].statusObj;
+		Object* shipObj = players[i].shipObj;
+		Object* statusObj = players[i].statusObj;
 		printf("player - statusIdx %d - hp %d - pos (%d, %d) - isHit %d - flickerDownCnt %d - laserIdx %d - laserCnt %d - enable %d\n",
-		statusObj->localSpriteIdx, players[i].hp, shipObj->xPos, shipObj->yPos, players[i].isHit, players[i].flickerDownCnt, players[i].laserIdx, players[i].laserActiveCnt, shipObj->enable);
+		statusObj->localSpriteIdx, players[i].hp, shipObj->xPos, shipObj->yPos, players[i].isHit, players[i].flickerDownCnt, players[i].laserIdx, players[i].laserActiveCnt, shipObj->enabled);
 	}
 	for (int i=0; i<asteroidMax; i++) {
-		object* asteroidObj = asteroids[i].asteroidObj;
+		Object* asteroidObj = asteroids[i].asteroidObj;
 		printf("asteroid %d - idx %d - hit %d - pos(%d, %d) - playerIdx %d - enable %d\n",
-		asteroidObj->id, asteroidObj->localSpriteIdx, asteroids[i].isHit, asteroidObj->xPos, asteroidObj->yPos, asteroids[i].playerIdx, asteroidObj->enable);
+		asteroidObj->id, asteroidObj->localSpriteIdx, asteroids[i].isHit, asteroidObj->xPos, asteroidObj->yPos, asteroids[i].playerIdx, asteroidObj->enabled);
 	}
 	for (int i=0; i<laserMax; i++) {
-		object* laserObj = lasers[i].laserObj;
+		Object* laserObj = lasers[i].laserObj;
 		printf("laser %d - pos (%d, %d) - playerIdx %d - enable %d\n",
-		laserObj->id, laserObj->xPos, laserObj->yPos, lasers[i].playerIdx, laserObj->enable);
+		laserObj->id, laserObj->xPos, laserObj->yPos, lasers[i].playerIdx, laserObj->enabled);
 	}
 	printf("\n");
 }
@@ -568,12 +570,6 @@ void test_print() {
 	printf("letters\n");
 	for (int i=0; i<letterMax; i++) {
 		print_object(letters[i].letterObj);
-	}/*
-	printf("\n");
-
-	printf("stars\n");
-	for (int i=objMax-30; i<objMax; i++) {
-		print_object(&objs[i]);
-	}*/
+	}
 	printf("\n\n");
 }

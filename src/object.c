@@ -5,18 +5,18 @@
 
 void init_objects(void)
 {
-    ship1Type = (spriteType) {SHIP, 0, 5};
-    ship2Type = (spriteType) {SHIP, 5, 5};
-    statusType = (spriteType) {STATUS, 10, 4};
-    asteroid1Type = (spriteType) {ASTEROID, 14, 11};
-    asteroid2Type = (spriteType) {ASTEROID, 25, 11};
-    asteroid3Type = (spriteType) {ASTEROID, 36, 16};
-    laserType = (spriteType) {LASER, 52, 5};
-    letterType = (spriteType) {LETTER, 57, 8};
-    starType = (spriteType) {STAR, 65, 6};
+    ship1Type = (SpriteType) {SHIP, 0, 5};
+    ship2Type = (SpriteType) {SHIP, 5, 5};
+    statusType = (SpriteType) {STATUS, 10, 4};
+    asteroid1Type = (SpriteType) {ASTEROID, 14, 11};
+    asteroid2Type = (SpriteType) {ASTEROID, 25, 11};
+    asteroid3Type = (SpriteType) {ASTEROID, 36, 16};
+    laserType = (SpriteType) {LASER, 52, 5};
+    letterType = (SpriteType) {LETTER, 57, 8};
+    starType = (SpriteType) {STAR, 65, 6};
 
-    spriteType* shipTypes[2] = {&ship1Type, &ship2Type};
-    spriteType* asteroidTypes[3] = {&asteroid1Type, &asteroid2Type, &asteroid3Type};
+    SpriteType* shipTypes[2] = {&ship1Type, &ship2Type};
+    SpriteType* asteroidTypes[3] = {&asteroid1Type, &asteroid2Type, &asteroid3Type};
     int star1Max = 7;
     int star2Max = 5;
     int star3Max = 6;
@@ -37,28 +37,30 @@ void init_objects(void)
     laserMax = 3 * shipMax;
     letterMax = 8;
     starMax = 30;
+
+    int num_objects_to_initialize = shipMax + statusMax + asteroidMax + laserMax + letterMax + starMax;
     
-    objs = (object *) malloc(sizeof(object) * (shipMax + statusMax + asteroidMax + laserMax + letterMax + starMax));
-    dirtyObjs = (int *) malloc(sizeof(int) * (shipMax + statusMax + asteroidMax + laserMax + letterMax + starMax));
+    objects = (Object *) malloc(sizeof(Object) * num_objects_to_initialize);
+    dirty_objects = (int *) malloc(sizeof(int) * num_objects_to_initialize);
 
     for (int i=0; i<shipMax; i++) {
-        objs[objMax] = (object) {objMax, shipTypes[i % 2], 0, 150 + 50*i, 400, 0, 0, 1, 1};
-        add_dirty_object(&objs[objMax]);
+        objects[objMax] = (Object) {objMax, shipTypes[i % 2], 0, 150 + 50*i, 400, 0, 0, 1, 1};
+        add_dirty_object(&objects[objMax]);
         objMax++;
     }
     for (int i=0; i<statusMax; i++) {
-        objs[objMax] = (object) {objMax, &statusType, 0, WIDTH - 16*(shipMax-i), 0, 0, 0, 1, 1};
-        add_dirty_object(&objs[objMax]);
+        objects[objMax] = (Object) {objMax, &statusType, 0, WIDTH - 16*(shipMax-i), 0, 0, 0, 1, 1};
+        add_dirty_object(&objects[objMax]);
         objMax++;
     }
     for (int i=0; i<asteroidMax; i++) {
-        objs[objMax] = (object) {objMax, asteroidTypes[i % 3], 0, 0, 0, 0, 0, 1, 1};
-        add_dirty_object(&objs[objMax]);
+        objects[objMax] = (Object) {objMax, asteroidTypes[i % 3], 0, 0, 0, 0, 0, 1, 1};
+        add_dirty_object(&objects[objMax]);
         objMax++;
     }
     for (int i=0; i<laserMax; i++) {
-        objs[objMax] = (object) {objMax, &laserType, 0, 0, 0, 0, 0, 0, 1};
-        add_dirty_object(&objs[objMax]);
+        objects[objMax] = (Object) {objMax, &laserType, 0, 0, 0, 0, 0, 0, 1};
+        add_dirty_object(&objects[objMax]);
         objMax++;
     }
     int xLetterBase = WIDTH / 2 - 32;
@@ -66,47 +68,47 @@ void init_objects(void)
     for (int i=0; i<letterMax; i++) {
         int xLetter = xLetterBase + 16 * (i % 4);
         int yLetter = yLetterBase + 16 * (i / 4);
-        objs[objMax] = (object) {objMax, &letterType, i, xLetter, yLetter, 0, 0, 0, 1};
-        add_dirty_object(&objs[objMax]);
+        objects[objMax] = (Object) {objMax, &letterType, i, xLetter, yLetter, 0, 0, 0, 1};
+        add_dirty_object(&objects[objMax]);
         objMax++;
     }
     for (int i=0; i<star1Max; i++) {
-        objs[objMax] = (object) {objMax, &starType, 0, star1Pos[2*i], star1Pos[2*i + 1], 0, 0, 1, 0};
-        add_dirty_object(&objs[objMax]);
+        objects[objMax] = (Object) {objMax, &starType, 0, star1Pos[2*i], star1Pos[2*i + 1], 0, 0, 1, 0};
+        add_dirty_object(&objects[objMax]);
         objMax++;
     }
     for (int i=0; i<star2Max; i++) {
-        objs[objMax] = (object) {objMax, &starType, 1, star2Pos[2*i], star2Pos[2*i + 1], 0, 0, 1, 0};
-        add_dirty_object(&objs[objMax]);
+        objects[objMax] = (Object) {objMax, &starType, 1, star2Pos[2*i], star2Pos[2*i + 1], 0, 0, 1, 0};
+        add_dirty_object(&objects[objMax]);
         objMax++;
     }
     for (int i=0; i<star3Max; i++) {
-        objs[objMax] = (object) {objMax, &starType, 2, star3Pos[2*i], star3Pos[2*i + 1], 0, 0, 1, 0};
-        add_dirty_object(&objs[objMax]);
+        objects[objMax] = (Object) {objMax, &starType, 2, star3Pos[2*i], star3Pos[2*i + 1], 0, 0, 1, 0};
+        add_dirty_object(&objects[objMax]);
         objMax++;
     }
     for (int i=0; i<star4Max; i++) {
-        objs[objMax] = (object) {objMax, &starType, 3, star4Pos[2*i], star4Pos[2*i + 1], 0, 0, 1, 0};
-        add_dirty_object(&objs[objMax]);
+        objects[objMax] = (Object) {objMax, &starType, 3, star4Pos[2*i], star4Pos[2*i + 1], 0, 0, 1, 0};
+        add_dirty_object(&objects[objMax]);
         objMax++;
     }
     for (int i=0; i<star5Max; i++) {
-        objs[objMax] = (object) {objMax, &starType, 4, star5Pos[2*i], star5Pos[2*i + 1], 0, 0, 1, 0};
-        add_dirty_object(&objs[objMax]);
+        objects[objMax] = (Object) {objMax, &starType, 4, star5Pos[2*i], star5Pos[2*i + 1], 0, 0, 1, 0};
+        add_dirty_object(&objects[objMax]);
         objMax++;
     }
     for (int i=0; i<star6Max; i++) {
-        objs[objMax] = (object) {objMax, &starType, 5, star6Pos[2*i], star6Pos[2*i + 1], 0, 0, 1, 0};
-        add_dirty_object(&objs[objMax]);
+        objects[objMax] = (Object) {objMax, &starType, 5, star6Pos[2*i], star6Pos[2*i + 1], 0, 0, 1, 0};
+        add_dirty_object(&objects[objMax]);
         objMax++;
     }
 }
 
-void add_dirty_object(object* obj) {
-    dirtyObjs[obj->id] = 1;
+void add_dirty_object(Object* obj) {
+    dirty_objects[obj->id] = 1;
 }
 
-int move_object(object* obj, int rot, int speed) {
+int move_object(Object* obj, int rot, int speed) {
 	int xOffset = 0;
 	int yOffset = 0;
 
@@ -161,30 +163,30 @@ int move_object(object* obj, int rot, int speed) {
     return 1;
 }
 
-int get_rot(object* object) {
-    bool xFlip = object->xFlip;
-    bool yFlip = object->yFlip;
+int get_rot(Object* Object) {
+    bool xFlip = Object->xFlip;
+    bool yFlip = Object->yFlip;
 
     if (!xFlip && !yFlip)
     {
-        return object->localSpriteIdx;
+        return Object->localSpriteIdx;
     }
     else if (xFlip && !yFlip)
     {
-        return 8 - object->localSpriteIdx;
+        return 8 - Object->localSpriteIdx;
     }
     else if (xFlip && yFlip)
     {
-        return object->localSpriteIdx + 8;
+        return Object->localSpriteIdx + 8;
     }
-    return (16 - object->localSpriteIdx) % 16;
+    return (16 - Object->localSpriteIdx) % 16;
 }
 
 void delete_objects() {
-    free(objs);
+    free(objects);
 }
 
-void print_object(object* obj) {
+void print_object(Object* obj) {
     printf("id:%d, globalSpriteIdx:%d, localSpriteIdx:%d, xPos:%d, yPos:%d, xFlip:%d, yFlip:%d, enable:%d, priority:%d\n",
-    obj->id, obj->type->globalSpriteIdx, obj->localSpriteIdx, obj->xPos, obj->yPos, obj->xFlip, obj->yFlip, obj->enable, obj->priority);
+    obj->id, obj->type->globalSpriteIdx, obj->localSpriteIdx, obj->xPos, obj->yPos, obj->xFlip, obj->yFlip, obj->enabled, obj->priority);
 }

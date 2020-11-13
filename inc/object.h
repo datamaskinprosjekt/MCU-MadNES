@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include "meta_data.h"
 
 #define WIDTH 640
 #define HEIGHT 480
@@ -15,35 +16,35 @@ typedef enum {
     STATUS,
     LETTER,
     STAR
-} spriteName;
+} SpriteName;
 
 typedef struct {
-    spriteName name;
+    SpriteName name;
     uint8_t globalSpriteIdx;
     uint8_t length;
-} spriteType;
+} SpriteType;
 
 typedef struct {
     uint16_t id;
-    spriteType* type;
+    SpriteType* type;
     uint8_t localSpriteIdx;
     uint16_t xPos;
     uint16_t yPos;
     bool xFlip;
     bool yFlip;
-    bool enable;
     bool priority;
-} object;
+    bool enabled;
+} Object;
 
-spriteType ship1Type;
-spriteType ship2Type;
-spriteType statusType;
-spriteType asteroid1Type;
-spriteType asteroid2Type;
-spriteType asteroid3Type;
-spriteType laserType;
-spriteType letterType;
-spriteType starType;
+SpriteType ship1Type;
+SpriteType ship2Type;
+SpriteType statusType;
+SpriteType asteroid1Type;
+SpriteType asteroid2Type;
+SpriteType asteroid3Type;
+SpriteType laserType;
+SpriteType letterType;
+SpriteType starType;
 
 int objMax;
 int shipMax;
@@ -53,14 +54,15 @@ int laserMax;
 int letterMax;
 int starMax;
 
-object* objs;
-int* dirtyObjs;
+Object* objects;
+//int* dirty_objects;
+int* dirty_objects;
 
 void init_objects();
-void add_dirty_object(object* obj);
-int move_object(object* obj, int rot, int speed);
-int get_rot(object* obj);
+void add_dirty_object(Object* obj);
+int move_object(Object* obj, int rot, int speed);
+int get_rot(Object* obj);
 void delete_objects();
-void print_object(object* obj);
+void print_object(Object* obj);
 
 #endif

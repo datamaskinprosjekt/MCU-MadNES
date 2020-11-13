@@ -9,7 +9,7 @@ CC = gcc
 INCL = -I$(INCDIR)
 CFLAGS = -g -O3 -Wall
 
-SRCFILES = $(wildcard $(SRCDIR)/*.c)
+SRCFILES = $(SRCDIR)/game_logic.c $(SRCDIR)/object.c
 OBJFILES = $(patsubst $(SRCDIR)/%.c,$(OBJDIR)/%.o,$(SRCFILES))
 
 $(BINDIR)/$(EXEC): $(OBJFILES)

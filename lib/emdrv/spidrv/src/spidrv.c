@@ -411,7 +411,7 @@ Ecode_t SPIDRV_Init(SPIDRV_Handle_t handle, SPIDRV_Init_t *initData)
                                            | ((uint32_t)initData->pinRx
                                               << _GPIO_USART_RXROUTE_PIN_SHIFT);
 
-    GPIO->USARTROUTE[spiPortNum].CLKROUTE = ((uint32_t)initData->pinClk
+    GPIO->USARTROUTE[spiPortNum].CLKROUTE = ((uint32_t)initData->portClk
                                              << _GPIO_USART_CLKROUTE_PORT_SHIFT)
                                             | ((uint32_t)initData->pinClk
                                                << _GPIO_USART_CLKROUTE_PIN_SHIFT);
