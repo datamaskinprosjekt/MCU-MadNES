@@ -121,9 +121,6 @@ INCLUDEPATHS += \
 -I$(LIB)/emdrv/dmadrv/inc \
 -I$(LIB)/emdrv/dmadrv/config \
 -I$(LIB)/emdrv/common/inc \
--I$(LIB)/service/sleeptimer/inc \
--I$(LIB)/service/sleeptimer/config \
--I$(LIB)/common/inc \
 -I$(INC)\
 
 
@@ -136,7 +133,6 @@ $(SRC)/main.c \
 $(SRC)/time.c \
 $(SRC)/ebi.c \
 $(SRC)/fpga.c \
-$(SRC)/fpga_test.c \
 $(SRC)/spi.c \
 $(SRC)/interrupt_handlers.c \
 $(SRC)/controllers.c \
