@@ -24,6 +24,7 @@ typedef struct {
     bool btn2;
 } Controller;
 
+Controller* CONTROLLER_INPUTS;
 
 /**************************************************************
  * Chip Active Pins

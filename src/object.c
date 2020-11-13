@@ -7,15 +7,31 @@ void init_objects(void)
 {
     ship1Type = (SpriteType) {SHIP, 0, 5};
     ship2Type = (SpriteType) {SHIP, 5, 5};
-    statusType = (SpriteType) {STATUS, 10, 4};
-    asteroid1Type = (SpriteType) {ASTEROID, 14, 11};
-    asteroid2Type = (SpriteType) {ASTEROID, 25, 11};
-    asteroid3Type = (SpriteType) {ASTEROID, 36, 16};
-    laserType = (SpriteType) {LASER, 52, 5};
-    letterType = (SpriteType) {LETTER, 57, 8};
-    starType = (SpriteType) {STAR, 65, 6};
+    ship3Type = (SpriteType) {SHIP, 10, 5};
+    ship4Type = (SpriteType) {SHIP, 15, 5};
+    ship5Type = (SpriteType) {SHIP, 20, 5};
+    ship6Type = (SpriteType) {SHIP, 25, 5};
+    ship7Type = (SpriteType) {SHIP, 30, 5};
+    ship8Type = (SpriteType) {SHIP, 35, 5};
+    ship9Type = (SpriteType) {SHIP, 40, 5};
+    status1Type = (SpriteType) {STATUS, 45, 4};
+    status2Type = (SpriteType) {STATUS, 49, 4};
+    status3Type = (SpriteType) {STATUS, 53, 4};
+    status4Type = (SpriteType) {STATUS, 57, 4};
+    status5Type = (SpriteType) {STATUS, 61, 4};
+    status6Type = (SpriteType) {STATUS, 65, 4};
+    status7Type = (SpriteType) {STATUS, 69, 4};
+    status8Type = (SpriteType) {STATUS, 73, 4};
+    status9Type = (SpriteType) {STATUS, 77, 4};
+    asteroid1Type = (SpriteType) {ASTEROID, 81, 11};
+    asteroid2Type = (SpriteType) {ASTEROID, 92, 11};
+    asteroid3Type = (SpriteType) {ASTEROID, 103, 16};
+    laserType = (SpriteType) {LASER, 119, 5};
+    letterType = (SpriteType) {LETTER, 125, 8};
+    starType = (SpriteType) {STAR, 132, 6};
 
-    SpriteType* shipTypes[2] = {&ship1Type, &ship2Type};
+    SpriteType* shipTypes[9] = {&ship1Type, &ship2Type, &ship3Type, &ship4Type, &ship5Type, &ship6Type, &ship7Type, &ship8Type, &ship9Type};
+    SpriteType* statusTypes[9] = {&status1Type, &status2Type, &status3Type, &status4Type, &status5Type, &status6Type, &status7Type, &status8Type, &status9Type};
     SpriteType* asteroidTypes[3] = {&asteroid1Type, &asteroid2Type, &asteroid3Type};
     int star1Max = 7;
     int star2Max = 5;
@@ -44,12 +60,12 @@ void init_objects(void)
     dirty_objects = (int *) malloc(sizeof(int) * num_objects_to_initialize);
 
     for (int i=0; i<shipMax; i++) {
-        objects[objMax] = (Object) {objMax, shipTypes[i % 2], 0, 150 + 50*i, 400, 0, 0, 1, 1};
+        objects[objMax] = (Object) {objMax, shipTypes[i % 9], 0, 150 + 50*i, 400, 0, 0, 1, 1};
         add_dirty_object(&objects[objMax]);
         objMax++;
     }
     for (int i=0; i<statusMax; i++) {
-        objects[objMax] = (Object) {objMax, &statusType, 0, WIDTH - 16*(shipMax-i), 0, 0, 0, 1, 1};
+        objects[objMax] = (Object) {objMax, statusTypes[i % 9], 0, WIDTH - 16*(shipMax-i), 0, 0, 0, 1, 1};
         add_dirty_object(&objects[objMax]);
         objMax++;
     }

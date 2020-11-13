@@ -38,7 +38,22 @@ typedef struct {
 
 SpriteType ship1Type;
 SpriteType ship2Type;
-SpriteType statusType;
+SpriteType ship3Type;
+SpriteType ship4Type;
+SpriteType ship5Type;
+SpriteType ship6Type;
+SpriteType ship7Type;
+SpriteType ship8Type;
+SpriteType ship9Type;
+SpriteType status1Type;
+SpriteType status2Type;
+SpriteType status3Type;
+SpriteType status4Type;
+SpriteType status5Type;
+SpriteType status6Type;
+SpriteType status7Type;
+SpriteType status8Type;
+SpriteType status9Type;
 SpriteType asteroid1Type;
 SpriteType asteroid2Type;
 SpriteType asteroid3Type;

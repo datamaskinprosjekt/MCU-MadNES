@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <math.h>
 #include "object.h"
+//#include "controllers.h"
 #include "game_logic.h"
 
 int main(void) {
@@ -48,15 +49,23 @@ bool sem_game = true;
 uint32_t currentTicks = 0;
 
 void main_logic() {
+	// seed randomizer
+
 	init_game();
+	// set ship number
+	// use controller_inputs from controllers.h
 
 	while (1) {
 
 		// Wait for sem_game to be released
-		while(sem_game);
+		while(!sem_game);
+		// set sem_game = 0
+
 		// get controller inputs
 		run_logic();
 	}
+
+	clear_all();
 }
 
 void run_logic() {

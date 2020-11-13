@@ -1,9 +1,6 @@
 #include "controllers.h"
 
 
-Controller* CONTROLLER_INPUTS;
-
-
 int get_controllers()
 {
     uint32_t port_E_input = GPIO_PortInGet(gpioPortE);
