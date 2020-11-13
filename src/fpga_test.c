@@ -11,7 +11,7 @@ char palette_data[NUM_COLORS * 3] = { 0, 0, 0, 147, 147, 147, 171, 171, 171, 111
 
 
 SpriteType st0 = {.name = ASTEROID, .globalSpriteIdx = 0};
-volatile uint32_t ticks;
+volatile uint32_t msTicks;
 
 void fpga_test()
 {
@@ -105,8 +105,8 @@ void fpga_test()
     
     memset(&dirty_objects, 0, sizeof(int)*MAX_OBJS);
 
-    uint32_t lastTick = ticks;
-    uint32_t currentTick = ticks;
+    uint32_t lastTick = msTicks;
+    uint32_t currentTick = msTicks;
 
     uint32_t tickDiff = 0;
 
