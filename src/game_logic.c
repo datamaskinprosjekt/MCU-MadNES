@@ -39,6 +39,49 @@ int main(void) {
 	return 0;
 }
 
+// "Semaphore"
+// When true, proceed
+// When false, wait
+bool sem_game = true;
+uint32_t ticks = 0;
+
+void main_logic() {
+	init_game();
+
+	while (1) {
+
+		// Wait for sem_game to be released
+		while(sem_game);
+		// get controller inputs
+		run_logic();
+	}
+}
+
+void run_logic() {
+	// Time since last time run_logic was called
+	static uint32_t lastTickCount;
+	static uint32_t deltaTicks;
+
+	// Ticks should be predefined by the SysClk module
+	deltaTicks = ticks - lastTickCount;
+	// check buttons and joystick
+	for (int i=0; i<shipMax; i++) {
+		int fuelButton = 0;
+		int shootButton = 0;
+		int restartButton = 0;
+		if (fuelButton) {
+			button_fuel_handler(deltaTicks, i);
+		}
+		if (shootButton) {
+			button_shoot_handler(i);
+		}
+		if (restartButton) {
+			button_restart_handler(i);
+		}
+	}
+	time_handler(deltaTicks);
+}
+
 void init_game() {
 	init_objects();
 

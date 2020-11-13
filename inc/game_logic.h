@@ -51,6 +51,9 @@ asteroid_elem* asteroids;
 laser_elem* lasers;
 letter_elem* letters;
 
+void main_logic();
+void run_logic();
+
 void init_game();
 void time_handler(int ticks);
 void joystick_handler(int playerIdx, int rot);
