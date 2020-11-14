@@ -5,81 +5,73 @@
 #include <unistd.h>
 #include <math.h>
 #include "object.h"
-//#include "controllers.h"
+// #include "controllers.h"
 #include "game_logic.h"
 
 int main(void) {
-	// TODO seed with actual time
-	srand(0);
-	//srand(time(NULL));
-	// search for roundNo and remove all
-	roundNo = 3;
-	// move the if (game) to the interrupt calls to avoid unnecessary repeats
-	game = 1;
-
-	init_game();
-	test_print();
-	button_shoot_handler(1);
-
-	int tmp = roundNo + 1;
-	// should be while(1), but is limited due to testing
-	while (roundNo) {
-		if (roundNo < tmp) {
-			button_restart_handler();
-			tmp--;
-			printf("\nGAME ROUND %d\n\n", roundNo);
-		}
-		if (roundNo == 3) {
-			test_game_print();
-		}
-		time_handler(100);
-	}
-	test_game_print();
-	test_print();
-
-	clear_all();
+	// test_main();
+	main_logic();
 
 	return 0;
 }
 
-// "Semaphore"
-// When true, proceed
-// When false, wait
-bool sem_game = true;
-uint32_t currentTicks = 0;
-
 void main_logic() {
-	// seed randomizer
+	// TODO seed with actual time
+	srand(time(NULL));
+
+	// "Semaphore", when true: proceed, when false: wait
+	sem_game = false;
+	force_quit = false;
+
+	// TODO set last ticks
+	lastTicks = 0;
+	newTicks = lastTicks;
 
 	init_game();
-	// set ship number
-	// use controller_inputs from controllers.h
+	CONTROLLER_INPUTS = (Controller* ) malloc(sizeof(Controller) * shipMax);
+	for (int i=0; i<shipMax; i++) {
+		CONTROLLER_INPUTS[i] = (Controller) {i, 1, -1, 0, 0, 0};
+	}
 
-	while (1) {
+	test_print();
 
+	while (!force_quit) {
 		// Wait for sem_game to be released
-		while(!sem_game);
-		// set sem_game = 0
+		while(!sem_game) {
+			simulate_semaphore();
+		}
+		sem_game = 0;
 
-		// get controller inputs
+		test_game_print();
+
 		run_logic();
 	}
+
+	test_print();
 
 	clear_all();
 }
 
 void run_logic() {
-	// Time since last time run_logic was called
-	static uint32_t lastTickCount;
-	static uint32_t deltaTicks;
+	// TODO ticks should be predefined by the SysClk module
+	deltaTicks = newTicks - lastTicks;
+	
+	int joyDir;
+	int fuelButton;
+	int shootButton;
+	int restartButton;
 
-	// Ticks should be predefined by the SysClk module
-	deltaTicks = currentTicks - lastTickCount;
-	// check buttons and joystick
 	for (int i=0; i<shipMax; i++) {
-		int fuelButton = 0;
-		int shootButton = 0;
-		int restartButton = 0;
+		Controller* controller = &CONTROLLER_INPUTS[i];
+
+		joyDir = controller->joyDir;
+		fuelButton = controller->btn1;
+		shootButton = controller->btn2;
+		restartButton = controller->joyBtn;
+
+		if (joyDir != -1) {
+			joystick_handler(i, joyDir);
+		}
 		if (fuelButton) {
 			button_fuel_handler(deltaTicks, i);
 		}
@@ -93,8 +85,55 @@ void run_logic() {
 	time_handler(deltaTicks);
 }
 
+int tmpCnt = 5;
+void simulate_semaphore() {
+	lastTicks = newTicks;
+	newTicks += 100;
+
+	CONTROLLER_INPUTS[1].btn1 = 1;
+
+	sem_game = 1;
+
+
+	if (!tmpCnt) {
+		force_quit = 1;
+	}
+	tmpCnt--;
+}
+
+void test_main() {
+	srand(time(NULL));
+
+	init_game();
+
+	test_print();
+	button_shoot_handler(1);
+	
+	int roundNo = 3;
+	while (roundNo) {
+		if (!game) {
+			button_restart_handler();
+			roundNo--;
+			printf("\nGAME ROUND %d\n\n", roundNo);
+		}
+		if (roundNo == 3) {
+			test_game_print();
+		}
+		time_handler(100);
+	}
+	test_game_print();
+	test_print();
+
+	clear_all();
+}
+
 void init_game() {
-	init_objects();
+	game = 1;
+
+	int playerNum = 2;
+	asteroidPerPlayer = 2;
+	laserPerPlayer = 3;
+	init_objects(playerNum, asteroidPerPlayer, laserPerPlayer);
 
 	playerPixelTicks = 50;
 	asteroidPixelTicks = 50;
@@ -102,9 +141,7 @@ void init_game() {
 	flickerTicks = 200;
 	explodeTicks = 100;
 	
-	asteroidCnt = asteroidMax / shipMax;
-	flickerCnt = 6;
-	laserCnt = laserMax / shipMax;
+	flickerTotal = 6;
 
 	players = (player_elem *) malloc(sizeof(player_elem) * shipMax);
 	asteroids = (asteroid_elem *) malloc(sizeof(asteroid_elem) * asteroidMax);
@@ -113,17 +150,17 @@ void init_game() {
 
 	int objIdx = 0;
 	for (int i=0; i<shipMax; i++) {
-		players[i] = (player_elem) {i, 3, 0, flickerCnt, laserCnt * i, 0, 0, 0, &objects[i], &objects[shipMax + i]};
+		players[i] = (player_elem) {i, 3, 0, flickerTotal, laserPerPlayer * i, 0, 0, 0, &objects[i], &objects[shipMax + i]};
 		objIdx += 2;
 	}
 	for (int i=0; i<asteroidMax; i++) {
-		asteroids[i] = (asteroid_elem) {0, i / asteroidCnt, 0, 0, &objects[objIdx]};
+		asteroids[i] = (asteroid_elem) {0, i / asteroidPerPlayer, 0, 0, &objects[objIdx]};
 		set_asteroid_pos(&asteroids[i]);
 		add_dirty_object(asteroids[i].asteroidObj);
 		objIdx++;
 	}
 	for (int i=0; i<laserMax; i++) {
-		lasers[i] = (laser_elem) {i / laserCnt, 0, &objects[objIdx]};
+		lasers[i] = (laser_elem) {i / laserPerPlayer, 0, &objects[objIdx]};
 		objIdx++;
 	}
 	for (int i=0; i<letterMax; i++) {
@@ -132,13 +169,13 @@ void init_game() {
 	}
 }
 
-void time_handler(int ticks) {
+void time_handler(int deltaTicks) {
 	if (game) {
 		for (int i=0; i<asteroidMax; i++) {
 			asteroid_elem* asteroid = &asteroids[i];
 			if (asteroid->asteroidObj->enabled) {
 				if (asteroid->isHit) {
-					int currentExplodeTicks = asteroid->explodeTicksCnt + ticks;
+					int currentExplodeTicks = asteroid->explodeTicksCnt + deltaTicks;
 					int explodeNum = currentExplodeTicks / explodeTicks;
 					asteroid->explodeTicksCnt = currentExplodeTicks % explodeTicks;
 					if (explodeNum) {
@@ -150,7 +187,7 @@ void time_handler(int ticks) {
 					}
 				} else {
 					int rot = get_asteroid_rotation(asteroid);
-					int currentPixelTicks = asteroid->pixelTicksCnt + ticks;
+					int currentPixelTicks = asteroid->pixelTicksCnt + deltaTicks;
 					int pixelNum = currentPixelTicks / asteroidPixelTicks;
 					asteroid->pixelTicksCnt = currentPixelTicks % asteroidPixelTicks;
 					if (pixelNum) {
@@ -188,7 +225,7 @@ void time_handler(int ticks) {
 			laser_elem* laser = &lasers[i];
 			if (laser->laserObj->enabled) {
 				int laserRot = get_rot(laser->laserObj);
-				int currentPixelTicks = laser->pixelTicksCnt + ticks;
+				int currentPixelTicks = laser->pixelTicksCnt + deltaTicks;
 				int pixelNum = currentPixelTicks / laserPixelTicks;
 				laser->pixelTicksCnt = currentPixelTicks % laserPixelTicks;
 				if (pixelNum) {
@@ -202,7 +239,7 @@ void time_handler(int ticks) {
 			}
 		}
 		for (int i=0; i<shipMax; i++) {
-			flicker_player(ticks, &players[i]);
+			flicker_player(deltaTicks, &players[i]);
 		}
 	}
 }
@@ -243,13 +280,13 @@ void joystick_handler(int playerIdx, int rot) {
 	}
 }
 
-void button_fuel_handler(int ticks, int playerIdx) {
+void button_fuel_handler(int deltaTicks, int playerIdx) {
 	if (game) {
 		if (!players[playerIdx].hp) {
 			return;
 		}
 		player_elem* player = &players[playerIdx];
-		int currentPixelTicks = player->pixelTicksCnt + ticks;
+		int currentPixelTicks = player->pixelTicksCnt + deltaTicks;
 		int pixelNum = currentPixelTicks / playerPixelTicks;
 		player->pixelTicksCnt = currentPixelTicks % playerPixelTicks;
 		if (pixelNum) {
@@ -265,8 +302,8 @@ void button_shoot_handler(int playerIdx) {
 		if (!player->hp) {
 			return;
 		}
-		if (player->laserActiveCnt < laserCnt) {
-			for (int i=player->laserIdx; i<player->laserIdx+laserCnt; i++) {
+		if (player->laserActiveCnt < laserPerPlayer) {
+			for (int i=player->laserIdx; i<player->laserIdx+laserPerPlayer; i++) {
 				laser_elem* laser = &lasers[i];
 				if (laser->laserObj->enabled == 0) {
 					player->laserActiveCnt++;
@@ -297,7 +334,7 @@ void button_restart_handler() {
 			player_elem* player = &players[i];
 			player->hp = 3;
 			player->isHit = 0;
-			player->flickerDownCnt = flickerCnt;
+			player->flickerDownCnt = flickerTotal;
 			player->laserActiveCnt = 0;
 			player->pixelTicksCnt = 0;
 			player->flickerTicksCnt = 0;
@@ -315,7 +352,7 @@ void button_restart_handler() {
 			asteroid_elem* asteroid = &asteroids[i];
 			set_asteroid_pos(asteroid);
 			asteroid->isHit = 0;
-			asteroid->playerIdx = i / asteroidCnt;
+			asteroid->playerIdx = i / asteroidPerPlayer;
 			asteroid->pixelTicksCnt = 0;
 			asteroid->explodeTicksCnt = 0;
 			asteroid->asteroidObj->enabled = 1;
@@ -433,9 +470,9 @@ int get_asteroid_rotation(asteroid_elem* asteroid) {
 	return 0;
 }
 
-void flicker_player(int ticks, player_elem* player) {
+void flicker_player(int deltaTicks, player_elem* player) {
 	if (player->isHit) {
-		int currentFlickerTicks = player->flickerTicksCnt + ticks;
+		int currentFlickerTicks = player->flickerTicksCnt + deltaTicks;
 		int flickerNum = currentFlickerTicks / flickerTicks;
 		player->flickerTicksCnt = currentFlickerTicks % flickerTicks;
 		if (flickerNum) {
@@ -447,7 +484,7 @@ void flicker_player(int ticks, player_elem* player) {
 				player->isHit = 0;
 				player->flickerTicksCnt = 0;
 				if (player->hp) {
-					player->flickerDownCnt = flickerCnt;
+					player->flickerDownCnt = flickerTotal;
 					player->shipObj->enabled = 1;
 				}
 				else {
@@ -519,7 +556,6 @@ bool check_game_over() {
 }
 
 void game_over() {
-	roundNo --;
 	game = 0;
 	for (int i=0; i<letterMax; i++) {
 		letter_elem* letter = &letters[i];
