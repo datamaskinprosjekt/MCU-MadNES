@@ -9,12 +9,9 @@
 #include "ebi.h"
 #include "fpga.h"
 #include "interrupt_handlers.h"
-#include "time.h"
+#include "sys_time.h"
 #include "meta_data.h"
 
-
-#define NUM_SPRITES 57
-#define NUM_COLORS 49
 
 #define FPGA_RESET_MASK 0b1 << 7
 #define FPGA_RESET_VALUE 1 << 7

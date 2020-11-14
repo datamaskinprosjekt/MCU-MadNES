@@ -56,6 +56,8 @@ void setup_NVIC()
  */ 
 void blanking_interrupt()
 {
+    if (!objects_initialized) { return; }
+
     Object* dirty_obj;
 
     for (int i = 0; i < MAX_OBJS; i++) {
@@ -67,7 +69,7 @@ void blanking_interrupt()
 
     memset(dirty_objects, 0, sizeof(int) * MAX_OBJS);
 
-    spi_test_sem = true;
+    sem_game = true;
 }
 
 

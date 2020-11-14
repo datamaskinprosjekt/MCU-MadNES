@@ -8,6 +8,7 @@
 #include "ebi.h"
 #include "fpga.h"
 #include "object.h"
+#include "game_logic.h"
 #include "meta_data.h"
 
 

@@ -1,10 +1,11 @@
+#include <stdio.h>
 #include "main.h"
 #include "debug_output.h"
-#include <stdio.h>
+#include "game_logic.h"
 
 
 // Counts 1ms ticks
-volatile uint32_t msTicks;
+volatile uint32_t ticks;
 
 int main()
 {
@@ -31,18 +32,19 @@ int main()
 
     setup_EBI();
 
-    setup_NVIC();
+    objects_initialized = false;
 
     setup_NVIC();
     
     setup_SPI();
 
+    initialize_controllers();
+
+    clear_object_memory();
+
     send_initial_data();
 
-    while(1) {
-        poll_single_controller(0);
-        delay(1000);
-    }
+    main_logic();
 
     /* GAME LOOP */
 

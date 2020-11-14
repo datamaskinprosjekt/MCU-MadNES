@@ -23,6 +23,7 @@ typedef struct Color {
 
 void wait_for_FPGA_ready();
 void reset_FPGA();
+void clear_object_memory();
 
 void write_sprite_sheet(uint16_t* sprite_sheet, int size);
 

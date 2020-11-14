@@ -5,7 +5,7 @@
 #include "em_cmu.h"
 #include "em_gpio.h"
 
-#include "time.h"
+#include "sys_time.h"
 #include "ebi.h"
 #include "fpga.h"
 #include "fpga_test.h"

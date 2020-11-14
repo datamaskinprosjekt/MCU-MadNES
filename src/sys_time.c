@@ -1,11 +1,11 @@
-#include "time.h"
+#include "sys_time.h"
 
 /**************************************************************
  * Interrupt Service Routine for system tick counter
  *************************************************************/
 void SysTick_Handler(void)
 {
-  msTicks++;
+  ticks++;
 }
 
 
@@ -17,7 +17,7 @@ void delay(uint32_t num_ticks)
 {
   uint32_t current_ticks;
   
-  current_ticks = msTicks;
+  current_ticks = ticks;
 
-  while ((msTicks - current_ticks) < num_ticks) ;
+  while ((ticks - current_ticks) < num_ticks) ;
 }

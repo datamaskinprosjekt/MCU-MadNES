@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <stdlib.h>
+#include "controllers.h"
 
 typedef struct {
     int id;
@@ -15,6 +16,7 @@ typedef struct {
     int flickerTicksCnt;
     Object* shipObj;
     Object* statusObj;
+    Controller* controller;
 } player_elem;
 
 typedef struct {
@@ -35,22 +37,8 @@ typedef struct {
     Object* letterObj;
 } letter_elem;
 
-
-// TODO REMOVE AND IMPORT CONTROLLERS.H
-typedef struct {
-    int id;
-    bool enabled;
-    int8_t joyDir;
-    bool joyBtn;
-    bool btn1;
-    bool btn2;
-} Controller;
-Controller* CONTROLLER_INPUTS;
-
-
 bool sem_game;
 bool force_quit;
-uint32_t newTicks;
 uint32_t lastTicks;
 uint32_t deltaTicks;
 

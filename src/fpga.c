@@ -22,10 +22,23 @@ void reset_FPGA()
     GPIO_PinModeSet(gpioPortA, 7, gpioModePushPull, 0);
 
     // "Pulse" a reset signal
-    GPIO_PinOutSet(gpioPortA, 7, 1);
-    GPIO_PinOutSet(gpioPortA, 7, 0);
+    GPIO_PinOutSet(gpioPortA, 7);
+    GPIO_PinOutClear(gpioPortA, 7);
 
     GPIO_PinModeSet(gpioPortA, 7, gpioModeDisabled, 0);
+}
+
+void clear_object_memory()
+{
+    Object* empty_obj;
+
+    empty_obj = malloc(sizeof(Object));
+    memset(empty_obj, 0, sizeof(Object));
+
+    for (int i = 0; i < MAX_OBJS; i++) {
+        empty_obj->id = i;
+        write_object(empty_obj);
+    }
 }
 
 

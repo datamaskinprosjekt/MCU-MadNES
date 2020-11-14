@@ -56,7 +56,9 @@ void setup_SPI()
     GPIO_PinModeSet(gpioPortB, 10, gpioModeInputPull, 1);   //CA_6
     GPIO_PinModeSet(gpioPortB, 9 , gpioModeInputPull, 1);   //CA_7
     GPIO_PinModeSet(gpioPortB, 12, gpioModeInputPull, 1);   //CA_8
-    GPIO_PinModeSet(gpioPortB, 11, gpioModeInputPull, 1);   //CA_9
+
+    // The on-board controller is not connected
+    //GPIO_PinModeSet(gpioPortB, 11, gpioModeInputPull, 1);   //CA_9
 
     /// Set CS pins on port B as output
     GPIO_PinModeSet(gpioPortB, 2, gpioModePushPull, 0);     //CS_1
@@ -69,7 +71,9 @@ void setup_SPI()
     GPIO_PinModeSet(gpioPortA, 11, gpioModePushPull, 0);    //CS_6
     GPIO_PinModeSet(gpioPortA, 10, gpioModePushPull, 0);    //CS_7
     GPIO_PinModeSet(gpioPortA, 9, gpioModePushPull,  0);    //CS_8
-    GPIO_PinModeSet(gpioPortA, 8, gpioModePushPull,  0);    //CS_9
+
+    // The on-board controller is not connected
+    //GPIO_PinModeSet(gpioPortA, 8, gpioModePushPull,  0);    //CS_9
 }
 
 

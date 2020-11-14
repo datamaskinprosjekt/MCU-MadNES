@@ -125,14 +125,15 @@ INCLUDEPATHS += \
 
 C_SRC +=  \
 $(SRC)/main.c \
-$(SRC)/time.c \
+$(SRC)/sys_time.c \
 $(SRC)/debug_output.c \
 $(SRC)/ebi.c \
 $(SRC)/fpga.c \
 $(SRC)/spi.c \
 $(SRC)/interrupt_handlers.c \
 $(SRC)/controllers.c \
-$(SRC)/spi_test.c \
+$(SRC)/object.c \
+$(SRC)/game_logic.c \
 $(SRC)/data.c \
 $(LIB)/EFM32GG/Source/system_efm32gg.c \
 $(LIB)/emlib/src/em_assert.c \

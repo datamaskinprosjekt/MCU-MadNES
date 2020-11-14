@@ -1,5 +1,6 @@
 #include "controllers.h"
 #include <math.h>
+#include "meta_data.h"
 
 #define M_PI 3.14159265358979323846264338327950288
 #define CONTROLLER_DEADZONE 100
@@ -15,24 +16,103 @@ int get_controllers()
     return active_controllers;
 }
 
+Controller* get_next_active_controller()
+{
+    static int i = -1;
+
+    i += 1;
+
+    while(!CONTROLLER_INPUTS[i].enabled && i < NUM_CONTROLLERS)
+    {
+       i++; 
+    }
+
+    if(i >= NUM_CONTROLLERS) return NULL;
+
+    return &CONTROLLER_INPUTS[i];
+}
+
+uint8_t get_num_active_controllers()
+{
+    uint8_t counter = 0;
+
+    for(int i = 0; i < 8; i++ )
+    {
+        RETARGET_WriteChar('\n');
+        RETARGET_WriteChar('W');
+        RETARGET_WriteChar('T');
+        RETARGET_WriteChar('F');
+        RETARGET_WriteChar(':');
+        RETARGET_WriteChar('0' + i);
+        RETARGET_WriteChar(':');
+        RETARGET_WriteChar(CONTROLLER_INPUTS[i].enabled);
+        RETARGET_WriteChar('\n');
+        
+
+        RETARGET_WriteChar('\n');
+
+
+        if(CONTROLLER_INPUTS[i].enabled) {
+            counter++;
+
+            RETARGET_WriteChar('\n');
+            RETARGET_WriteChar('C');
+            RETARGET_WriteChar(i + '0');
+            RETARGET_WriteChar('\n');
+        }
+
+    }
+
+    return counter;
+}
+
 
 void initialize_controllers()
 {
     // Allocate memory for Controller structs and zero the memory region
-    CONTROLLER_INPUTS = (Controller*) malloc(sizeof(Controller*) * 8);
+    CONTROLLER_INPUTS = (Controller*) malloc(sizeof(Controller) * 8);
     memset(CONTROLLER_INPUTS, 0, sizeof(Controller) * 8);
 
-    //int enabled_controllers = get_controllers();
+    bool is_avail;
 
-    CONTROLLER_INPUTS[0] = (Controller) {
+    /*CONTROLLER_INPUTS[0] = (Controller) {
         .id = 0,
         .enabled = true,
-        .joyDir = 0,
+        .joyDir = -1,
+        .prevJoyDir = -1,
         .joyBtn = false,
         .btn1 = false,
         .btn2 = false   
-    };
+    };*/
 
+    for(int i = 0; i < 8; i++)
+    {
+        is_avail = check_controller_connection(i);
+
+        if(is_avail) {
+            RETARGET_WriteChar('\n');
+            RETARGET_WriteChar('A');
+            RETARGET_WriteChar('C');
+            RETARGET_WriteChar('T');
+            RETARGET_WriteChar('I');
+            RETARGET_WriteChar('V');
+            RETARGET_WriteChar('E');
+            RETARGET_WriteChar(':');
+            RETARGET_WriteChar(' ');
+            RETARGET_WriteChar(i + '0');
+
+            RETARGET_WriteChar('\n');
+            CONTROLLER_INPUTS[i] = (Controller) {
+                .id = i,
+                .enabled = true,
+                .joyDir = -1,
+                .prevJoyDir = -1,
+                .joyBtn = false,
+                .btn1 = false,
+                .btn2 = false   
+            };
+        }         
+    }    
 }
 
 
@@ -76,13 +156,39 @@ void poll_controllers()
 
 bool check_controller_connection(int id)
 {
-    if(id == 0) {
-        bool truthVal = GPIO_PinInGet(gpioPortE, 4) == 0;
 
-        return truthVal;
+    bool retVal = false;
+    
+    switch(id) {
+        case 0:
+            retVal = GPIO_PinInGet(gpioPortE, 4) == 0;
+            break;
+        case 1:
+            retVal = GPIO_PinInGet(gpioPortE, 3) == 0;
+            break;
+        case 2:
+            retVal = GPIO_PinInGet(gpioPortE, 2) == 0;
+            break;
+        case 3:
+            retVal = GPIO_PinInGet(gpioPortE, 1) == 0;
+            break;
+        case 4:
+            retVal = GPIO_PinInGet(gpioPortE, 0) == 0;
+            break;
+        case 5:
+            retVal = GPIO_PinInGet(gpioPortB, 10) == 0;
+            break;
+        case 6:
+            retVal = GPIO_PinInGet(gpioPortB, 9) == 0;
+            break;
+        case 7:
+            retVal = GPIO_PinInGet(gpioPortB, 12) == 0;
+            break;
     }
 
-    return false;
+    RETARGET_WriteChar(retVal ? '1' : '0');
+
+    return retVal;
 }
 
 

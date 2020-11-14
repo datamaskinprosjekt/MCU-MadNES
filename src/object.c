@@ -59,6 +59,9 @@ void init_objects(int playerNum, int asteroidPerPlayer, int laserPerPlayer)
     objects = (Object *) malloc(sizeof(Object) * num_objects_to_initialize);
     dirty_objects = (int *) malloc(sizeof(int) * num_objects_to_initialize);
 
+
+
+
     for (int i=0; i<shipMax; i++) {
         objects[objMax] = (Object) {objMax, shipTypes[i % 9], 0, 150 + 50*i, 400, 0, 0, 1, 1};
         add_dirty_object(&objects[objMax]);
@@ -118,6 +121,10 @@ void init_objects(int playerNum, int asteroidPerPlayer, int laserPerPlayer)
         add_dirty_object(&objects[objMax]);
         objMax++;
     }
+
+
+    // "Notify" that the objects are initialized
+    objects_initialized = true;
 }
 
 void add_dirty_object(Object* obj) {

@@ -27,7 +27,12 @@ typedef struct  {
 
 Controller* CONTROLLER_INPUTS;
 
-Controller* CONTROLLER_INPUTS;
+/**
+ * Gets the number of enabled controllers
+ */
+uint8_t get_num_active_controllers();
+
+bool check_controller_connection(int id);
 
 
 /**************************************************************
