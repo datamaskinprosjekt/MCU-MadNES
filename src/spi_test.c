@@ -91,12 +91,15 @@ void spi_test()
 
         //joystick_handler(rot, &obj1);
 
-        if(CONTROLLER_INPUTS[0].joyDir == 0) {
+        if(CONTROLLER_INPUTS[0].joyDir == 2) {
             objects[1].xPos = (objects[1].xPos + 1) % 640;
+            objects[1].yPos = (objects[1].yPos + 1) % 480;
 
             //write_object(&objects[1]);
             dirty_objects[1] = 1;
         }
+
+
 
         
     }

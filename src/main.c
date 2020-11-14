@@ -6,7 +6,7 @@
 // Counts 1ms ticks
 volatile uint32_t msTicks;
 
-int main_alt()
+int main()
 {
     // Object dirty_objects
 
@@ -29,20 +29,19 @@ int main_alt()
         while (1);
     }
 
-    //setup_EBI();
+    setup_EBI();
 
-    //setup_NVIC();
+    setup_NVIC();
 
     setup_SPI();
 
-    //send_initial_data();
+    send_initial_data();
 
     while(1) {
         poll_single_controller(0);
         delay(1000);
     }
 
-    //fpga_test();
     /* GAME LOOP */
 
     /* END GAME */
@@ -52,9 +51,11 @@ int main_alt()
     return 0;
 }
 
-int main()
+int main_alt()
 {
-    spi_test();
+    // ebi_test();
+    // fpga_test();
+    // spi_test();
 
     return 0;
 }
