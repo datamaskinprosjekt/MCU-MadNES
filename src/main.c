@@ -26,39 +26,24 @@ int main()
         while (1);
     }
 
-    //setup_EBI();
+    setup_EBI();
 
-    //setup_NVIC();
-
-    //GPIO_PinModeSet(gpioPortD, 1, gpioModeInput, 0);
-    //while(GPIO_PinInGet(gpioPortD, 1) == 0);
-
-    //delay(1000);
-
+    setup_NVIC();
+    
     setup_SPI();
 
-    uint8_t outBuf = 0b01010101;
-    uint8_t inBuf = 0;
-    while(1) {
-        select_controller(8);
+    // wait_for_fpga_ready();
 
-        outBuf = 0b01010111;
-        inBuf = 0;
 
-        //send_to_controller(8);
-        inBuf = USART_SpiTransfer(USART0, outBuf);
-        select_controller(-1);
-        delay(16.7);
-    }
+    send_initial_data();
 
-    //send_initial_data();
 
-    //fpga_test();
     /* GAME LOOP */
 
     /* END GAME */
 
     /* RESET */
+    // reset_FPGA();
 
     return 0;
 }

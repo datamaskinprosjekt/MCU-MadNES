@@ -1,6 +1,34 @@
 #include "fpga.h"
 #include "data.h"
 
+
+/**************************************************************
+ * Waits for the FPGA to be ready.
+ *************************************************************/
+void wait_for_FPGA_ready()
+{
+    GPIO_PinModeSet(gpioPortD, 1, gpioModeInput, 0);
+
+    while(GPIO_PinInGet(gpioPortD, 1) == 0);
+
+    GPIO_PinModeSet(gpioPortD, 1, gpioModeDisabled, 0);
+}
+
+/**************************************************************
+ * Resets the FPGA.
+ *************************************************************/
+void reset_FPGA()
+{
+    GPIO_PinModeSet(gpioPortA, 7, gpioModePushPull, 0);
+
+    // "Pulse" a reset signal
+    GPIO_PinOutSet(gpioPortA, 7, 1);
+    GPIO_PinOutSet(gpioPortA, 7, 0);
+
+    GPIO_PinModeSet(gpioPortA, 7, gpioModeDisabled, 0);
+}
+
+
 /**************************************************************
  * Writes a sprite sheet to the SPRITE Memory Bank on the FPGA.
  * @param sprite_sheet A pointer to the first element of the sprite sheet to be written
@@ -14,13 +42,6 @@ void write_sprite_sheet(uint16_t* sprite_sheet, int size)
         *(FPGA_ADDR + i) = *(sprite_sheet + i);
         clear_bank();
     }
-}
-
-
-void wait_for_fpga_ready()
-{
-    GPIO_PinModeSet(gpioPortD, 1, gpioModeInput, 0);
-    while(GPIO_PinInGet(gpioPortD, 1) == 0);
 }
 
 
@@ -38,6 +59,7 @@ void write_tile_sheet(uint16_t* tile_sheet, int size)
         clear_bank();
     }
 }
+
 
 /*************************************************************
  * Writes a color palette to the FPGA.
