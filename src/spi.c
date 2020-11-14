@@ -31,7 +31,7 @@ void setup_SPI()
     spi.msbf = true;
     spi.master = true;
     spi.autoCsEnable = false;
-    spi.baudrate = 9600;
+    spi.baudrate = 50000;
     
     USART_InitSync(USART0, &spi);
 

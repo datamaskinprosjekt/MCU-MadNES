@@ -4,7 +4,7 @@
 #include <stdint.h>
 
 
-volatile uint32_t ticks;
+volatile uint32_t msTicks;
 
 void tick(void);
 void delay(uint32_t num_ticks);

@@ -2,7 +2,7 @@
 
 
 // Counts 1ms ticks
-volatile uint32_t ticks;
+volatile uint32_t msTicks;
 
 int main()
 {

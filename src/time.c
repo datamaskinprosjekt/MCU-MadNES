@@ -5,7 +5,7 @@
  *************************************************************/
 void SysTick_Handler(void)
 {
-  ticks++;
+  msTicks++;
 }
 
 
@@ -17,7 +17,7 @@ void delay(uint32_t num_ticks)
 {
   uint32_t current_ticks;
   
-  current_ticks = ticks;
+  current_ticks = msTicks;
 
-  while ((ticks - current_ticks) < num_ticks) ;
+  while ((msTicks - current_ticks) < num_ticks) ;
 }
