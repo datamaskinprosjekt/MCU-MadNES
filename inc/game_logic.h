@@ -35,17 +35,34 @@ typedef struct {
     Object* letterObj;
 } letter_elem;
 
-//remove rounNo, it's for testing
-int roundNo;
+
+// TODO REMOVE AND IMPORT CONTROLLERS.H
+typedef struct {
+    int id;
+    bool enabled;
+    int8_t joyDir;
+    bool joyBtn;
+    bool btn1;
+    bool btn2;
+} Controller;
+Controller* CONTROLLER_INPUTS;
+
+
+bool sem_game;
+bool force_quit;
+uint32_t newTicks;
+uint32_t lastTicks;
+uint32_t deltaTicks;
+
 bool game;
 int playerPixelTicks;
 int asteroidPixelTicks;
 int laserPixelTicks;
 int flickerTicks;
 int explodeTicks;
-int asteroidCnt;
-int flickerCnt;
-int laserCnt;
+int asteroidPerPlayer;
+int laserPerPlayer;
+int flickerTotal;
 
 player_elem* players;
 asteroid_elem* asteroids;
@@ -54,6 +71,8 @@ letter_elem* letters;
 
 void main_logic();
 void run_logic();
+void simulate_semaphore();
+void test_main();
 
 void init_game();
 void time_handler(int ticks);

@@ -70,10 +70,9 @@ int letterMax;
 int starMax;
 
 Object* objects;
-//int* dirty_objects;
 int* dirty_objects;
 
-void init_objects();
+void init_objects(int playerNum, int asteroidPerPlayer, int laserPerPlayer);
 void add_dirty_object(Object* obj);
 int move_object(Object* obj, int rot, int speed);
 int get_rot(Object* obj);
