@@ -116,11 +116,6 @@ INCLUDEPATHS += \
 -I$(LIB)/CMSIS/Include \
 -I$(LIB)/EFM32GG/Include \
 -I$(LIB)/emlib/inc \
--I$(LIB)/emdrv/spidrv/inc \
--I$(LIB)/emdrv/spidrv/config \
--I$(LIB)/emdrv/dmadrv/inc \
--I$(LIB)/emdrv/dmadrv/config \
--I$(LIB)/emdrv/common/inc \
 -I$(INC)\
 
 
@@ -146,8 +141,6 @@ $(LIB)/emlib/src/em_emu.c \
 $(LIB)/emlib/src/em_gpio.c \
 $(LIB)/emlib/src/em_system.c \
 $(LIB)/emlib/src/em_usart.c \
-$(LIB)/emlib/src/em_dma.c \
-$(LIB)/emlib/src/em_rtc.c \
 
 s_SRC +=
 

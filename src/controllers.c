@@ -55,29 +55,6 @@ void select_controller(int id)
 }
 
 
-Controller decode_controller_frame(uint8_t frame)
-{
-    Controller inputs;
-
-    // Frame format:
-    // Bits 6-3: Potentiometer 
-    // Bit  2: Joy Btn
-    // Bit  1: Btn 1
-    // Bit  0: Btn 2
-
-    inputs.joyDir = (frame & 0b01111000);
-    inputs.joyBtn = (frame & 0b00000100) > 0;
-    inputs.btn1   = (frame & 0b00000010) > 0;
-    inputs.btn2   = (frame & 0b00000001) > 0;
-
-    if(frame & 0b10000000 > 0) {
-        inputs.joyDir = -1;
-    }
-
-    return inputs;
-}
-
-
 void send_to_controller(int id, uint8_t data)
 {
     // Set Chip Select
@@ -101,25 +78,38 @@ void poll_controllers()
 }
 
 
+/*************************************************************
+ * Uses the SPI bus to poll a single controller for its inputs
+ * and decodes the rotation value for the joystick
+ *
+ * Button Bitmask:
+ * 00000001: A
+ * 00000010: B
+ * 00000100: Joystick Button 
+ *************************************************************/
 void poll_single_controller(int id)
 {
     Controller* ctrl = &CONTROLLER_INPUTS[id];
 
-    // Set Chip Select
-    select_controller(id);
-
     // Recieve data
-    uint8_t buffer = 0;
-    receive_ctrl_SPI(&buffer);
+    uint8_t buttons;
+    int8_t joystick_x;
+    int8_t joystick_y;
 
-    // Clear Chip Select
-    select_controller(-1);
+    receive_ctrl_SPI(id, &buttons, &joystick_x, &joystick_y);
 
     // Decode data
-    Controller decoded_inputs = decode_controller_frame(buffer);
+    ctrl->btn1 = buttons & 1;
+    ctrl->btn2 = buttons & 2;
+    ctrl->joyBtn = buttons & 4;
 
-    decoded_inputs.id = id;
-    decoded_inputs.enabled = true;
+    uint8_t rot = 0;
 
-    *ctrl = decoded_inputs;
+    // Get rotation value based on joystick-x, joystick-y
+    if      (joystick_x >= 0 && joystick_y >= 0) { rot =  joystick_x;      }
+    else if (joystick_x >= 0 && joystick_y  < 0) { rot = -joystick_y + 4;  }
+    else if (joystick_x <  0 && joystick_y  < 0) { rot = -joystick_x + 8;  }
+    else if (joystick_x <  0 && joystick_y >= 0) { rot =  joystick_y + 12; }
+
+    ctrl->joyDir = rot;
 }

@@ -76,17 +76,6 @@ void initialize_controllers();
 
 
 /*************************************************************
- * Decodes the 8 bit data frame received by a controller
- * to get information on potentiometer, joystick and the two
- * buttons.
- * 
- * @param frame The 8 bit frame to decode.
- * @returns A Controller struct.
- *************************************************************/
-Controller decode_controller_frame(uint8_t frame);
-
-
-/*************************************************************
  * For testing purposes.
  * Transmits data to a single controller connected.
  * 
