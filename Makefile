@@ -29,7 +29,7 @@ DIR = .
 # Change path to the tools according to your system configuration
 # DO NOT add trailing whitespace chars, they do matter !
 # WINDOWSCS  ?= GNU Tools ARM Embedded\4.8 2013q4
-LINUXCS    ?= /usr/local/Cellar/gcc-arm-none-eabi-49/20150925
+LINUXCS    ?= /gcc-arm-none-eabi-9-2020-q2-update
 
 RMDIRS	   := rm -rf
 RMFILES	   := rm -rf
