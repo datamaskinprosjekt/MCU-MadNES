@@ -1,30 +1,25 @@
-####################################################################
-# Makefile                                                         #
-####################################################################
+EXEC = asteroid
 
-.SUFFIXES: # ignore builtin rules
-.PHONY: all debug release clean
+BINDIR = exe
+INCDIR = inc
+SRCDIR = src
+OBJDIR = obj
 
-####################################################################
-# Definitions                                                      #
-####################################################################
+CC = gcc
+INCL = -I$(INCDIR)
+CFLAGS = -g -O3 -Wall
 
-DEVICE = EFM32GG980F1024
-PROJECTNAME = astroids
+SRCFILES = $(SRCDIR)/game_logic.c $(SRCDIR)/object.c
+OBJFILES = $(patsubst $(SRCDIR)/%.c,$(OBJDIR)/%.o,$(SRCFILES))
 
-OBJ_DIR = build
-EXE_DIR = exe
-LST_DIR = lst
+$(BINDIR)/$(EXEC): $(OBJFILES)
+	$(CC) $(CFLAGS) $^ -o $@ -lm
 
-LIB = lib
-SRC = src
-INC = inc
-DIR = .
+$(OBJDIR)/%.o: $(SRCDIR)/%.c
+	$(CC) $(CFLAGS) $(INCL) -c $< -o $@
 
-####################################################################
-# Definitions of toolchain                                         #
-# You might need to do changes to match your system setup          #
-####################################################################
+run:
+	./$(BINDIR)/$(EXEC)
 
 # Change path to the tools according to your system configuration
 # DO NOT add trailing whitespace chars, they do matter !
@@ -211,11 +206,4 @@ $(EXE_DIR)/$(PROJECTNAME).bin: $(EXE_DIR)/$(PROJECTNAME).out
 
 .PHONY : clean
 clean:
-ifeq ($(filter $(MAKECMDGOALS),all debug release),)
-	$(RMDIRS) $(OBJ_DIR) $(LST_DIR) $(EXE_DIR)
-endif
-
-# include auto-generated dependency files (explicit rules)
-ifneq (clean,$(findstring clean, $(MAKECMDGOALS)))
--include $(C_DEPS)
-endif
+	rm -f $(OBJDIR)/*.o $(BINDIR)/*$(EXEC)  core *~
