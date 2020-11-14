@@ -15,14 +15,18 @@
 #define CTRL_PORT_E_MASK 0b0000000011111
 
 
-typedef struct {
+typedef struct  {
     int id;
     bool enabled;
     int8_t joyDir;
+    int8_t prevJoyDir;
     bool joyBtn;
     bool btn1;
     bool btn2;
 } Controller;
+
+
+Controller* CONTROLLER_INPUTS;
 
 
 /**************************************************************

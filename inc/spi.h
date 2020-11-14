@@ -23,7 +23,7 @@ void usart_receive_single_spi(uint8_t* inBuf);
  * 
  * @param buffer Pointer to data storage.
  *************************************************************/
-void receive_ctrl_SPI(int id, uint8_t* buffer_buttons, int8_t* buffer_joystick_x, int8_t* buffer_joystick_y);
+void receive_ctrl_SPI(int id, uint8_t* buttons, uint8_t* joystick_x, uint8_t* joystick_y);
 void send_ctrl_SPI(uint8_t* buffer);
 
 #endif // _SPI_H_

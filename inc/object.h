@@ -61,7 +61,6 @@ int letterMax;
 int starMax;
 
 Object objects[MAX_OBJS];
-//int* dirty_objects;
 int dirty_objects[MAX_OBJS];
 
 void init_objects();

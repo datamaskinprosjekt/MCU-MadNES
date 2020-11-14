@@ -6,7 +6,7 @@
 // Counts 1ms ticks
 volatile uint32_t msTicks;
 
-int main()
+int main_alt()
 {
     // Object dirty_objects
 
@@ -24,8 +24,8 @@ int main()
     CMU_ClockSelectSet(cmuClock_HF, cmuSelect_HFXO);
     CMU_ClockDivSet(cmuClock_HF, cmuClkDiv_4);
 
-    // Setup SysTick Timer for 1 msec interrupts
-    if (SysTick_Config(CMU_ClockFreqGet(cmuClock_CORE) / 1000)) {
+    // Setup SysTick Timer for 0.1 msec interrupts
+    if (SysTick_Config(CMU_ClockFreqGet(cmuClock_CORE) / 10000)) {
         while (1);
     }
 
@@ -33,18 +33,14 @@ int main()
 
     //setup_NVIC();
 
-    //GPIO_PinModeSet(gpioPortD, 1, gpioModeInput, 0);
-    //while(GPIO_PinInGet(gpioPortD, 1) == 0);
-
-    //delay(1000);
-
     setup_SPI();
 
-    while(1) {
-        poll_controllers(8);                
-    }
-
     //send_initial_data();
+
+    while(1) {
+        poll_single_controller(0);
+        delay(1000);
+    }
 
     //fpga_test();
     /* GAME LOOP */
@@ -56,9 +52,9 @@ int main()
     return 0;
 }
 
-int main_alt()
+int main()
 {
-    fpga_test();
-    //while(1);
+    spi_test();
+
     return 0;
 }

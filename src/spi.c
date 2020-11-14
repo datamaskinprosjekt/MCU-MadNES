@@ -1,6 +1,10 @@
 #include "spi.h"
 #include <stdint.h>
 
+#define INCLUDE_SWO_OUTPUT 1
+
+// Insert newlines after each SWO output
+//#define RETARGETTEXTDISPLAY_LINE_FEED_MODE
 
 /**************************************************************
  * Main file for SPI Functionality
@@ -42,17 +46,17 @@ void setup_SPI()
     GPIO_PinModeSet(gpioPortE, 5, gpioModePushPull, 0);     // Clock
 
     /// Set CA pins on port E as input
-    GPIO_PinModeSet(gpioPortE, 4, gpioModeInput, 1);        //CA_1
-    GPIO_PinModeSet(gpioPortE, 3, gpioModeInput, 1);        //CA_2
-    GPIO_PinModeSet(gpioPortE, 2, gpioModeInput, 1);        //CA_3
-    GPIO_PinModeSet(gpioPortE, 1, gpioModeInput, 1);        //CA_4
-    GPIO_PinModeSet(gpioPortE, 0, gpioModeInput, 1);        //CA_5
+    GPIO_PinModeSet(gpioPortE, 4, gpioModeInputPull, 1);    //CA_1
+    GPIO_PinModeSet(gpioPortE, 3, gpioModeInputPull, 1);    //CA_2
+    GPIO_PinModeSet(gpioPortE, 2, gpioModeInputPull, 1);    //CA_3
+    GPIO_PinModeSet(gpioPortE, 1, gpioModeInputPull, 1);    //CA_4
+    GPIO_PinModeSet(gpioPortE, 0, gpioModeInputPull, 1);    //CA_5
 
     /// Set CA pins on port B as input
-    GPIO_PinModeSet(gpioPortB, 10, gpioModeInput, 1);       //CA_6
-    GPIO_PinModeSet(gpioPortB, 9 , gpioModeInput, 1);       //CA_7
-    GPIO_PinModeSet(gpioPortB, 12, gpioModeInput, 1);       //CA_8
-    GPIO_PinModeSet(gpioPortB, 11, gpioModeInput, 1);       //CA_9
+    GPIO_PinModeSet(gpioPortB, 10, gpioModeInputPull, 1);   //CA_6
+    GPIO_PinModeSet(gpioPortB, 9 , gpioModeInputPull, 1);   //CA_7
+    GPIO_PinModeSet(gpioPortB, 12, gpioModeInputPull, 1);   //CA_8
+    GPIO_PinModeSet(gpioPortB, 11, gpioModeInputPull, 1);   //CA_9
 
     /// Set CS pins on port B as output
     GPIO_PinModeSet(gpioPortB, 2, gpioModePushPull, 0);     //CS_1
@@ -83,7 +87,7 @@ void teardown_SPI()
  * @brief Helper function to receive controller input
  * @returns void
  ***********************************************************/
-void receive_ctrl_SPI(int id, uint8_t* buffer_buttons, int8_t* buffer_joystick_x, int8_t* buffer_joystick_y)
+void receive_ctrl_SPI(int id, uint8_t* buttons, uint8_t* joystick_x, uint8_t* joystick_y)
 {
 
     // SPI commands for different data, they are delayed by one command
@@ -98,18 +102,23 @@ void receive_ctrl_SPI(int id, uint8_t* buffer_buttons, int8_t* buffer_joystick_x
     select_controller(-1);
 
     select_controller(id);
-    *buffer_buttons = USART_SpiTransfer(USART0, 1);
-    //RETARGET_WriteChar(buttons);
+    *buttons = USART_SpiTransfer(USART0, 1);
+
+
     select_controller(-1);
 
     select_controller(id);
-    *buffer_joystick_x = USART_SpiTransfer(USART0, 2);
-    //RETARGET_WriteChar(joystick_x);
+    *joystick_x = USART_SpiTransfer(USART0, 2);
+
     select_controller(-1);
 
+
+    // Idle: (131, 126)
+    // Axis: 0-255
+
     select_controller(id);
-    *buffer_joystick_y = USART_SpiTransfer(USART0, 0);
-    //RETARGET_WriteChar(joystick_y);
+    *joystick_y = USART_SpiTransfer(USART0, 0);
+
     select_controller(-1);
 }
 
