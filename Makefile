@@ -116,11 +116,6 @@ INCLUDEPATHS += \
 -I$(LIB)/CMSIS/Include \
 -I$(LIB)/EFM32GG/Include \
 -I$(LIB)/emlib/inc \
--I$(LIB)/emdrv/spidrv/inc \
--I$(LIB)/emdrv/spidrv/config \
--I$(LIB)/emdrv/dmadrv/inc \
--I$(LIB)/emdrv/dmadrv/config \
--I$(LIB)/emdrv/common/inc \
 -I$(INC)\
 
 
@@ -131,11 +126,14 @@ INCLUDEPATHS += \
 C_SRC +=  \
 $(SRC)/main.c \
 $(SRC)/time.c \
+$(SRC)/debug_output.c \
 $(SRC)/ebi.c \
 $(SRC)/fpga.c \
 $(SRC)/spi.c \
 $(SRC)/interrupt_handlers.c \
 $(SRC)/controllers.c \
+$(SRC)/spi_test.c \
+$(SRC)/data.c \
 $(LIB)/EFM32GG/Source/system_efm32gg.c \
 $(LIB)/emlib/src/em_assert.c \
 $(LIB)/emlib/src/em_cmu.c \
@@ -145,8 +143,6 @@ $(LIB)/emlib/src/em_emu.c \
 $(LIB)/emlib/src/em_gpio.c \
 $(LIB)/emlib/src/em_system.c \
 $(LIB)/emlib/src/em_usart.c \
-$(LIB)/emlib/src/em_dma.c \
-$(LIB)/emlib/src/em_rtc.c \
 
 s_SRC +=
 

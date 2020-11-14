@@ -69,8 +69,8 @@ int laserMax;
 int letterMax;
 int starMax;
 
-Object* objects;
-int* dirty_objects;
+Object objects[MAX_OBJS];
+int dirty_objects[MAX_OBJS];
 
 void init_objects(int playerNum, int asteroidPerPlayer, int laserPerPlayer);
 void add_dirty_object(Object* obj);

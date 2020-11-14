@@ -1,4 +1,5 @@
 #include "interrupt_handlers.h"
+#include "spi_test.h"
 
 /**
  * setupNVIC()
@@ -65,6 +66,8 @@ void blanking_interrupt()
     }
 
     memset(dirty_objects, 0, sizeof(int) * MAX_OBJS);
+
+    spi_test_sem = true;
 }
 
 
@@ -89,4 +92,6 @@ void __attribute__ ((interrupt)) GPIO_ODD_IRQHandler()
     blanking_interrupt();
 
     GPIO_IntClear(pending_interrupts);
+
+    spi_test_sem = true;
 }

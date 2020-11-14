@@ -15,16 +15,20 @@
 #define CTRL_PORT_E_MASK 0b0000000011111
 
 
-typedef struct {
+typedef struct  {
     int id;
     bool enabled;
     int8_t joyDir;
+    int8_t prevJoyDir;
     bool joyBtn;
     bool btn1;
     bool btn2;
 } Controller;
 
 Controller* CONTROLLER_INPUTS;
+
+Controller* CONTROLLER_INPUTS;
+
 
 /**************************************************************
  * Chip Active Pins
@@ -74,17 +78,6 @@ void select_controller(int id);
  * Initializes Controller structs for all active controllers.
  *************************************************************/
 void initialize_controllers();
-
-
-/*************************************************************
- * Decodes the 8 bit data frame received by a controller
- * to get information on potentiometer, joystick and the two
- * buttons.
- * 
- * @param frame The 8 bit frame to decode.
- * @returns A Controller struct.
- *************************************************************/
-Controller decode_controller_frame(uint8_t frame);
 
 
 /*************************************************************

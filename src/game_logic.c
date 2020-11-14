@@ -8,6 +8,7 @@
 // #include "controllers.h"
 #include "game_logic.h"
 
+<<<<<<< HEAD
 int main(void) {
 	// test_main();
 	main_logic();
@@ -17,6 +18,9 @@ int main(void) {
 
 void main_logic() {
 	// TODO seed with actual time
+=======
+/*int main(void) {
+>>>>>>> feature/spi_and_swo_output
 	srand(time(NULL));
 
 	// "Semaphore", when true: proceed, when false: wait
@@ -296,6 +300,7 @@ void button_fuel_handler(int deltaTicks, int playerIdx) {
 	}
 }
 
+<<<<<<< HEAD
 void button_shoot_handler(int playerIdx) {
 	if (game) {
 		player_elem* player = &players[playerIdx];
@@ -317,6 +322,28 @@ void button_shoot_handler(int playerIdx) {
 					add_dirty_object(laser->laserObj);
 					break;
 				}
+=======
+void button_shoot_handler() {
+	// Check whether the game is active and that there are laser objects
+	// that can be enabled
+	if (game && (laserCnt < laserMax)) {
+
+		// Find the first laser object that is available (disabled state), position it and enable it
+		for (int i=0; i<laserMax; i++) {
+			laser_elem* laser = &lasers[i];
+			if (laser->laserObj->enabled == 0) {
+				laserCnt++;
+				laser->laserObj->enabled = 1;
+				
+				// ? Same local sprite index to signify same rotation?
+				laser->laserObj->localSpriteIdx = players[0].shipObj->localSpriteIdx;
+				laser->laserObj->xPos = players[0].shipObj->xPos;
+				laser->laserObj->yPos = players[0].shipObj->yPos;
+				laser->laserObj->xFlip = players[0].shipObj->xFlip;
+				laser->laserObj->yFlip = players[0].shipObj->yFlip;
+				add_dirty_object(laser->laserObj);
+				break;
+>>>>>>> feature/spi_and_swo_output
 			}
 		}
 	}
@@ -501,24 +528,43 @@ void flicker_player(int deltaTicks, player_elem* player) {
 	}
 }
 
+/**
+ * Checks whether the bounding boxes of a player and an asteroid object overlap 
+ * 
+ * @param player The player element to check
+ * @param asteroid The asteroid element to check
+ **/
 bool check_collision_player(player_elem* player, asteroid_elem* asteroid) {
+<<<<<<< HEAD
 	if (!player->hp || player->isHit) {
 		return 0;
 	}
+=======
+
+	// Calculate bounding box coordinates for player
+>>>>>>> feature/spi_and_swo_output
 	int playerLeft = player->shipObj->xPos;
 	int playerRight = playerLeft + 15;
 	int playerUp = player->shipObj->yPos;
 	int playerDown = playerUp + 15;
 
+	// Calculate bounding box coordinates for asteroid
 	int asteroidLeft = asteroid->asteroidObj->xPos;
 	int asteroidRight = asteroidLeft + 15;
 	int asteroidUp = asteroid->asteroidObj->yPos;
 	int asteroidDown = asteroidUp + 15;
 
+	// Return overlap status
 	return playerLeft <= asteroidRight && playerRight >= asteroidLeft
 			 && playerUp <= asteroidDown && playerDown >= asteroidUp;
 }
 
+/**
+ * Checks whether the bounding boxes of a laser and an asteroid overlap 
+ * 
+ * @param laser The laser to check
+ * @param asteroid The asteroid element to check
+ */
 bool check_collision_laser(laser_elem* laser, asteroid_elem* asteroid) {
 	int laserLeft = laser->laserObj->xPos + 7;
 	int laserRight = laserLeft + 1;
