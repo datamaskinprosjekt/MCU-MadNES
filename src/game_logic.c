@@ -145,7 +145,9 @@ void init_game()
 	players = (PlayerElem *) malloc(sizeof(PlayerElem) * playerNum);
 	asteroids = (AsteroidElem *) malloc(sizeof(AsteroidElem) * asteroidNum);
 	lasers = (LaserElem *) malloc(sizeof(LaserElem) * laserNum);
-	letters = (LetterElem *) malloc(sizeof(LetterElem) * num_letters_game_over);
+	letterGameOver = (LetterGameOverElem *) malloc(sizeof(LetterGameOverElem) * num_letters_game_over);
+	letterLogo = (LetterLogoElem *) malloc(sizeof(LetterLogoElem) * num_letters_logo);
+	letterPushToStart = (LetterPushToStartElem *) malloc(sizeof(LetterPushToStartElem) * num_letters_push_to_start);
 
 	int objIdx = starNum;
 	for (int i=0; i<laserNum; i++) {
@@ -162,7 +164,7 @@ void init_game()
 	}
 	objIdx += playerNum;
 	for (int i=0; i<num_letters_game_over; i++) {
-		letters[i] = (LetterElem) {&objects[objIdx]};
+		letterGameOver[i] = (LetterGameOverElem) {&objects[objIdx]};
 		objIdx++;
 	}
 	for (int i=0; i<num_letters_logo; i++) {
@@ -362,10 +364,20 @@ void button_start_handler()
 	if (game_state != GAME_RUN) {
 		game_state = GAME_RUN;
 		// Disable all letters
-		for (int i=0; i<num_letters_game_over + num_letters_game_over + num_letters_logo; i++) {
-			LetterElem* letter = &letters[i];
-			letter->letterObj->enabled = 0;
-			add_dirty_object(letter->letterObj);
+		for (int i=0; i<num_letters_game_over; i++) {
+			LetterGameOverElem* letterGameOver = &letterGameOver[i];
+			letterGameOver->letterGameOverObj->enabled = 0;
+			add_dirty_object(letterGameOver->letterGameOverObj);
+		}
+		for (int i=0; i<num_letters_logo; i++) {
+			LetterLogoElem* letterLogo = &letterLogo[i];
+			letterLogo->letterLogoObj->enabled = 0;
+			add_dirty_object(letterLogo->letterLogoObj);
+		}
+		for (int i=0; i<num_letters_push_to_start; i++) {
+			LetterPushToStartElem* letterPushToStart = &letterPushToStart[i];
+			letterPushToStart->letterPushToStartObj->enabled = 0;
+			add_dirty_object(letterPushToStart->letterPushToStartObj);
 		}
 
 		for (int i=0; i<shipNum; i++) {
@@ -626,9 +638,9 @@ void game_over()
 	game_state = GAME_OVER;
 	gameOverCounter = 0;
 	for (int i=0; i<num_letters_game_over; i++) {
-		LetterElem* letter = &letters[i];
-		letter->letterObj->enabled = 1;
-		add_dirty_object(letter->letterObj);
+		LetterGameOverElem* letterGameOver = &letterGameOver[i];
+		letterGameOver->letterGameOverObj->enabled = 1;
+		add_dirty_object(letterGameOver->letterGameOverObj);
 	}
 }
 
@@ -636,15 +648,15 @@ void start_screen()
 {
 	game_state = GAME_START_SCREEN;
 	for(int i = 0; i < num_letters_logo; i++) {
-		LetterElem* letter = &letters[i + num_letters_game_over];
-		letter->letterObj->enabled = true;
-		add_dirty_object(letter->letterObj);
+		LetterLogoElem* letterLogo = &letterLogo[i];
+		letterLogo->letterLogoObj->enabled = true;
+		add_dirty_object(letterLogo->letterLogoObj);
 	}
 
 	for(int i = 0; i < num_letters_push_to_start; i++) {
-		LetterElem* letter = &letters[i + num_letters_game_over + num_letters_logo];
-		letter->letterObj->enabled = true;
-		add_dirty_object(letter->letterObj);
+		LetterPushToStartElem* letterPushToStart = &letterPushToStart[i];
+		letterPushToStart->letterPushToStartObj->enabled = true;
+		add_dirty_object(letterPushToStart->letterPushToStartObj);
 	}
 }
 
@@ -654,7 +666,9 @@ void clear_all()
 	free(players);
 	free(asteroids);
 	free(lasers);
-	free(letters);
+	free(letterGameOver);
+	free(letterLogo);
+	free(letterPushToStart);
 }
 
 void test_game_print()
@@ -701,7 +715,7 @@ void test_print()
 
 	printf("letters\n");
 	for (int i=0; i<num_letters_game_over; i++) {
-		print_object(letters[i].letterObj);
+		print_object(letterGameOver[i].letterGameOverObj);
 	}
 	printf("\n\n");
 }

@@ -29,8 +29,8 @@ typedef enum {
     SHIP,
     LASER,
     STATUS,
-    LETTER,
-    LOGO,
+    LETTER_GAME_OVER,
+    LETTER_LOGO,
     STAR
 } SpriteName;
 
@@ -62,8 +62,8 @@ SpriteType statusTypes[NUM_SHIP_TYPES];
 SpriteType asteroidTypes[NUM_ASTEROID_TYPES];
 
 SpriteType laserType;
-SpriteType letterType;
-SpriteType logoType;
+SpriteType letterGameOverType;
+SpriteType letterLogoType;
 SpriteType starType;
 
 /// The number of different types of stars to spawn

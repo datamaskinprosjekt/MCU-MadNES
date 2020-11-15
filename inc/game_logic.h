@@ -38,15 +38,15 @@ typedef struct {
 } LaserElem;
 
 typedef struct {
-    Object* letterObj;
-} LetterElem;
+    Object* letterGameOverObj;
+} LetterGameOverElem;
 
 typedef struct {
-    Object* logoObj;
+    Object* letterLogoObj;
 } LetterLogoElem;
 
 typedef struct {
-    Object* logoObj;
+    Object* letterPushToStartObj;
 } LetterPushToStartElem;
 
 typedef enum {
@@ -78,7 +78,7 @@ int flickerTotal;
 PlayerElem* players;
 AsteroidElem* asteroids;
 LaserElem* lasers;
-LetterElem* letters;
+LetterGameOverElem* letterGameOver;
 LetterLogoElem* letterLogo;
 LetterPushToStartElem* letterPushToStart;
 

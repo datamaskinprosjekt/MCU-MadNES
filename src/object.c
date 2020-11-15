@@ -33,11 +33,11 @@ void init_entity_types()
     // Initialize laser type
     laserType = (SpriteType) {LASER, 119, 5};
 
-    // Initialize letter type
-    letterType = (SpriteType) {LETTER, 124, 8};
+    // Initialize letter game over type
+    letterGameOverType = (SpriteType) {LETTER_GAME_OVER, 124, 8};
 
-    // Initialize logo type
-    logoType = (SpriteType) {LOGO, 132, 20};
+    // Initialize letter logo type
+    letterLogoType = (SpriteType) {LETTER_LOGO, 132, 20};
 
     // Initialize star type
     starType = (SpriteType) {STAR, 152, 6};
@@ -118,12 +118,12 @@ void init_objects(int playerNum, int asteroidPerPlayer, int laserPerPlayer)
         add_dirty_object(&objects[objNum]);
         objNum++;
     }
-    int xLetterBase = WIDTH / 2 - 32;
-    int yLetterBase = HEIGHT / 2 - 16;
+    int xGameOverBase = WIDTH / 2 - 32;
+    int yGameOverBase = HEIGHT / 2 - 16;
     for (int i=0; i<num_letters_game_over; i++) {
-        int xLetter = xLetterBase + 16 * (i % 4);
-        int yLetter = yLetterBase + 16 * (i / 4);
-        objects[objNum] = (Object) {objNum, &letterType, i, xLetter, yLetter, 0, 0, 1, 0};
+        int xGameOver = xGameOverBase + 16 * (i % 4);
+        int yGameOver = yGameOverBase + 16 * (i / 4);
+        objects[objNum] = (Object) {objNum, &letterGameOverType, i, xGameOver, yGameOver, 0, 0, 1, 0};
         add_dirty_object(&objects[objNum]);
         objNum++;
     }
@@ -133,7 +133,7 @@ void init_objects(int playerNum, int asteroidPerPlayer, int laserPerPlayer)
     int yLogoBase = HEIGHT / 2 - 32;
     for (int i=0; i<num_letters_logo; i++) {
         int xLogo = xLogoBase + 16 * i;
-        objects[objNum] = (Object) {objNum, &logoType, i, xLogo, yLogoBase, 0, 0, 1, 1};
+        objects[objNum] = (Object) {objNum, &letterLogoType, i, xLogo, yLogoBase, 0, 0, 1, 1};
         add_dirty_object(&objects[objNum]);
         objNum++;
     }
@@ -142,7 +142,7 @@ void init_objects(int playerNum, int asteroidPerPlayer, int laserPerPlayer)
     yLogoBase = HEIGHT / 2 + 16;
     for (int i=0; i<num_letters_push_to_start; i++) {
         int xLogo = xLogoBase + 16 * i;
-        objects[objNum] = (Object) {objNum, &logoType, num_letters_logo + i, xLogo, yLogoBase, 0, 0, 1, 1};
+        objects[objNum] = (Object) {objNum, &letterLogoType, num_letters_logo + i, xLogo, yLogoBase, 0, 0, 1, 1};
         add_dirty_object(&objects[objNum]);
         objNum++;
     }
