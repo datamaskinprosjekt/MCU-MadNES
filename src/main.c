@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "main.h"
 #include "debug_output.h"
-#include "game_logic.h"
+//#include "game_logic.h"
 
 
 // Counts 1ms ticks
@@ -30,13 +30,24 @@ int main()
 
     wait_for_FPGA_ready();
 
-    initialize_controllers();
+    //initialize_controllers();
 
     clear_object_memory();
 
     send_initial_data();
+    int x_offset = 0;
+    for (int i = 0; i < 7; i++)
+    {
+         Object obj1;
+        obj1.id      = i;
+        obj1.xPos    = x_offset; 
+        obj1.yPos    = 0; 
+        obj1.enabled = 1;
+        write_object(&obj1);
+        x_offset += 16;
+    }
 
-    game_loop();
+    //game_loop();
 
     return 0;
 }

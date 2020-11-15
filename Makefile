@@ -133,7 +133,6 @@ $(SRC)/spi.c \
 $(SRC)/interrupt_handlers.c \
 $(SRC)/controllers.c \
 $(SRC)/object.c \
-$(SRC)/game_logic.c \
 $(SRC)/data.c \
 $(LIB)/EFM32GG/Source/system_efm32gg.c \
 $(LIB)/emlib/src/em_assert.c \

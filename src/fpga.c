@@ -1,5 +1,6 @@
 #include "fpga.h"
 #include "data.h"
+#include "debug_output.h"
 
 
 /**************************************************************
@@ -90,7 +91,17 @@ void write_palette(Color* palette, int size)
         addr += sizeof(uint16_t) * id;
 
         Color* color = palette + id;
-
+        RETARGET_WriteChar('\n');
+        RETARGET_WriteChar('r');
+        RETARGET_WriteChar(':');
+        RETARGET_WriteChar(color->r);
+        RETARGET_WriteChar('g');
+        RETARGET_WriteChar(':');
+        RETARGET_WriteChar(color->g);
+        RETARGET_WriteChar('b');
+        RETARGET_WriteChar(':');
+        RETARGET_WriteChar(color->b);
+        RETARGET_WriteChar('\n');
         uint16_t RG_Pair = (color->r << 8) + color->g;
         uint16_t B_Single = color->b;
 
