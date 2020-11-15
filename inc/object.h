@@ -72,7 +72,11 @@ int shipNum;
 int statusNum;
 int asteroidNum;
 int laserNum;
-int letterNum;
+int num_letters_game_over;
+int num_letters_logo;
+int num_letters_push_to_start;
+
+
 int starNum;
 
 Object* objects;

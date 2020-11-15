@@ -172,12 +172,24 @@ Color* create_palette()
 	i = 0;
 	
 	for (j = 0; j < (NUM_COLORS * 3); j += 3) {
-		Color color = {.r = (uint8_t) palette_data[j], .g = (uint8_t) palette_data[j+1], .b = (uint8_t) palette_data[j+2]};
+		Color color = {.r = palette_data[j], .g = palette_data[j+1], .b = palette_data[j+2]};
 		palette[i] = color;
 		i++;
 	}
 	
 	return palette;
+}
+
+void clear_sprite_sheet(int size)
+{
+    for (int i = 0; i < size; i++) {
+        set_bank(SPRITE);
+
+        uint16_t zero = 0;
+
+        *(FPGA_ADDR + i) = zero;
+        clear_bank();
+    }
 }
 
 
@@ -190,7 +202,7 @@ void send_initial_data()
     Color* palette;
     palette = create_palette(NUM_COLORS);
 
-    // TODO: add tile sheet
-    write_sprite_sheet((uint16_t*) sprite_data, NUM_SPRITES * 256);
+    write_sprite_sheet((uint16_t*) sprite_data, NUM_SPRITES * 128);
+    
     write_palette(palette, NUM_COLORS);
 }

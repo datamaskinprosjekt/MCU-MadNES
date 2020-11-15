@@ -2,8 +2,7 @@
 #include <math.h>
 #include "meta_data.h"
 
-#define M_PI 3.14159265358979323846264338327950288
-#define CONTROLLER_DEADZONE 100
+#define CONTROLLER_DEADZONE 50
 
 
 int get_controllers()
@@ -15,6 +14,7 @@ int get_controllers()
 
     return active_controllers;
 }
+
 
 Controller* get_next_active_controller()
 {
@@ -74,34 +74,11 @@ void initialize_controllers()
     memset(CONTROLLER_INPUTS, 0, sizeof(Controller) * 8);
 
     bool is_avail;
-
-    /*CONTROLLER_INPUTS[0] = (Controller) {
-        .id = 0,
-        .enabled = true,
-        .joyDir = -1,
-        .prevJoyDir = -1,
-        .joyBtn = false,
-        .btn1 = false,
-        .btn2 = false   
-    };*/
-
     for(int i = 0; i < 8; i++)
     {
         is_avail = check_controller_connection(i);
 
         if(is_avail) {
-            RETARGET_WriteChar('\n');
-            RETARGET_WriteChar('A');
-            RETARGET_WriteChar('C');
-            RETARGET_WriteChar('T');
-            RETARGET_WriteChar('I');
-            RETARGET_WriteChar('V');
-            RETARGET_WriteChar('E');
-            RETARGET_WriteChar(':');
-            RETARGET_WriteChar(' ');
-            RETARGET_WriteChar(i + '0');
-
-            RETARGET_WriteChar('\n');
             CONTROLLER_INPUTS[i] = (Controller) {
                 .id = i,
                 .enabled = true,
@@ -227,14 +204,13 @@ void poll_single_controller(int id)
     ctrl->btn2 =   buttons >> 1 & 1;
     ctrl->joyBtn = buttons >> 2 & 1;
 
+    // Save the last state for smoother interpolation between states
     ctrl->prevJoyDir = ctrl->joyDir;
 
     if( (abs(127 - joystick_x) < CONTROLLER_DEADZONE) && (abs(127 - joystick_y) < CONTROLLER_DEADZONE)) {
         ctrl->joyDir = -1;
         return;
     }
-
-    // Save the last state for smoother interpolation between states
 
     if(joystick_x > 80 && joystick_x < 160 && joystick_y == 255) ctrl->joyDir = 0;
     else if(joystick_x == 255 && joystick_y == 255) ctrl->joyDir = 2;

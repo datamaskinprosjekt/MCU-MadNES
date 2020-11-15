@@ -9,15 +9,6 @@ volatile uint32_t ticks;
 
 int main()
 {
-    // Object dirty_objects
-
-    /* INITIALIZATION */
-        // Initialize chip, EBI, NVIC, SPI(?)
-        // Enable clock
-        // Setup timer interrupts
-        // Reset FPGA
-        // Send initial data to FPGA: sprite sheet, palette, tile sheet (?)
-
     CHIP_Init();
     SWO_Setup();
 
@@ -35,8 +26,9 @@ int main()
     objects_initialized = false;
 
     setup_NVIC();
-    
     setup_SPI();
+
+    wait_for_FPGA_ready();
 
     initialize_controllers();
 
@@ -44,23 +36,7 @@ int main()
 
     send_initial_data();
 
-    main_logic();
-
-    /* GAME LOOP */
-
-    /* END GAME */
-
-    /* RESET */
-    // reset_FPGA();
-
-    return 0;
-}
-
-int main_alt()
-{
-    // ebi_test();
-    // fpga_test();
-    // spi_test();
+    game_loop();
 
     return 0;
 }

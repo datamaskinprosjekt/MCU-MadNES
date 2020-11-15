@@ -73,10 +73,10 @@ void init_objects(int playerNum, int asteroidPerPlayer, int laserPerPlayer)
     statusNum = shipNum;
     asteroidNum = asteroidPerPlayer * shipNum;
     laserNum = laserPerPlayer * shipNum;
-    letterNum = 8;
+    num_letters_game_over = 8;
     starNum = 30;
 
-    int num_objects_to_initialize = shipNum + statusNum + asteroidNum + laserNum + letterNum + starNum;
+    int num_objects_to_initialize = shipNum + statusNum + asteroidNum + laserNum + num_letters_game_over + starNum;
     
     objects = (Object *) malloc(sizeof(Object) * MAX_OBJS);
     dirty_objects = (int *) malloc(sizeof(int) * MAX_OBJS);
@@ -84,8 +84,27 @@ void init_objects(int playerNum, int asteroidPerPlayer, int laserPerPlayer)
     memset(objects, 0, sizeof(Object) * MAX_OBJS);
     memset(dirty_objects, 0, sizeof(int) * MAX_OBJS);
 
+
+    // Initialize the stars
+    for (int i = 0; i < NUM_STAR_TYPES; i++) {
+        for (int j = 0; j < starTypeNumber[i]; j++) {                               
+            objects[objNum] = (Object) {objNum, &starType, i, starPositions[i][2 * j], starPositions[i][2 * j + 1], 0, 0, 0, 1};
+            add_dirty_object(&objects[objNum]);
+            objNum++;
+        }
+    }
+    for (int i=0; i<laserNum; i++) {
+        objects[objNum] = (Object) {objNum, &laserType, 0, 0, 0, 0, 0, 1, 0};
+        add_dirty_object(&objects[objNum]);
+        objNum++;
+    }
+    for (int i=0; i<asteroidNum; i++) {
+        objects[objNum] = (Object) {objNum, &asteroidTypes[i % NUM_ASTEROID_TYPES], 0, 0, 0, 0, 0, 0, 1};
+        add_dirty_object(&objects[objNum]);
+        objNum++;
+    }
     for (int i=0; i<shipNum; i++) {
-        objects[objNum] = (Object) {objNum, &shipTypes[i % NUM_SHIP_TYPES], 0, 150 + 50 * i, 400, 0, 0, 1, 1};
+        objects[objNum] = (Object) {objNum, &shipTypes[(i) % NUM_SHIP_TYPES], 0, 150 + 50 * i, 400, 0, 0, 1, 1};
         add_dirty_object(&objects[objNum]);
         objNum++;
     }
@@ -94,19 +113,9 @@ void init_objects(int playerNum, int asteroidPerPlayer, int laserPerPlayer)
         add_dirty_object(&objects[objNum]);
         objNum++;
     }
-    for (int i=0; i<asteroidNum; i++) {
-        objects[objNum] = (Object) {objNum, &asteroidTypes[i % NUM_ASTEROID_TYPES], 0, 0, 0, 0, 0, 1, 1};
-        add_dirty_object(&objects[objNum]);
-        objNum++;
-    }
-    for (int i=0; i<laserNum; i++) {
-        objects[objNum] = (Object) {objNum, &laserType, 0, 0, 0, 0, 0, 1, 0};
-        add_dirty_object(&objects[objNum]);
-        objNum++;
-    }
     int xLetterBase = WIDTH / 2 - 32;
     int yLetterBase = HEIGHT / 2 - 16;
-    for (int i=0; i<letterNum; i++) {
+    for (int i=0; i<num_letters_game_over; i++) {
         int xLetter = xLetterBase + 16 * (i % 4);
         int yLetter = yLetterBase + 16 * (i / 4);
         objects[objNum] = (Object) {objNum, &letterType, i, xLetter, yLetter, 0, 0, 1, 0};
@@ -114,14 +123,9 @@ void init_objects(int playerNum, int asteroidPerPlayer, int laserPerPlayer)
         objNum++;
     }
 
-    // Initialize the stars
-   for (int i = 0; i < NUM_STAR_TYPES; i++) {
-        for (int j = 0; j < starTypeNumber[i]; j++) {                               
-            objects[objNum] = (Object) {objNum, &starType, i, starPositions[i][2 * j], starPositions[i][2 * j + 1], 0, 0, 0, 1};
-            add_dirty_object(&objects[objNum]);
-            objNum++;
-        }
-    }
+    // Positioning of logo
+
+    // Positioning of push to start
 }
 
 void add_dirty_object(Object* obj)
@@ -195,8 +199,8 @@ int move_object(Object* obj, int rot, int speed)
 }
 
 int get_rot(Object* Object) {
-    bool xFlip = Object->xFlip;
-    bool yFlip = Object->yFlip;
+    bool xFlip = Object->yFlip;
+    bool yFlip = Object->xFlip;
 
     if (!xFlip && !yFlip)
     {
