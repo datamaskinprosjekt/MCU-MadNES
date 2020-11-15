@@ -36,8 +36,11 @@ void init_entity_types()
     // Initialize letter type
     letterType = (SpriteType) {LETTER, 124, 8};
 
+    // Initialize logo type
+    logoType = (SpriteType) {LOGO, 132, 20};
+
     // Initialize star type
-    starType = (SpriteType) {STAR, 132, 6};
+    starType = (SpriteType) {STAR, 152, 6};
     
     starTypeNumber[0] = 7;
     starTypeNumber[1] = 5;
@@ -74,9 +77,11 @@ void init_objects(int playerNum, int asteroidPerPlayer, int laserPerPlayer)
     asteroidNum = asteroidPerPlayer * shipNum;
     laserNum = laserPerPlayer * shipNum;
     num_letters_game_over = 8;
+    num_letters_logo = 9;
+    num_letters_push_to_start = 11;
     starNum = 30;
 
-    int num_objects_to_initialize = shipNum + statusNum + asteroidNum + laserNum + num_letters_game_over + starNum;
+    int num_objects_to_initialize = shipNum + statusNum + asteroidNum + laserNum + num_letters_game_over + num_letters_logo + num_letters_push_to_start + starNum;
     
     objects = (Object *) malloc(sizeof(Object) * MAX_OBJS);
     dirty_objects = (int *) malloc(sizeof(int) * MAX_OBJS);
@@ -124,8 +129,23 @@ void init_objects(int playerNum, int asteroidPerPlayer, int laserPerPlayer)
     }
 
     // Positioning of logo
-
+    int xLogoBase = WIDTH / 2 - 16 * 4 - 8;
+    int yLogoBase = HEIGHT / 2 - 32;
+    for (int i=0; i<num_letters_logo; i++) {
+        int xLogo = xLogoBase + 16 * i;
+        objects[objNum] = (Object) {objNum, &logoType, i, xLogo, yLogoBase, 0, 0, 1, 1};
+        add_dirty_object(&objects[objNum]);
+        objNum++;
+    }
     // Positioning of push to start
+    xLogoBase = WIDTH / 2 - 16 * 6 - 8;
+    yLogoBase = HEIGHT / 2 + 16;
+    for (int i=0; i<num_letters_push_to_start; i++) {
+        int xLogo = xLogoBase + 16 * i;
+        objects[objNum] = (Object) {objNum, &logoType, num_letters_logo + i, xLogo, yLogoBase, 0, 0, 1, 1};
+        add_dirty_object(&objects[objNum]);
+        objNum++;
+    }
 }
 
 void add_dirty_object(Object* obj)

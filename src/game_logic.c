@@ -165,6 +165,14 @@ void init_game()
 		letters[i] = (LetterElem) {&objects[objIdx]};
 		objIdx++;
 	}
+	for (int i=0; i<num_letters_logo; i++) {
+		letterLogo[i] = (LetterLogoElem) {&objects[objIdx]};
+		objIdx++;
+	}
+	for (int i=0; i<num_letters_push_to_start; i++) {
+		letterPushToStart[i] = (LetterPushToStartElem) {&objects[objIdx]};
+		objIdx++;
+	}
 
 	for (int i=0; i<asteroidNum; i++) {
 		set_asteroid_pos(&asteroids[i]);

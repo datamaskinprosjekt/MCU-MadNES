@@ -41,6 +41,14 @@ typedef struct {
     Object* letterObj;
 } LetterElem;
 
+typedef struct {
+    Object* logoObj;
+} LetterLogoElem;
+
+typedef struct {
+    Object* logoObj;
+} LetterPushToStartElem;
+
 typedef enum {
     GAME_START_SCREEN,
     GAME_RUN,
@@ -71,6 +79,8 @@ PlayerElem* players;
 AsteroidElem* asteroids;
 LaserElem* lasers;
 LetterElem* letters;
+LetterLogoElem* letterLogo;
+LetterPushToStartElem* letterPushToStart;
 
 void game_loop();
 void run_logic();
