@@ -39,6 +39,8 @@ void clear_object_memory()
         empty_obj->id = i;
         write_object(empty_obj);
     }
+
+    free(empty_obj);
 }
 
 

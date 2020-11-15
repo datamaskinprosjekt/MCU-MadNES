@@ -17,7 +17,7 @@ typedef struct {
     Object* shipObj;
     Object* statusObj;
     Controller* controller;
-} player_elem;
+} PlayerElem;
 
 typedef struct {
     bool isHit;
@@ -25,17 +25,17 @@ typedef struct {
     int pixelTicksCnt;
     int explodeTicksCnt;
     Object* asteroidObj;
-} asteroid_elem;
+} AsteroidElem;
 
 typedef struct {
     int playerIdx;
     int pixelTicksCnt;
     Object* laserObj;
-} laser_elem;
+} LaserElem;
 
 typedef struct {
     Object* letterObj;
-} letter_elem;
+} LetterElem;
 
 bool sem_game;
 bool force_quit;
@@ -43,6 +43,7 @@ uint32_t lastTicks;
 uint32_t deltaTicks;
 
 bool game;
+int playerNum;
 int playerPixelTicks;
 int asteroidPixelTicks;
 int laserPixelTicks;
@@ -52,10 +53,10 @@ int asteroidPerPlayer;
 int laserPerPlayer;
 int flickerTotal;
 
-player_elem* players;
-asteroid_elem* asteroids;
-laser_elem* lasers;
-letter_elem* letters;
+PlayerElem* players;
+AsteroidElem* asteroids;
+LaserElem* lasers;
+LetterElem* letters;
 
 void main_logic();
 void run_logic();
@@ -68,14 +69,14 @@ void joystick_handler(int playerIdx, int rot);
 void button_fuel_handler(int ticks, int playerIdx);
 void button_shoot_handler(int playerIdx);
 void button_restart_handler();
-void set_asteroid_pos(asteroid_elem* asteroid);
-void set_asteroid_new_player(player_elem* oldPlayer);
-int get_asteroid_rotation(asteroid_elem* asteroid);
-void flicker_player(int ticks, player_elem* player);
-bool check_collision_player(player_elem* player, asteroid_elem* asteroid);
-bool check_collision_laser(laser_elem* laser, asteroid_elem* asteroid);
-void collision_player(player_elem* player, asteroid_elem* asteroid);
-void collision_laser(laser_elem* laser, asteroid_elem* asteroid);
+void set_asteroid_pos(AsteroidElem* asteroid);
+void set_asteroid_new_player(PlayerElem* oldPlayer);
+int get_asteroid_rotation(AsteroidElem* asteroid);
+void flicker_player(int ticks, PlayerElem* player);
+bool check_collision_player(PlayerElem* player, AsteroidElem* asteroid);
+bool check_collision_laser(LaserElem* laser, AsteroidElem* asteroid);
+void collision_player(PlayerElem* player, AsteroidElem* asteroid);
+void collision_laser(LaserElem* laser, AsteroidElem* asteroid);
 bool check_game_over();
 void game_over();
 void clear_all();

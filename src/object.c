@@ -3,42 +3,55 @@
 #include <stdlib.h>
 #include "object.h"
 
+void init_entity_types()
+{
+    
+    shipTypes[0] = (SpriteType) {SHIP, 0, 5};       // ship1Type
+    shipTypes[1] = (SpriteType) {SHIP, 5, 5};       // ship2Type
+    shipTypes[2] = (SpriteType) {SHIP, 10, 5};      // ship3Type
+    shipTypes[3] = (SpriteType) {SHIP, 15, 5};      // ship4Type
+    shipTypes[4] = (SpriteType) {SHIP, 20, 5};      // ship5Type
+    shipTypes[5] = (SpriteType) {SHIP, 25, 5};      // ship6Type
+    shipTypes[6] = (SpriteType) {SHIP, 30, 5};      // ship7Type
+    shipTypes[7] = (SpriteType) {SHIP, 35, 5};      // ship8Type
+    shipTypes[8] = (SpriteType) {SHIP, 40, 5};       // ship9Type
+
+    statusTypes[0] = (SpriteType)  {STATUS, 45, 4};
+    statusTypes[1] = (SpriteType)  {STATUS, 49, 4};
+    statusTypes[2] = (SpriteType)  {STATUS, 53, 4};
+    statusTypes[3] = (SpriteType)  {STATUS, 57, 4};
+    statusTypes[4] = (SpriteType)  {STATUS, 61, 4};
+    statusTypes[5] = (SpriteType)  {STATUS, 65, 4};
+    statusTypes[6] = (SpriteType)  {STATUS, 69, 4};
+    statusTypes[7] = (SpriteType)  {STATUS, 73, 4};
+    statusTypes[8] = (SpriteType)  {STATUS, 77, 4};
+
+    asteroidTypes[0] = (SpriteType) {ASTEROID, 81, 11};
+    asteroidTypes[1] = (SpriteType) {ASTEROID, 92, 11};
+    asteroidTypes[2] = (SpriteType) {ASTEROID, 103, 16};
+
+    // Initialize laser type
+    laserType = (SpriteType) {LASER, 119, 5};
+
+    // Initialize letter type
+    letterType = (SpriteType) {LETTER, 124, 8};
+
+    // Initialize star type
+    starType = (SpriteType) {STAR, 132, 6};
+    
+    starTypeNumber[0] = 7;
+    starTypeNumber[1] = 5;
+    starTypeNumber[2] = 6;
+    starTypeNumber[3] = 5;
+    starTypeNumber[4] = 3;
+    starTypeNumber[5] = 4;
+}
+
 void init_objects(int playerNum, int asteroidPerPlayer, int laserPerPlayer)
 {
-    ship1Type = (SpriteType) {SHIP, 0, 5};
-    ship2Type = (SpriteType) {SHIP, 5, 5};
-    ship3Type = (SpriteType) {SHIP, 10, 5};
-    ship4Type = (SpriteType) {SHIP, 15, 5};
-    ship5Type = (SpriteType) {SHIP, 20, 5};
-    ship6Type = (SpriteType) {SHIP, 25, 5};
-    ship7Type = (SpriteType) {SHIP, 30, 5};
-    ship8Type = (SpriteType) {SHIP, 35, 5};
-    ship9Type = (SpriteType) {SHIP, 40, 5};
-    status1Type = (SpriteType) {STATUS, 45, 4};
-    status2Type = (SpriteType) {STATUS, 49, 4};
-    status3Type = (SpriteType) {STATUS, 53, 4};
-    status4Type = (SpriteType) {STATUS, 57, 4};
-    status5Type = (SpriteType) {STATUS, 61, 4};
-    status6Type = (SpriteType) {STATUS, 65, 4};
-    status7Type = (SpriteType) {STATUS, 69, 4};
-    status8Type = (SpriteType) {STATUS, 73, 4};
-    status9Type = (SpriteType) {STATUS, 77, 4};
-    asteroid1Type = (SpriteType) {ASTEROID, 81, 11};
-    asteroid2Type = (SpriteType) {ASTEROID, 92, 11};
-    asteroid3Type = (SpriteType) {ASTEROID, 103, 16};
-    laserType = (SpriteType) {LASER, 119, 5};
-    letterType = (SpriteType) {LETTER, 125, 8};
-    starType = (SpriteType) {STAR, 132, 6};
 
-    SpriteType* shipTypes[9] = {&ship1Type, &ship2Type, &ship3Type, &ship4Type, &ship5Type, &ship6Type, &ship7Type, &ship8Type, &ship9Type};
-    SpriteType* statusTypes[9] = {&status1Type, &status2Type, &status3Type, &status4Type, &status5Type, &status6Type, &status7Type, &status8Type, &status9Type};
-    SpriteType* asteroidTypes[3] = {&asteroid1Type, &asteroid2Type, &asteroid3Type};
-    int star1Max = 7;
-    int star2Max = 5;
-    int star3Max = 6;
-    int star4Max = 5;
-    int star5Max = 3;
-    int star6Max = 4;
+    init_entity_types();
+
     int star1Pos[2 * 7] = {62,136, 227,380, 283,174, 321,278, 408,88, 488,252, 582,174};
     int star2Pos[2 * 5] = {122,112, 158,273, 392,113, 469,380, 527,262};
     int star3Pos[2 * 6] = {85,331, 124,53, 329,93, 416,305, 477,128, 530,411};
@@ -46,92 +59,86 @@ void init_objects(int playerNum, int asteroidPerPlayer, int laserPerPlayer)
     int star5Pos[2 * 3] = {45,103, 230,146, 309,417};
     int star6Pos[2 * 4] = {258,209, 355,235, 489,63, 535,311};
 
-    objMax = 0;
-    shipMax = playerNum;
-    statusMax = shipMax;
-    asteroidMax = asteroidPerPlayer * shipMax;
-    laserMax = laserPerPlayer * shipMax;
-    letterMax = 8;
-    starMax = 30;
+    int* starPositions[NUM_STAR_TYPES] = {
+        star1Pos,
+        star2Pos,
+        star3Pos,
+        star4Pos,
+        star5Pos,
+        star6Pos
+    };
 
-    int num_objects_to_initialize = shipMax + statusMax + asteroidMax + laserMax + letterMax + starMax;
+    objNum = 0;
+    shipNum = playerNum;
+    statusNum = shipNum;
+    asteroidNum = asteroidPerPlayer * shipNum;
+    laserNum = laserPerPlayer * shipNum;
+    letterNum = 8;
+    starNum = 30;
+
+    int num_objects_to_initialize = shipNum + statusNum + asteroidNum + laserNum + letterNum + starNum;
     
-    objects = (Object *) malloc(sizeof(Object) * num_objects_to_initialize);
-    dirty_objects = (int *) malloc(sizeof(int) * num_objects_to_initialize);
+    objects = (Object *) malloc(sizeof(Object) * MAX_OBJS);
+    dirty_objects = (int *) malloc(sizeof(int) * MAX_OBJS);
+    
+    memset(objects, 0, sizeof(Object) * MAX_OBJS);
+    memset(dirty_objects, 0, sizeof(int) * MAX_OBJS);
 
-
-
-
-    for (int i=0; i<shipMax; i++) {
-        objects[objMax] = (Object) {objMax, shipTypes[i % 9], 0, 150 + 50*i, 400, 0, 0, 1, 1};
-        add_dirty_object(&objects[objMax]);
-        objMax++;
+    for (int i=0; i<shipNum; i++) {
+        objects[objNum] = (Object) {objNum, &shipTypes[i % NUM_SHIP_TYPES], 0, 150 + 50 * i, 400, 0, 0, 1, 1};
+        add_dirty_object(&objects[objNum]);
+        objNum++;
     }
-    for (int i=0; i<statusMax; i++) {
-        objects[objMax] = (Object) {objMax, statusTypes[i % 9], 0, WIDTH - 16*(shipMax-i), 0, 0, 0, 1, 1};
-        add_dirty_object(&objects[objMax]);
-        objMax++;
+    for (int i=0; i<statusNum; i++) {
+        objects[objNum] = (Object) {objNum, &statusTypes[i % NUM_STATUS_TYPES], 0, WIDTH - 16*(statusNum - i), 0, 0, 0, 1, 1};
+        add_dirty_object(&objects[objNum]);
+        objNum++;
     }
-    for (int i=0; i<asteroidMax; i++) {
-        objects[objMax] = (Object) {objMax, asteroidTypes[i % 3], 0, 0, 0, 0, 0, 1, 1};
-        add_dirty_object(&objects[objMax]);
-        objMax++;
+    for (int i=0; i<asteroidNum; i++) {
+        objects[objNum] = (Object) {objNum, &asteroidTypes[i % NUM_ASTEROID_TYPES], 0, 0, 0, 0, 0, 1, 1};
+        add_dirty_object(&objects[objNum]);
+        objNum++;
     }
-    for (int i=0; i<laserMax; i++) {
-        objects[objMax] = (Object) {objMax, &laserType, 0, 0, 0, 0, 0, 1, 0};
-        add_dirty_object(&objects[objMax]);
-        objMax++;
+    for (int i=0; i<laserNum; i++) {
+        objects[objNum] = (Object) {objNum, &laserType, 0, 0, 0, 0, 0, 1, 0};
+        add_dirty_object(&objects[objNum]);
+        objNum++;
     }
     int xLetterBase = WIDTH / 2 - 32;
     int yLetterBase = HEIGHT / 2 - 16;
-    for (int i=0; i<letterMax; i++) {
+    for (int i=0; i<letterNum; i++) {
         int xLetter = xLetterBase + 16 * (i % 4);
         int yLetter = yLetterBase + 16 * (i / 4);
-        objects[objMax] = (Object) {objMax, &letterType, i, xLetter, yLetter, 0, 0, 1, 0};
-        add_dirty_object(&objects[objMax]);
-        objMax++;
-    }
-    for (int i=0; i<star1Max; i++) {
-        objects[objMax] = (Object) {objMax, &starType, 0, star1Pos[2*i], star1Pos[2*i + 1], 0, 0, 0, 1};
-        add_dirty_object(&objects[objMax]);
-        objMax++;
-    }
-    for (int i=0; i<star2Max; i++) {
-        objects[objMax] = (Object) {objMax, &starType, 1, star2Pos[2*i], star2Pos[2*i + 1], 0, 0, 0, 1};
-        add_dirty_object(&objects[objMax]);
-        objMax++;
-    }
-    for (int i=0; i<star3Max; i++) {
-        objects[objMax] = (Object) {objMax, &starType, 2, star3Pos[2*i], star3Pos[2*i + 1], 0, 0, 0, 1};
-        add_dirty_object(&objects[objMax]);
-        objMax++;
-    }
-    for (int i=0; i<star4Max; i++) {
-        objects[objMax] = (Object) {objMax, &starType, 3, star4Pos[2*i], star4Pos[2*i + 1], 0, 0, 0, 1};
-        add_dirty_object(&objects[objMax]);
-        objMax++;
-    }
-    for (int i=0; i<star5Max; i++) {
-        objects[objMax] = (Object) {objMax, &starType, 4, star5Pos[2*i], star5Pos[2*i + 1], 0, 0, 0, 1};
-        add_dirty_object(&objects[objMax]);
-        objMax++;
-    }
-    for (int i=0; i<star6Max; i++) {
-        objects[objMax] = (Object) {objMax, &starType, 5, star6Pos[2*i], star6Pos[2*i + 1], 0, 0, 0, 1};
-        add_dirty_object(&objects[objMax]);
-        objMax++;
+        objects[objNum] = (Object) {objNum, &letterType, i, xLetter, yLetter, 0, 0, 1, 0};
+        add_dirty_object(&objects[objNum]);
+        objNum++;
     }
 
-
-    // "Notify" that the objects are initialized
-    objects_initialized = true;
+    // Initialize the stars
+   for (int i = 0; i < NUM_STAR_TYPES; i++) {
+        for (int j = 0; j < starTypeNumber[i]; j++) {                               
+            objects[objNum] = (Object) {objNum, &starType, i, starPositions[i][2 * j], starPositions[i][2 * j + 1], 0, 0, 0, 1};
+            add_dirty_object(&objects[objNum]);
+            objNum++;
+        }
+    }
 }
 
-void add_dirty_object(Object* obj) {
+void add_dirty_object(Object* obj)
+{
     dirty_objects[obj->id] = 1;
+
+#if DEBUG_WRITE_OBJECT_DIRECT
+    write_object(obj);
+#endif
+
 }
 
-int move_object(Object* obj, int rot, int speed) {
+int move_object(Object* obj, int rot, int speed)
+{
+    int xNew;
+    int yNew;
+
 	int xOffset = 0;
 	int yOffset = 0;
 
@@ -174,8 +181,8 @@ int move_object(Object* obj, int rot, int speed) {
 			break;
 	}
 
-	int xNew = obj->xPos + xOffset;
-	int yNew = obj->yPos + yOffset;
+	xNew = obj->xPos + xOffset;
+	yNew = obj->yPos + yOffset;
 
 	if (xNew < 0 || xNew + 15 >= WIDTH || yNew < 0 || yNew + 15 >= HEIGHT) {
 		return 0;
@@ -183,6 +190,7 @@ int move_object(Object* obj, int rot, int speed) {
 
 	obj->xPos = xNew;
 	obj->yPos = yNew;
+
     return 1;
 }
 

@@ -9,6 +9,21 @@
 #define WIDTH 640
 #define HEIGHT 480
 
+// The number of distinct ship sprites
+#define NUM_SHIP_TYPES 9
+
+// The number of distinct status bar sprites
+#define NUM_STATUS_TYPES 9
+
+// The number of distinct asteroid sprites
+#define NUM_ASTEROID_TYPES 3
+
+// The number of distinct star sprites
+#define NUM_STAR_TYPES 6
+
+
+//#define DEBUG_WRITE_OBJECT_DIRECT true
+
 typedef enum {
     ASTEROID,
     SHIP,
@@ -36,46 +51,57 @@ typedef struct {
     bool enabled;
 } Object;
 
-SpriteType ship1Type;
-SpriteType ship2Type;
-SpriteType ship3Type;
-SpriteType ship4Type;
-SpriteType ship5Type;
-SpriteType ship6Type;
-SpriteType ship7Type;
-SpriteType ship8Type;
-SpriteType ship9Type;
-SpriteType status1Type;
-SpriteType status2Type;
-SpriteType status3Type;
-SpriteType status4Type;
-SpriteType status5Type;
-SpriteType status6Type;
-SpriteType status7Type;
-SpriteType status8Type;
-SpriteType status9Type;
-SpriteType asteroid1Type;
-SpriteType asteroid2Type;
-SpriteType asteroid3Type;
+
+/// An array of SpriteTypes to contain the different ship types
+SpriteType shipTypes[NUM_SHIP_TYPES];
+
+/// An array of SpriteTypes to contain the status indicators for the different players
+SpriteType statusTypes[NUM_SHIP_TYPES];
+
+SpriteType asteroidTypes[NUM_ASTEROID_TYPES];
+
 SpriteType laserType;
 SpriteType letterType;
 SpriteType starType;
 
-int objMax;
-int shipMax;
-int statusMax;
-int asteroidMax;
-int laserMax;
-int letterMax;
-int starMax;
+/// The number of different types of stars to spawn
+int starTypeNumber[NUM_STAR_TYPES];
+
+int objNum;
+int shipNum;
+int statusNum;
+int asteroidNum;
+int laserNum;
+int letterNum;
+int starNum;
 
 Object* objects;
 int* dirty_objects;
 
 bool objects_initialized;
 
+/**************************************************************
+ * Initializes SpriteType objects 
+ * @see struct SpriteType
+ **************************************************************/
+void init_entity_types();
+
 void init_objects(int playerNum, int asteroidPerPlayer, int laserPerPlayer);
+
+
+/**************************************************************
+ * Marks the object as dirty.
+ **************************************************************/
 void add_dirty_object(Object* obj);
+
+
+/**************************************************************
+ * Calculates and updates the position of the object.
+ * 
+ * @param obj The object to move.
+ * @param rot The rotation to consider.
+ * @param speed The speed to consider.
+ **************************************************************/
 int move_object(Object* obj, int rot, int speed);
 int get_rot(Object* obj);
 void delete_objects();
