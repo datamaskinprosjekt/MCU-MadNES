@@ -142,6 +142,8 @@ void init_objects(int playerNum, int asteroidPerPlayer, int laserPerPlayer)
     yLogoBase = HEIGHT / 2 + 16;
     for (int i=0; i<num_letters_push_to_start; i++) {
         int xLogo = xLogoBase + 16 * i;
+        xLogo += i == 5? 16 : 0;
+        xLogo += i == 7? 16 : 0;
         objects[objNum] = (Object) {objNum, &letterLogoType, num_letters_logo + i, xLogo, yLogoBase, 0, 0, 1, 1};
         add_dirty_object(&objects[objNum]);
         objNum++;
