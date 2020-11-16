@@ -22,7 +22,7 @@
 #define NUM_STAR_TYPES 6
 
 
-//#define DEBUG_WRITE_OBJECT_DIRECT true
+#define DEBUG_WRITE_OBJECT_DIRECT true
 
 typedef enum {
     ASTEROID,

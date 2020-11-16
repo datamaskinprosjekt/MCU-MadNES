@@ -22,12 +22,12 @@ Controller* get_next_active_controller()
 
     i += 1;
 
-    while(!CONTROLLER_INPUTS[i].enabled && i < NUM_CONTROLLERS)
+    while(!CONTROLLER_INPUTS[i].enabled && i < MAX_CONTROLLERS)
     {
        i++; 
     }
 
-    if(i >= NUM_CONTROLLERS) return NULL;
+    if(i >= MAX_CONTROLLERS) return NULL;
 
     return &CONTROLLER_INPUTS[i];
 }

@@ -4,8 +4,7 @@
 #include "object.h"
 
 void init_entity_types()
-{
-    
+{    
     shipTypes[0] = (SpriteType) {SHIP, 0, 5};       // ship1Type
     shipTypes[1] = (SpriteType) {SHIP, 5, 5};       // ship2Type
     shipTypes[2] = (SpriteType) {SHIP, 10, 5};      // ship3Type
@@ -52,7 +51,6 @@ void init_entity_types()
 
 void init_objects(int playerNum, int asteroidPerPlayer, int laserPerPlayer)
 {
-
     init_entity_types();
 
     int star1Pos[2 * 7] = {62,136, 227,380, 283,174, 321,278, 408,88, 488,252, 582,174};
@@ -81,7 +79,8 @@ void init_objects(int playerNum, int asteroidPerPlayer, int laserPerPlayer)
     num_letters_push_to_start = 11;
     starNum = 30;
 
-    int num_objects_to_initialize = shipNum + statusNum + asteroidNum + laserNum + num_letters_game_over + num_letters_logo + num_letters_push_to_start + starNum;
+    // Not used anymore
+    //int num_objects_to_initialize = shipNum + statusNum + asteroidNum + laserNum + num_letters_game_over + num_letters_logo + num_letters_push_to_start + starNum;
     
     objects = (Object *) malloc(sizeof(Object) * MAX_OBJS);
     dirty_objects = (int *) malloc(sizeof(int) * MAX_OBJS);
@@ -118,6 +117,7 @@ void init_objects(int playerNum, int asteroidPerPlayer, int laserPerPlayer)
         add_dirty_object(&objects[objNum]);
         objNum++;
     }
+
     int xGameOverBase = WIDTH / 2 - 32;
     int yGameOverBase = HEIGHT / 2 - 16;
     for (int i=0; i<num_letters_game_over; i++) {
@@ -140,16 +140,22 @@ void init_objects(int playerNum, int asteroidPerPlayer, int laserPerPlayer)
     // Positioning of push to start
     xLogoBase = WIDTH / 2 - 16 * 6 - 8;
     yLogoBase = HEIGHT / 2 + 16;
+
+    int spaces_encountered = 0;
+
     for (int i=0; i<num_letters_push_to_start; i++) {
-        int xLogo = xLogoBase + 16 * i;
-        xLogo += i == 5? 16 : 0;
-        xLogo += i == 7? 16 : 0;
+
+        int xLogo = xLogoBase + 16 * i + 16 * spaces_encountered;
+        if ( (i == 5) | (i == 7) ) { spaces_encountered++; }
+
+        xLogo += (i == 5 ? 16 : 0);
+        xLogo += (i == 7 ? 16 : 0);
         objects[objNum] = (Object) {objNum, &letterLogoType, num_letters_logo + i, xLogo, yLogoBase, 0, 0, 1, 1};
         add_dirty_object(&objects[objNum]);
         objNum++;
     }
 }
-
+    
 void add_dirty_object(Object* obj)
 {
     dirty_objects[obj->id] = 1;

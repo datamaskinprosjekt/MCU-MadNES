@@ -55,13 +55,21 @@ void run_logic()
 	int restartButton;
 
 	// Handle switching state from GAME_OVER to start screen
-	if(game_state == GAME_OVER) gameOverCounter += deltaTicks;
 	if(game_state == GAME_OVER && gameOverCounter > GAME_OVER_DURATION ) { 
 		gameOverCounter = 0;
-		game_state = GAME_START_SCREEN;
+		//game_state = GAME_START_SCREEN;
+		start_screen();
 	}
+	if(game_state == GAME_OVER) {
+		gameOverCounter += deltaTicks;
+		game_over_loop();
+		return;
+	} 
 
-
+	if(game_state == GAME_START_SCREEN)
+	{
+		start_screen_loop();
+	}
 
 
 	for (int i=0; i<shipNum; i++) {
@@ -72,7 +80,9 @@ void run_logic()
 			prevJoyDir = controller->prevJoyDir;
 			fuelButton = controller->btn1;
 			shootButton = controller->btn2 || controller->joyBtn;
-			restartButton = controller->btn1 || controller->btn2 || controller->joyBtn || controller->joyDir != -1; //?
+			restartButton = controller->btn1 || controller->btn2 || controller->joyBtn || (controller->joyDir != -1); 
+
+			int a = 8;
 
 			if (joyDir != -1) {
 				joystick_handler(i, joyDir, prevJoyDir);
@@ -103,8 +113,6 @@ void test_main()
 	int roundNo = 3;
 	while (roundNo) {
 
-
-
 		if (game_state != GAME_RUN) {
 			button_start_handler();
 			roundNo--;
@@ -132,8 +140,8 @@ void init_game()
 	laserPerPlayer = 3;
 	init_objects(playerNum, asteroidPerPlayer, laserPerPlayer);
 
-	playerPixelTicks = 300;
-	asteroidPixelTicks = 500;
+	playerPixelTicks = 200;
+	asteroidPixelTicks = 200;
 	laserPixelTicks = 70;
 	shootTicks = 2500;
 	rotDelayTicks = 100;
@@ -365,19 +373,19 @@ void button_start_handler()
 		game_state = GAME_RUN;
 		// Disable all letters
 		for (int i=0; i<num_letters_game_over; i++) {
-			LetterGameOverElem* letterGameOver = &letterGameOver[i];
-			letterGameOver->letterGameOverObj->enabled = 0;
-			add_dirty_object(letterGameOver->letterGameOverObj);
+			LetterGameOverElem* letter = &letterGameOver[i];
+			letter->letterGameOverObj->enabled = 0;
+			add_dirty_object(letter->letterGameOverObj);
 		}
 		for (int i=0; i<num_letters_logo; i++) {
-			LetterLogoElem* letterLogo = &letterLogo[i];
-			letterLogo->letterLogoObj->enabled = 0;
-			add_dirty_object(letterLogo->letterLogoObj);
+			LetterLogoElem* letter = &letterLogo[i];
+			letter->letterLogoObj->enabled = 0;
+			add_dirty_object(letter->letterLogoObj);
 		}
 		for (int i=0; i<num_letters_push_to_start; i++) {
-			LetterPushToStartElem* letterPushToStart = &letterPushToStart[i];
-			letterPushToStart->letterPushToStartObj->enabled = 0;
-			add_dirty_object(letterPushToStart->letterPushToStartObj);
+			LetterPushToStartElem* letter = &letterPushToStart[i];
+			letter->letterPushToStartObj->enabled = 0;
+			add_dirty_object(letter->letterPushToStartObj);
 		}
 
 		for (int i=0; i<shipNum; i++) {
@@ -623,6 +631,11 @@ void collision_laser(LaserElem* laser, AsteroidElem* asteroid)
 	asteroid->isHit = 1;
 }
 
+void explode_asteroid(AsteroidElem* asteroid) 
+{
+	asteroid->isHit = 1;
+}
+
 bool check_game_over()
 {
 	for (int i=0; i<shipNum; i++) {
@@ -633,30 +646,100 @@ bool check_game_over()
 	return 1;
 }
 
+void game_over_loop()
+{
+
+	gameOverFlickerCounter += deltaTicks;
+
+	// Explode Asteroids
+	for(int i = 0; i < asteroidNum; i++)
+	{
+		AsteroidElem* asteroid = &asteroids[i];
+
+		int currentExplodeTicks = asteroid->explodeTicksCnt + deltaTicks;
+		int explodeNum = currentExplodeTicks / explodeTicks;
+		asteroid->explodeTicksCnt = currentExplodeTicks % explodeTicks;
+		if (explodeNum) {
+			if (asteroid->asteroidObj->localSpriteIdx + 1 >= asteroid->asteroidObj->type->length) {
+				asteroid->asteroidObj->enabled = 0;
+			} else {
+				asteroid->asteroidObj->localSpriteIdx++;
+			}
+			
+			add_dirty_object(asteroid->asteroidObj);
+		}
+	}
+
+	if (gameOverCounter > 1000) {
+		if (gameOverFlickerCounter > 7500) {
+			gameOverFlickerCounter = 0;
+			for(int i = 0; i < num_letters_game_over; i++)
+			{
+				LetterGameOverElem* letter = &letterGameOver[i];
+
+				letter->letterGameOverObj->enabled = !letter->letterGameOverObj->enabled;
+
+				add_dirty_object(letter->letterGameOverObj);
+			}
+		}
+	}
+	
+}
+
 void game_over()
 {
 	game_state = GAME_OVER;
+
 	gameOverCounter = 0;
+	gameOverFlickerCounter = 0;
+
 	for (int i=0; i<num_letters_game_over; i++) {
-		LetterGameOverElem* letterGameOver = &letterGameOver[i];
-		letterGameOver->letterGameOverObj->enabled = 1;
-		add_dirty_object(letterGameOver->letterGameOverObj);
+		LetterGameOverElem* letter = &letterGameOver[i];
+		letter->letterGameOverObj->enabled = 1;
+		add_dirty_object(letter->letterGameOverObj);
+	}
+}
+
+void start_screen_loop()
+{
+	pressToStartFlickerCounter += deltaTicks;
+
+
+	if(pressToStartFlickerCounter > 7500) {
+		pressToStartFlickerCounter = 0;
+		for (int i = 0; i < num_letters_push_to_start; i++) {
+			LetterPushToStartElem* letter = &letterPushToStart[i];
+			letter->letterPushToStartObj->enabled = !letter->letterPushToStartObj->enabled;
+			add_dirty_object(letter->letterPushToStartObj);
+		}
 	}
 }
 
 void start_screen()
 {
 	game_state = GAME_START_SCREEN;
+
+	pressToStartFlickerCounter = 0;
+
+	// Tear down GAME OVER text
+
+	for(int i = 0; i < num_letters_game_over; i++)
+	{
+		LetterGameOverElem* letter = &letterGameOver[i];
+		letter->letterGameOverObj->enabled = false;
+		add_dirty_object(letter->letterGameOverObj);
+	}
+
 	for(int i = 0; i < num_letters_logo; i++) {
-		LetterLogoElem* letterLogo = &letterLogo[i];
-		letterLogo->letterLogoObj->enabled = true;
-		add_dirty_object(letterLogo->letterLogoObj);
+		LetterLogoElem* letter = &letterLogo[i];
+		letter->letterLogoObj->enabled = true;
+		add_dirty_object(letter->letterLogoObj);
 	}
 
 	for(int i = 0; i < num_letters_push_to_start; i++) {
-		LetterPushToStartElem* letterPushToStart = &letterPushToStart[i];
-		letterPushToStart->letterPushToStartObj->enabled = true;
-		add_dirty_object(letterPushToStart->letterPushToStartObj);
+		LetterPushToStartElem* letter = &letterPushToStart[i];
+		letter->letterPushToStartObj->enabled = true;
+		add_dirty_object(letter->letterPushToStartObj);
 	}
 }
 

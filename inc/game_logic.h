@@ -1,7 +1,7 @@
 #ifndef GAME_LOGIC_H
 #define GAME_LOGIC_H
 
-#define GAME_OVER_DURATION 10000
+#define GAME_OVER_DURATION 70000
 
 #include <stdint.h>
 #include <stdlib.h>
@@ -57,12 +57,17 @@ typedef enum {
 
 int gameOverCounter;
 
+// Number of ticks before the game over text is toggled
+int gameOverFlickerCounter;
+
+int pressToStartFlickerCounter;
+
+GameState game_state;
 bool sem_game;
 bool force_quit;
 uint32_t lastTicks;
 uint32_t deltaTicks;
 
-GameState game;
 int playerNum;
 int playerPixelTicks;
 int asteroidPixelTicks;
@@ -88,6 +93,9 @@ void simulate_semaphore();
 void test_main();
 
 void start_screen();
+void start_screen_loop();
+
+void game_over_loop();
 
 void init_game();
 void time_handler(int deltaTicks);
