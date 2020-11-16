@@ -134,3 +134,12 @@ uint8_t palette_data[NUM_COLORS * 3] = {
 	255,0,255, //Magenta
 	255,255,255//White
 };
+
+
+// Red
+// Black
+// Green
+// Black
+// Black
+// Blue
+// White
