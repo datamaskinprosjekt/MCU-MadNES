@@ -25,8 +25,8 @@ int main()
 
     objects_initialized = false;
 
-    setup_NVIC();
-    setup_SPI();
+    //setup_NVIC();
+    //setup_SPI();
 
     wait_for_FPGA_ready();
 
@@ -38,10 +38,14 @@ int main()
     int x_offset = 0;
     for (int i = 0; i < 7; i++)
     {
-         Object obj1;
+        Object obj1;
         obj1.id      = i;
+        obj1.type    = &((SpriteType) {ASTEROID, i, 1});
         obj1.xPos    = x_offset; 
-        obj1.yPos    = 0; 
+        obj1.yPos    = 0;
+        obj1.xFlip   = 0; 
+        obj1.yFlip   = 0;
+        obj1.priority = 0;
         obj1.enabled = 1;
         write_object(&obj1);
         x_offset += 16;
