@@ -135,6 +135,7 @@ $(SRC)/controllers.c \
 $(SRC)/object.c \
 $(SRC)/game_logic.c \
 $(SRC)/data.c \
+$(SRC)/data_alt.c \
 $(LIB)/EFM32GG/Source/system_efm32gg.c \
 $(LIB)/emlib/src/em_assert.c \
 $(LIB)/emlib/src/em_cmu.c \

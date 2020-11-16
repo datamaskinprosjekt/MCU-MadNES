@@ -9,6 +9,7 @@
 #include "ebi.h"
 #include "object.h"
 #include "data.h"
+#include "data_alt.h"
 
 
 #define FPGA_ADDR (uint16_t *) EBI_BankAddress(EBI_BANK0)
@@ -36,6 +37,9 @@ void write_object(Object* obj);
 Color* create_palette();
 
 void send_initial_data();
+
+Color* create_palette_alt();
+void send_initial_data_alt();
 
 //Object obj1;
 //Object obj2;

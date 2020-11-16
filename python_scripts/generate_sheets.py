@@ -63,7 +63,6 @@ def print_sheets():
 			print(spriteSheet[i][j], end=" ");
 		print()
 
-
 add_sprite(spriteSheet, 'img/ship16-3.png')
 add_sprite(spriteSheet, 'img/ship16-4.png')
 add_sprite(spriteSheet, 'img/ship16-2.png')
@@ -88,6 +87,7 @@ add_sprite(spriteSheet, 'img/asteroid-3.png')
 add_sprite(spriteSheet, 'img/laser-2.png')
 add_sprite(spriteSheet, 'img/gameover-1.png')
 add_sprite(spriteSheet, 'img/start-1.png')
+add_sprite(spriteSheet, 'img/numbers-1.png')
 add_sprite(spriteSheet, 'img/stars-1.png')
 
 save_sheets()

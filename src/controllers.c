@@ -161,6 +161,9 @@ bool check_controller_connection(int id)
         case 7:
             retVal = GPIO_PinInGet(gpioPortB, 12) == 0;
             break;
+        default:
+            retVal = false;
+            break;
     }
 
     RETARGET_WriteChar(retVal ? '1' : '0');
@@ -215,12 +218,13 @@ void poll_single_controller(int id)
     if(joystick_x > 80 && joystick_x < 160 && joystick_y == 255) ctrl->joyDir = 0;
     else if(joystick_x == 255 && joystick_y == 255) ctrl->joyDir = 2;
     else if(joystick_x == 255 && joystick_y > 150 ) ctrl->joyDir = 4;
-    else if(joystick_x == 255 && joystick_y == 0 )  ctrl->joyDir = 6;
-    else if(joystick_x > 80 && joystick_x < 160 && joystick_y == 0 )  ctrl->joyDir = 8;
-    else if(joystick_x == 0 && joystick_y == 0 )  ctrl->joyDir = 12;
-    else if(joystick_x < 80 && joystick_y == 0 )  ctrl->joyDir = 10;
-    else if(joystick_x == 0 && joystick_y > 80 && joystick_y < 160) ctrl->joyDir = 14;
+    else if(joystick_x == 255 && joystick_y < 20 )  ctrl->joyDir = 6;
+    else if(joystick_x > 80 && joystick_x < 160 && joystick_y < 20 )  ctrl->joyDir = 8;
+    else if(joystick_x < 20 && joystick_y < 20 )  ctrl->joyDir = 12;
+    else if(joystick_x < 80 && joystick_y < 20 )  ctrl->joyDir = 10;
+    else if(joystick_x < 20 && joystick_y > 80 && joystick_y < 160) ctrl->joyDir = 14;
 
+    int breakHere = 3;
     // Values to map from 
     // 0 deg:   (131, 255)
     // 45 deg:  (255, 255) 

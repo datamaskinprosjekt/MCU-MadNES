@@ -38,8 +38,11 @@ void init_entity_types()
     // Initialize letter logo type
     letterLogoType = (SpriteType) {LETTER_LOGO, 132, 20};
 
+    // Initialize number type
+    scoreType = (SpriteType) {SCORE, 152, 10};
+
     // Initialize star type
-    starType = (SpriteType) {STAR, 152, 6};
+    starType = (SpriteType) {STAR, 162, 6};
     
     starTypeNumber[0] = 7;
     starTypeNumber[1] = 5;
@@ -77,6 +80,7 @@ void init_objects(int playerNum, int asteroidPerPlayer, int laserPerPlayer)
     num_letters_game_over = 8;
     num_letters_logo = 9;
     num_letters_push_to_start = 11;
+    scoreNum = playerNum * 2;
     starNum = 30;
 
     // Not used anymore
@@ -103,17 +107,17 @@ void init_objects(int playerNum, int asteroidPerPlayer, int laserPerPlayer)
         objNum++;
     }
     for (int i=0; i<asteroidNum; i++) {
-        objects[objNum] = (Object) {objNum, &asteroidTypes[i % NUM_ASTEROID_TYPES], 0, 0, 0, 0, 0, 0, 1};
+        objects[objNum] = (Object) {objNum, &asteroidTypes[i % NUM_ASTEROID_TYPES], 0, 0, 0, 0, 0, 0, 0};
         add_dirty_object(&objects[objNum]);
         objNum++;
     }
     for (int i=0; i<shipNum; i++) {
-        objects[objNum] = (Object) {objNum, &shipTypes[(i) % NUM_SHIP_TYPES], 0, 150 + 50 * i, 400, 0, 0, 1, 1};
+        objects[objNum] = (Object) {objNum, &shipTypes[(i) % NUM_SHIP_TYPES], 0, 150 + 50 * i, 400, 0, 0, 1, 0};
         add_dirty_object(&objects[objNum]);
         objNum++;
     }
     for (int i=0; i<statusNum; i++) {
-        objects[objNum] = (Object) {objNum, &statusTypes[i % NUM_STATUS_TYPES], 0, WIDTH - 16*(statusNum - i), 0, 0, 0, 1, 1};
+        objects[objNum] = (Object) {objNum, &statusTypes[i % NUM_STATUS_TYPES], 0, WIDTH - 16*(statusNum * 2 - i * 2), 0, 0, 0, 1, 0};
         add_dirty_object(&objects[objNum]);
         objNum++;
     }
@@ -151,6 +155,20 @@ void init_objects(int playerNum, int asteroidPerPlayer, int laserPerPlayer)
         xLogo += (i == 5 ? 16 : 0);
         xLogo += (i == 7 ? 16 : 0);
         objects[objNum] = (Object) {objNum, &letterLogoType, num_letters_logo + i, xLogo, yLogoBase, 0, 0, 1, 1};
+        add_dirty_object(&objects[objNum]);
+        objNum++;
+    }
+
+    // Positioning of scores
+    int xScoreBase = 0;
+    int yScoreBase = 0;
+    for (int i=0; i<scoreNum; i++) {
+        if (i == 0) {
+            tmpScoreObjId = objNum;
+        }
+        xScoreBase += 16;
+        xScoreBase += i % 2 == 0 ? 16 : 0;
+        objects[objNum] = (Object) {objNum, &scoreType, 0, xScoreBase, yScoreBase, 0, 0, 1, 0};
         add_dirty_object(&objects[objNum]);
         objNum++;
     }

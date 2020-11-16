@@ -12,4 +12,8 @@
 #include "spi.h"
 #include "controllers.h"
 
+Object globalObj;
+
+SpriteType globalSpriteType;
+
 #endif // _MAIN_H_

@@ -31,6 +31,7 @@ typedef enum {
     STATUS,
     LETTER_GAME_OVER,
     LETTER_LOGO,
+    SCORE,
     STAR
 } SpriteName;
 
@@ -64,6 +65,7 @@ SpriteType asteroidTypes[NUM_ASTEROID_TYPES];
 SpriteType laserType;
 SpriteType letterGameOverType;
 SpriteType letterLogoType;
+SpriteType scoreType;
 SpriteType starType;
 
 /// The number of different types of stars to spawn
@@ -77,6 +79,9 @@ int laserNum;
 int num_letters_game_over;
 int num_letters_logo;
 int num_letters_push_to_start;
+int scoreNum;
+// Weird bug, scores in game_logic need this explicity
+int tmpScoreObjId;
 
 
 int starNum;

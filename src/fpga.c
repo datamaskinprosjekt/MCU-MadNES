@@ -1,6 +1,4 @@
 #include "fpga.h"
-#include "data.h"
-
 
 /**************************************************************
  * Waits for the FPGA to be ready.
@@ -84,10 +82,10 @@ void write_tile_sheet(uint16_t* tile_sheet, int size)
  *************************************************************/
 void write_palette(Color* palette, int size)
 {
-    uint16_t* addr = FPGA_ADDR;
+    void* addr = FPGA_ADDR;
     
     for (int id = 0; id < size; id++) {
-        addr += sizeof(uint16_t) * id;
+        addr = FPGA_ADDR + sizeof(uint16_t) * id;
 
         Color* color = palette + id;
 
@@ -96,8 +94,8 @@ void write_palette(Color* palette, int size)
 
         set_bank(PALETTE);
         
-        *addr = RG_Pair;
-        *(addr + 1) = B_Single;
+        *( (uint16_t*) addr) = RG_Pair;
+        *( (uint16_t*) addr + 1) = B_Single;
 
         clear_bank();
     }
@@ -192,6 +190,18 @@ void clear_sprite_sheet(int size)
     }
 }
 
+void clear_palette(int size)
+{
+    for (int i = 0; i < size; i++) {
+        set_bank(PALETTE);
+
+        uint16_t zero = 0;
+
+        *(FPGA_ADDR + i) = zero;
+        clear_bank();
+    }
+}
+
 
 /**************************************************************
  * Sends initial data consisting of tile sheet, sprite sheet
@@ -205,4 +215,33 @@ void send_initial_data()
     write_sprite_sheet((uint16_t*) sprite_data, NUM_SPRITES * 128);
     
     write_palette(palette, NUM_COLORS);
+}
+
+// Test
+
+Color* create_palette_alt()
+{
+	Color* palette;
+    int i, j;
+		
+	palette = (Color*) malloc(NUM_COLORS_ALT * sizeof(void*));
+	i = 0;
+	
+	for (j = 0; j < (NUM_COLORS_ALT * 3); j += 3) {
+		Color color = {.r = palette_data_alt[j], .g = palette_data_alt[j+1], .b = palette_data_alt[j+2]};
+		palette[i] = color;
+		i++;
+	}
+	
+	return palette;
+}
+
+void send_initial_data_alt()
+{
+    Color* palette;
+    palette = create_palette_alt(NUM_COLORS_ALT);
+
+    write_sprite_sheet((uint16_t*) sprite_data_alt, NUM_SPRITES_ALT * 128);
+    
+    write_palette(palette, NUM_COLORS_ALT);
 }

@@ -107,23 +107,21 @@ void receive_ctrl_SPI(int id, uint8_t* buttons, uint8_t* joystick_x, uint8_t* jo
 
     select_controller(id);
     *buttons = USART_SpiTransfer(USART0, 1);
-
-
     select_controller(-1);
 
     select_controller(id);
     *joystick_x = USART_SpiTransfer(USART0, 2);
-
     select_controller(-1);
-
 
     // Idle: (131, 126)
     // Axis: 0-255
 
     select_controller(id);
     *joystick_y = USART_SpiTransfer(USART0, 0);
-
     select_controller(-1);
+    
+    delay(25/1000);
+
 }
 
 
