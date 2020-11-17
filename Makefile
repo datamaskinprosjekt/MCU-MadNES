@@ -10,15 +10,18 @@
 ####################################################################
 
 DEVICE = EFM32GG980F1024
-PROJECTNAME = astroids
+PROJECTNAME = MadNES
 
 OBJ_DIR = build
 EXE_DIR = exe
 LST_DIR = lst
 
 LIB = lib
-SRC = src
-INC = inc
+SYS_SRC = sys/src
+SYS_INC = sys/inc
+GAME_SRC = game/src
+GAME_INC = game/inc
+MAIN = game/src/main.c
 DIR = .
 
 ####################################################################
@@ -116,26 +119,26 @@ INCLUDEPATHS += \
 -I$(LIB)/CMSIS/Include \
 -I$(LIB)/EFM32GG/Include \
 -I$(LIB)/emlib/inc \
--I$(INC)\
+-I$(SYS_INC) \
+-I$(GAME_INC) \
 
 
 ####################################################################
 # Files                                                            #
 ####################################################################
 
-C_SRC +=  \
-$(SRC)/main.c \
-$(SRC)/sys_time.c \
-$(SRC)/debug_output.c \
-$(SRC)/ebi.c \
-$(SRC)/fpga.c \
-$(SRC)/spi.c \
-$(SRC)/interrupt_handlers.c \
-$(SRC)/controllers.c \
-$(SRC)/object.c \
-$(SRC)/game_logic.c \
-$(SRC)/data.c \
-$(SRC)/data_alt.c \
+C_SRC += \
+$(SYS_SRC)/sys_time.c \
+$(SYS_SRC)/debug_output.c \
+$(SYS_SRC)/ebi.c \
+$(SYS_SRC)/fpga.c \
+$(SYS_SRC)/spi.c \
+$(SYS_SRC)/interrupt_handlers.c \
+$(SYS_SRC)/controllers.c \
+$(GAME_SRC)/main.c \
+$(GAME_SRC)/object.c \
+$(GAME_SRC)/game_logic.c \
+$(GAME_SRC)/data.c \
 $(LIB)/EFM32GG/Source/system_efm32gg.c \
 $(LIB)/emlib/src/em_assert.c \
 $(LIB)/emlib/src/em_cmu.c \
