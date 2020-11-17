@@ -21,20 +21,3 @@ The exacutable file can then be found in the folder MCU/exe.
     3. Press Flash.
 
 ---
-
-## Project Structure
-
-The system files include all files that are not game-specific.
-
----
-
-## Creating your own game for MadNES
-There is an 
-If you want to create your own game you will need to follow some basic guidelines.
-- Create a sprite sheet where each sprite is 16 x 16 bytes and place it in `sprite_data` in data.c.
-- Create a palette where each color is 3 bytes (RGB) and place it in `palette_data`in data.c.
-- Provide information about your sprite sheet and palette by setting the macros `NUM_SPRITES` and `NUM_COLORS` to the number of sprites in your sprite sheet and the number of colors in your palette respectively.
-- Make use of the Oject structure, see ?.c
-
-
-Initialize your game by adding the objects you will need. One object will correspond to one element on screen. 
