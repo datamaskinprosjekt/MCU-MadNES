@@ -160,9 +160,6 @@ void receive_ctrl_SPI(int id, uint8_t* buttons, uint8_t* joystick_x, uint8_t* jo
     select_controller(-1);
 
     select_controller(id);
-    *joystick_y = USART_SpiTransfer(USART0, 0);
+    *joystick_y = USART_SpiTransfer(USART0, 3);
     select_controller(-1);
-    
-    // Delay to stabalize select signals
-    delay(25/1000);
 }

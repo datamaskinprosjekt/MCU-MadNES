@@ -124,6 +124,9 @@ void init_game()
 	// Set game state
 	game_state = GAME_START_SCREEN;
 
+	// Check controller status
+	refresh_controller_status();
+
 	// Set number of players, asteroids per player, lasers per player
 	playerNum = get_num_active_controllers();
 	asteroidPerPlayer = 3;
@@ -131,7 +134,6 @@ void init_game()
 
 	// Initialize objects
 	init_objects(playerNum, asteroidPerPlayer, laserPerPlayer);
-
 
 	/*
 	 * Set number of ticks delay before action
@@ -164,7 +166,7 @@ void init_game()
 	flickerTotal = 6;
 
 	// Malloc arrays of elements
-	players = (PlayerElem *) malloc(sizeof(PlayerElem) * playerNum);
+	players = (PlayerElem *) malloc(sizeof(PlayerElem) * MAX_CONTROLLERS);
 	asteroids = (AsteroidElem *) malloc(sizeof(AsteroidElem) * asteroidNum);
 	lasers = (LaserElem *) malloc(sizeof(LaserElem) * laserNum);
 	letterGameOver = (LetterGameOverElem *) malloc(sizeof(LetterGameOverElem) * num_letters_game_over);
@@ -189,10 +191,47 @@ void init_game()
 
 	// Initialize all players
 	for (int i=0; i<playerNum; i++) {
-		players[i] = (PlayerElem) {i, 3, 0, flickerTotal, laserPerPlayer * i, 0, 0, 0, 0, &objects[objIdx], &objects[playerNum + objIdx], get_next_active_controller()};
+		players[i] = (PlayerElem) {
+			i,								// ID
+			3,								// HP
+			0,								// isHit
+			flickerTotal,					// flickerDownCnt
+			laserPerPlayer * i,				// laserIdx
+			0,								// localLaserNext
+			0,								// pixelTicksCnt
+			0,								// shootTicksCnt
+			0,								// flickerTicksCnt
+			&objects[objIdx],				// shipObj
+			&objects[MAX_CONTROLLERS + objIdx], // statusObj
+			get_next_active_controller(false), // controller
+			true						  // enabled
+		};
 		objIdx++;
 	}
-	objIdx += playerNum;
+
+	// Initialize possible players
+	for (int i = playerNum; i < MAX_CONTROLLERS; i++) {
+		players[i] = (PlayerElem) {
+			i,
+			3,
+			0,
+			flickerTotal,
+			laserPerPlayer * i,
+			0,
+			0,
+			0,
+			0,
+			&objects[objIdx],
+			&objects[MAX_CONTROLLERS + objIdx],
+			NULL,
+			false
+		};
+		objIdx++;
+	}
+	players[0].statusObj = &objects[statusObjIdx];
+
+	// Skip over the status objects
+	objIdx += MAX_CONTROLLERS;
 
 	// Initialize GAME OVER text
 	for (int i=0; i<num_letters_game_over; i++) {
@@ -405,6 +444,7 @@ void joystick_handler(int playerIdx, int rot)
 		}
 
 		// Set ship rotation by updating sprite index, xFlip and yFlip
+		// xFlip and yFlip must be swapped
 		player->shipObj->localSpriteIdx = spriteIdx;
 		player->shipObj->xFlip = yFlip;
 		player->shipObj->yFlip = xFlip;
@@ -469,8 +509,9 @@ void button_shoot_handler(int playerIdx)
 		int currentShootTicks = player->shootTicksCnt + deltaTicks;
 		int shootNum = currentShootTicks / shootTicks;
 		player->shootTicksCnt = currentShootTicks % shootTicks;
-		if (shootNum) {
 
+		if (shootNum) {
+			
 			// Enable and position the next laser
 			LaserElem* laser = &lasers[player->laserIdx + player->localLaserNext];
 			player->localLaserNext = (player->localLaserNext + 1) % laserPerPlayer;
@@ -499,6 +540,11 @@ void button_start_handler()
 	if (game_state != GAME_RUN) {
 		game_state = GAME_RUN;
 
+		// Get the most recent status for the controllers
+		refresh_controller_status();
+
+		int num_connected_controllers = get_num_active_controllers();
+
 		// Hide GAME OVER text
 		for (int i=0; i<num_letters_game_over; i++) {
 			LetterGameOverElem* letter = &letterGameOver[i];
@@ -521,7 +567,7 @@ void button_start_handler()
 		}
 
 		// Reset player attributes
-		for (int i=0; i<shipNum; i++) {
+		for (int i=0; i<MAX_CONTROLLERS; i++) {
 			PlayerElem* player = &players[i];
 			player->hp = 3;
 			player->isHit = 0;
@@ -530,20 +576,22 @@ void button_start_handler()
 			player->pixelTicksCnt = 0;
 			player->shootTicksCnt = 0;
 			player->flickerTicksCnt = 0;
-			player->shipObj->enabled = 1;
 			player->shipObj->localSpriteIdx = 0;
 			player->shipObj->xPos = 150 + 50*i;
 			player->shipObj->yPos = 400;
 			player->shipObj->xFlip = 0;
 			player->shipObj->yFlip = 0;
-			player->statusObj->enabled = 1;
+			player->shipObj->enabled = false;
+			player->statusObj->enabled = false;
 			player->statusObj->localSpriteIdx = 0;
+			player->controller = NULL;
+			player->enabled = false;
 			add_dirty_object(player->shipObj);
 			add_dirty_object(player->statusObj);
 		}
 
 		// Reset asteroid attributes
-		for (int i=0; i<asteroidNum; i++) {
+		for (int i=0; i< MAX_CONTROLLERS * asteroidPerPlayer; i++) {
 			AsteroidElem* asteroid = &asteroids[i];
 			set_asteroid_pos(asteroid);
 			asteroid->isHit = 0;
@@ -551,7 +599,22 @@ void button_start_handler()
 			asteroid->pixelTicksCnt = 0;
 			asteroid->explodeTicksCnt = 0;
 			asteroid->prevCollideState = 0;
-			asteroid->asteroidObj->enabled = 1;
+			asteroid->asteroidObj->enabled = 0;
+			asteroid->asteroidObj->localSpriteIdx = 0;
+			add_dirty_object(asteroid->asteroidObj);
+		}
+
+		// Enable only the asteroids that should be enabled
+		for ( int i = 0; i < num_connected_controllers*asteroidPerPlayer; i++)
+		{
+			AsteroidElem* asteroid = &asteroids[i];
+
+			asteroid->isHit = 0;
+			asteroid->playerIdx = i / asteroidPerPlayer;
+			asteroid->pixelTicksCnt = 0;
+			asteroid->explodeTicksCnt = 0;
+			asteroid->prevCollideState = 0;
+			asteroid->asteroidObj->enabled = 0;
 			asteroid->asteroidObj->localSpriteIdx = 0;
 			add_dirty_object(asteroid->asteroidObj);
 		}
@@ -565,16 +628,48 @@ void button_start_handler()
 		}
 
 		// Reset SCORE display
-		for (int i=0; i<scoreNum; i++) {
+		for (int i=0; i<MAX_CONTROLLERS * 2; i++) {
+			ScoreElem* score = &scores[i];
+			score->scoreObj->enabled = 0;
+			score->scoreObj->localSpriteIdx = 0;
+			add_dirty_object(score->scoreObj);
+		}
+
+		// Enable Score Elements for the connected players
+		for(int i = 0; i < num_connected_controllers*2; i++)
+		{
 			ScoreElem* score = &scores[i];
 			score->scoreObj->enabled = 1;
-			score->scoreObj->localSpriteIdx = 0;
 			add_dirty_object(score->scoreObj);
 		}
 
 		// Reset asteroid speed
 		asteroidPixelTicks = asteroidStartPixelTicks;
 		increaseAsteroidSpeedTicksCnt = 0;
+
+		// Reset the active controller iterator
+		get_next_active_controller(true);
+
+		// Assign players to their ships
+		for(int i = 0; i < num_connected_controllers; i++)
+		{
+			PlayerElem* player = &players[i];
+			player->controller = get_next_active_controller(false);
+			player->enabled = true;
+			player->statusObj->enabled = true;
+			player->statusObj->xPos = WIDTH - 16*(num_connected_controllers * 2 - i * 2);
+			player->shipObj->enabled = true;
+			add_dirty_object(player->statusObj);
+			add_dirty_object(player->shipObj);
+		}
+
+		shipNum = num_connected_controllers;
+		statusNum = num_connected_controllers;
+		playerNum = num_connected_controllers;
+		asteroidNum = num_connected_controllers * asteroidPerPlayer;
+		laserNum = num_connected_controllers * laserPerPlayer;
+		scoreNum = num_connected_controllers * 2;
+
 	}
 }
 
@@ -1040,11 +1135,11 @@ void game_over()
  */
 void start_screen_loop()
 {
-	pressToStartFlickerCounter += deltaTicks;
+	pressToStartFlickerTicksCnt += deltaTicks;
 
 	// Flicker PRESS TO PLAY text
-	if(pressToStartFlickerCounter > 7500) {
-		pressToStartFlickerCounter = 0;
+	if(pressToStartFlickerTicksCnt > 7500) {
+		pressToStartFlickerTicksCnt = 0;
 		for (int i = 0; i < num_letters_push_to_start; i++) {
 			LetterPushToStartElem* letter = &letterPushToStart[i];
 			letter->letterPushToStartObj->enabled = !letter->letterPushToStartObj->enabled;
@@ -1064,7 +1159,7 @@ void start_screen()
 {
 	game_state = GAME_START_SCREEN;
 
-	pressToStartFlickerCounter = 0;
+	pressToStartFlickerTicksCnt = 0;
 
 	// Hide GAME OVER text
 	for(int i = 0; i < num_letters_game_over; i++)

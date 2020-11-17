@@ -14,5 +14,6 @@ void setup_SPI();
 void teardown_SPI();
 
 void receive_ctrl_SPI(int id, uint8_t* buttons, uint8_t* joystick_x, uint8_t* joystick_y);
+void send_ctrl_sound(int id, int sound);
 
 #endif // _SPI_H_

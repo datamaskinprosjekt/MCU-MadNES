@@ -1,8 +1,17 @@
 #include "controllers.h"
-#include <math.h>
-#include "meta_data.h"
 
-#define CONTROLLER_DEADZONE 50
+#define CONTROLLER_DEADZONE 35
+
+/**************************************************************
+ * Controller Interfacing.
+ * ------------------------------------------------------------
+ * This file contains all the functions needed to handle
+ * interfacing with the controllers.
+ * 
+ * See spi.c for specifics on how data-transfers are handled.
+ *************************************************************/
+
+#define PI 3.14159265
 
 
 int get_controllers()
@@ -16,9 +25,14 @@ int get_controllers()
 }
 
 
-Controller* get_next_active_controller()
+Controller* get_next_active_controller(bool reset)
 {
     static int i = -1;
+
+    if(reset) {
+        i = -1;
+        return;
+    }
 
     i += 1;
 
@@ -49,13 +63,19 @@ uint8_t get_num_active_controllers()
 }
 
 
+// Todo: Comment this function
 void initialize_controllers()
 {
     // Allocate memory for Controller structs and zero the memory region
     CONTROLLER_INPUTS = (Controller*) malloc(sizeof(Controller) * 8);
     memset(CONTROLLER_INPUTS, 0, sizeof(Controller) * 8);
+}
 
+// TODO: Comment this function
+void refresh_controller_status()
+{
     bool is_avail;
+
     for(int i = 0; i < 8; i++)
     {
         is_avail = check_controller_connection(i);
@@ -70,8 +90,19 @@ void initialize_controllers()
                 .btn1 = false,
                 .btn2 = false   
             };
-        }         
-    }    
+        } else {
+            CONTROLLER_INPUTS[i] = (Controller) {
+                .id = i,
+                .enabled = false,
+                .joyDir = -1,
+                .prevJoyDir = -1,
+                .joyBtn = false,
+                .btn1 = false,
+                .btn2 = false
+            };
+        }
+
+    }
 }
 
 
@@ -88,19 +119,6 @@ void select_controller(int id)
         GPIO_PortOutSetVal(gpioPortA, 1 << (16 - id), 0b0000000111111000); // Set correct port
         GPIO_PortOutSetVal(gpioPortB, 0, 0b0000000000000111); // Clear other port
     }
-}
-
-
-void send_to_controller(int id, uint8_t data)
-{
-    // Set Chip Select
-    select_controller(id);
-
-    // Send data
-    send_ctrl_SPI(&data);
-    
-    // Clear Chip Select
-    select_controller(-1);
 }
 
 
@@ -196,14 +214,35 @@ void poll_single_controller(int id)
         return;
     }
 
-    if(joystick_x > 80 && joystick_x < 160 && joystick_y == 255) ctrl->joyDir = 0;
-    else if(joystick_x == 255 && joystick_y == 255) ctrl->joyDir = 2;
-    else if(joystick_x == 255 && joystick_y > 150 ) ctrl->joyDir = 4;
-    else if(joystick_x == 255 && joystick_y < 20 )  ctrl->joyDir = 6;
-    else if(joystick_x > 80 && joystick_x < 160 && joystick_y < 20 )  ctrl->joyDir = 8;
-    else if(joystick_x < 20 && joystick_y < 20 )  ctrl->joyDir = 12;
-    else if(joystick_x < 80 && joystick_y < 20 )  ctrl->joyDir = 10;
-    else if(joystick_x < 20 && joystick_y > 80 && joystick_y < 160) ctrl->joyDir = 14;
+    int16_t vertical = joystick_y - 127;
+    int16_t horizontal = joystick_x - 127;
+
+    uint16_t angle = (uint16_t) (round((atan2(-horizontal, -vertical)+PI)*180/PI));
+
+    if(angle < 0) {
+        angle = 360 - angle;
+    }
+
+    bool centered = ((vertical < 5) && (vertical > -5) && (horizontal < 5) && (horizontal > -5));
+
+    uint8_t joyDir = round( (long) ((angle - 0) * (15 - 0)) / (long) (360 - 0) + 0);
+
+    if(centered) {
+        ctrl->joyDir = -1;
+    } else {
+        ctrl->joyDir = joyDir;
+    }
+
+
+
+    //if(joystick_x > 80 && joystick_x < 160 && joystick_y == 255) ctrl->joyDir = 0;
+    //else if(joystick_x == 255 && joystick_y == 255) ctrl->joyDir = 2;
+    //else if(joystick_x == 255 && joystick_y > 150 ) ctrl->joyDir = 4;
+    //else if(joystick_x == 255 && joystick_y < 20 )  ctrl->joyDir = 6;
+    //else if(joystick_x > 80 && joystick_x < 160 && joystick_y < 20 )  ctrl->joyDir = 8;
+    //else if(joystick_x < 20 && joystick_y < 20 )  ctrl->joyDir = 12;
+    //else if(joystick_x < 80 && joystick_y < 20 )  ctrl->joyDir = 10;
+    //else if(joystick_x < 20 && joystick_y > 80 && joystick_y < 160) ctrl->joyDir = 14;
 
     // Values to map from 
     // 0 deg:   (131, 255)

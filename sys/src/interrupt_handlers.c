@@ -99,6 +99,10 @@ void blanking_interrupt()
        if (dirty_objects[i]) {
            dirty_obj = &objects[i];
            write_object(dirty_obj);
+
+           if(dirty_obj->type == SCORE) {
+               int breakhere = 3;
+           }
        }
     }
 

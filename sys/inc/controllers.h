@@ -3,9 +3,12 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include <math.h>
 
 #include "em_gpio.h"
+
 #include "spi.h"
+#include "meta_data.h"
 
 /// Mask for pins 9-12 on PORT B
 #define CTRL_PORT_B_MASK 0b1111000000000
@@ -26,6 +29,10 @@ typedef struct  {
 
 Controller* CONTROLLER_INPUTS;
 
+Controller* get_next_active_controller(bool reset);
+
+
+void refresh_controller_status();
 
 uint8_t get_num_active_controllers();
 
@@ -80,16 +87,6 @@ void select_controller(int id);
  * Initializes Controller structs for all active controllers.
  *************************************************************/
 void initialize_controllers();
-
-
-/*************************************************************
- * For testing purposes.
- * Transmits data to a single controller connected.
- * 
- * @param id The identifier of the controller to transmit to.
- * @param data The data to transmit.
- *************************************************************/
-void send_to_controller(int id, uint8_t data);
 
 
 /*************************************************************
