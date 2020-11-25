@@ -1,4 +1,5 @@
-# MCU
+![](logo.png)
+# MadNES MCU source
 
 ## Setup
 
