@@ -4,8 +4,8 @@
 /**************************************************************
  * EBI Functionality
  * ------------------------------------------------------------
- * Here are all the functions used for utilizing the EBI bus
- * to the FPGA on the EFM32GG.
+ * This file contains all the functions for utilizing the
+ * EBI bus to the FPGA on the EFM32GG.
  **************************************************************/
 
 

@@ -1,9 +1,8 @@
 #include "controllers.h"
 
-#define CONTROLLER_DEADZONE 35
 
 /**************************************************************
- * Controller Interfacing.
+ * Controller Interfacing
  * ------------------------------------------------------------
  * This file contains all the functions needed to handle
  * interfacing with the controllers.
@@ -11,10 +10,39 @@
  * See spi.c for specifics on how data-transfers are handled.
  *************************************************************/
 
-#define PI 3.14159265
+/**************************************************************
+ * Chip Active Pins
+ * ------------------------------------------------------------
+ * CA1 = PE4
+ * CA2 = PE3
+ * CA3 = PE2
+ * CA4 = PE1
+ * CA5 = PE0
+ * CA6 = PB10
+ * CA7 = PB9
+ * CA8 = PB12
+ * CA9 = PB11
+ **************************************************************/
+
+/**************************************************************
+ * Chip Select Pins 
+ * ------------------------------------------------------------
+ * CS1 = PB2
+ * CS2 = PB1
+ * CS3 = PB0
+ * CS4 = PA13
+ * CS5 = PA12
+ * CS6 = PA11
+ * CS7 = PA10
+ * CS8 = PA9
+ * CS9 = PA8
+ **************************************************************/
 
 
-int get_controllers()
+/*************************************************************
+ * Gets the active controllers based on the Chip Available pins
+ *************************************************************/
+int get_controllers_status()
 {
     uint32_t port_E_input = GPIO_PortInGet(gpioPortE);
     uint32_t port_B_input = GPIO_PortInGet(gpioPortB);
@@ -25,112 +53,12 @@ int get_controllers()
 }
 
 
-Controller* get_next_active_controller(bool reset)
-{
-    static int i = -1;
-
-    if(reset) {
-        i = -1;
-        return;
-    }
-
-    i += 1;
-
-    while(!CONTROLLER_INPUTS[i].enabled && i < MAX_CONTROLLERS)
-    {
-       i++; 
-    }
-
-    if(i >= MAX_CONTROLLERS) return NULL;
-
-    return &CONTROLLER_INPUTS[i];
-}
-
-uint8_t get_num_active_controllers()
-{
-    uint8_t counter = 0;
-
-    for(int i = 0; i < 8; i++ )
-    {
-
-        if(CONTROLLER_INPUTS[i].enabled) {
-            counter++;
-        }
-
-    }
-
-    return counter;
-}
-
-
-// Todo: Comment this function
-void initialize_controllers()
-{
-    // Allocate memory for Controller structs and zero the memory region
-    CONTROLLER_INPUTS = (Controller*) malloc(sizeof(Controller) * 8);
-    memset(CONTROLLER_INPUTS, 0, sizeof(Controller) * 8);
-}
-
-// TODO: Comment this function
-void refresh_controller_status()
-{
-    bool is_avail;
-
-    for(int i = 0; i < 8; i++)
-    {
-        is_avail = check_controller_connection(i);
-
-        if(is_avail) {
-            CONTROLLER_INPUTS[i] = (Controller) {
-                .id = i,
-                .enabled = true,
-                .joyDir = -1,
-                .prevJoyDir = -1,
-                .joyBtn = false,
-                .btn1 = false,
-                .btn2 = false   
-            };
-        } else {
-            CONTROLLER_INPUTS[i] = (Controller) {
-                .id = i,
-                .enabled = false,
-                .joyDir = -1,
-                .prevJoyDir = -1,
-                .joyBtn = false,
-                .btn1 = false,
-                .btn2 = false
-            };
-        }
-
-    }
-}
-
-
-void select_controller(int id)
-{
-    if(id == -1) {
-        GPIO_PortOutSetVal(gpioPortB, 0, 0b0000000000000111); // Set correct port
-        GPIO_PortOutSetVal(gpioPortA, 0, 0b0000000111111000); // Clear other port
-    }
-    if (id <= 2) {
-        GPIO_PortOutSetVal(gpioPortB, 1 << (2 - id), 0b0000000000000111); // Set correct port
-        GPIO_PortOutSetVal(gpioPortA, 0, 0b0000000111111000); // Clear other port
-    } else {
-        GPIO_PortOutSetVal(gpioPortA, 1 << (16 - id), 0b0000000111111000); // Set correct port
-        GPIO_PortOutSetVal(gpioPortB, 0, 0b0000000000000111); // Clear other port
-    }
-}
-
-
-void poll_controllers()
-{
-    for (int i = 0; i < 9; i++) {
-        if(CONTROLLER_INPUTS[i].enabled) {
-            poll_single_controller(i);
-        }
-    }
-}
-
+/*************************************************************
+ * Checks if a spesific controller is connected.
+ * 
+ * @param id The identifier of the controller to check for connection.
+ * @returns Boolean to indicate if the controller is connected. 
+ *************************************************************/
 bool check_controller_connection(int id)
 {
 
@@ -166,19 +94,161 @@ bool check_controller_connection(int id)
             break;
     }
 
-
     return retVal;
 }
 
 
+/**************************************************************
+ * Sets the Chip Select line corresponding to a specific controller.
+ * 
+ * @param id The identifier of the controller to select.
+ **************************************************************/ 
+void select_controller(int id)
+{
+    if(id == -1) {
+        GPIO_PortOutSetVal(gpioPortB, 0, 0b0000000000000111); // Set correct port
+        GPIO_PortOutSetVal(gpioPortA, 0, 0b0000000111111000); // Clear other port
+    }
+    if (id <= 2) {
+        GPIO_PortOutSetVal(gpioPortB, 1 << (2 - id), 0b0000000000000111); // Set correct port
+        GPIO_PortOutSetVal(gpioPortA, 0, 0b0000000111111000); // Clear other port
+    } else {
+        GPIO_PortOutSetVal(gpioPortA, 1 << (16 - id), 0b0000000111111000); // Set correct port
+        GPIO_PortOutSetVal(gpioPortB, 0, 0b0000000000000111); // Clear other port
+    }
+}
+
+
 /*************************************************************
- * Uses the SPI bus to poll a single controller for its inputs
- * and decodes the rotation value for the joystick
- *
- * Button Bitmask:
+ * Allocates memory for Controller structures for
+ * the maximum number of controllers.
+ *************************************************************/
+void initialize_controllers()
+{
+    CONTROLLER_INPUTS = (Controller*) malloc(sizeof(Controller) * 8);
+    memset(CONTROLLER_INPUTS, 0, sizeof(Controller) * 8);
+}
+
+
+/*************************************************************
+ * Resets the data of the Controller structures.
+ *************************************************************/
+void refresh_controller_status()
+{
+    bool is_avail;
+
+    for(int i = 0; i < 8; i++)
+    {
+        is_avail = check_controller_connection(i);
+
+        if(is_avail) {
+            CONTROLLER_INPUTS[i] = (Controller) {
+                .id = i,
+                .enabled = true,
+                .joyDir = -1,
+                .prevJoyDir = -1,
+                .joyBtn = false,
+                .btn1 = false,
+                .btn2 = false   
+            };
+        } else {
+            CONTROLLER_INPUTS[i] = (Controller) {
+                .id = i,
+                .enabled = false,
+                .joyDir = -1,
+                .prevJoyDir = -1,
+                .joyBtn = false,
+                .btn1 = false,
+                .btn2 = false
+            };
+        }
+
+    }
+}
+
+
+/*************************************************************
+ * Gets the number of controllers connected.
+ * 
+ * @returns The number of active controllers.
+ *************************************************************/
+uint8_t get_num_active_controllers()
+{
+    uint8_t counter = 0;
+
+    for(int i = 0; i < 8; i++ )
+    {
+
+        if(CONTROLLER_INPUTS[i].enabled) {
+            counter++;
+        }
+
+    }
+
+    return counter;
+}
+
+
+/*************************************************************
+ * Gets the first active controller using the Controller structure.
+ * 
+ * @param reset
+ * @returns A pointer to the Controller structure of the first active controller.
+ *************************************************************/
+Controller* get_next_active_controller(bool reset)
+{
+    static int i = -1;
+
+    if(reset) {
+        i = -1;
+        return;
+    }
+
+    i += 1;
+
+    while(!CONTROLLER_INPUTS[i].enabled && i < MAX_CONTROLLERS)
+    {
+       i++; 
+    }
+
+    if(i >= MAX_CONTROLLERS) return NULL;
+
+    return &CONTROLLER_INPUTS[i];
+}
+
+
+/*************************************************************
+ * Polls all connected controllers in turn.
+ *************************************************************/
+void poll_controllers()
+{
+    for (int i = 0; i < 9; i++) {
+        if(CONTROLLER_INPUTS[i].enabled) {
+            poll_single_controller(i);
+        }
+    }
+}
+
+
+/*************************************************************
+ * @brief Polls a single controller connected and stores the
+ * input data in the corresponding Controller struct.
+ * -----------------------------------------------------------
+ * Receives data from the buttons and the joystick of a
+ * controller using the SPI and decodes the recevied data.
+ * 
+ * The buttons are considered active (1) or not active (0).
+ * Button Bitmask
  * 00000001: A
  * 00000010: B
- * 00000100: Joystick Button 
+ * 00000100: Joystick Button
+ * 
+ * The joystick data is translated into a rotation.
+ * Joystick rotations
+ * -1: no rotation
+ * 0 to 16: 0 to 360 degrees
+ * 
+ * @param id The identifier of the controller to poll.
  *************************************************************/
 void poll_single_controller(int id)
 {
@@ -232,26 +302,4 @@ void poll_single_controller(int id)
     } else {
         ctrl->joyDir = joyDir;
     }
-
-
-
-    //if(joystick_x > 80 && joystick_x < 160 && joystick_y == 255) ctrl->joyDir = 0;
-    //else if(joystick_x == 255 && joystick_y == 255) ctrl->joyDir = 2;
-    //else if(joystick_x == 255 && joystick_y > 150 ) ctrl->joyDir = 4;
-    //else if(joystick_x == 255 && joystick_y < 20 )  ctrl->joyDir = 6;
-    //else if(joystick_x > 80 && joystick_x < 160 && joystick_y < 20 )  ctrl->joyDir = 8;
-    //else if(joystick_x < 20 && joystick_y < 20 )  ctrl->joyDir = 12;
-    //else if(joystick_x < 80 && joystick_y < 20 )  ctrl->joyDir = 10;
-    //else if(joystick_x < 20 && joystick_y > 80 && joystick_y < 160) ctrl->joyDir = 14;
-
-    // Values to map from 
-    // 0 deg:   (131, 255)
-    // 45 deg:  (255, 255) 
-    // 90 deg:  (255, 126)
-    // 135 deg: (255, 0)
-    // 180 deg: (131, 0)
-    // 225 deg: (0  , 0)
-    // 270 deg: (0  , 126)
-    // 315 deg: (255, 0)
-
 }

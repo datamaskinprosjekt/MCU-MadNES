@@ -1,5 +1,6 @@
 #include "interrupt_handlers.h"
 
+
 /**************************************************************
  * Interrupt Handlers
  * ------------------------------------------------------------
@@ -17,6 +18,7 @@ void register_interrupt_callback(void (*callback)())
 {
     user_interrupt_callback = callback;
 }
+
 
 /**************************************************************
  * @brief Sets up GPIO interrupt pins
@@ -68,6 +70,7 @@ void setup_NVIC()
     NVIC_EnableIRQ(GPIO_EVEN_IRQn);
 }
 
+
 /**************************************************************
  * Must be called by the game to enable writing dirty objects
  * 
@@ -99,10 +102,6 @@ void blanking_interrupt()
        if (dirty_objects[i]) {
            dirty_obj = &objects[i];
            write_object(dirty_obj);
-
-           if(dirty_obj->type == SCORE) {
-               int breakhere = 3;
-           }
        }
     }
 

@@ -4,8 +4,8 @@
 /**************************************************************
  * SPI Functionality
  * ------------------------------------------------------------
- * Here are all the functions for utilizing the SPI driver
- * on the EFM32GG.
+ * This file contains all the functions for utilizing the
+ * SPI driver on the EFM32GG.
  **************************************************************/
 
 
@@ -126,6 +126,7 @@ void teardown_SPI()
     CMU_ClockEnable(cmuClock_HFPER, false);
     CMU_ClockEnable(cmuClock_USART0, false);
 }
+
 
 /**************************************************************
  * @brief Helper function to receive controller input

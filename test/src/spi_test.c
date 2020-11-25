@@ -1,5 +1,9 @@
 #include "spi_test.h"
 
+/**************************************************************
+ * Test for SPI functionality.
+ *************************************************************/
+
 // Counts 1ms ticks
 volatile uint32_t msTicks;
 
@@ -77,32 +81,21 @@ void spi_test()
 
     while(1) {
 
-
         while(!spi_test_sem);
-        spi_test_sem = false;
 
+        spi_test_sem = false;
 
         memset(&dirty_objects, 0, sizeof(int)*MAX_OBJS);
 
-    
         poll_single_controller(0);
 
         int rot = CONTROLLER_INPUTS[0].joyDir;
-
-        //joystick_handler(rot, &obj1);
 
         if(CONTROLLER_INPUTS[0].joyDir == 2) {
             objects[1].xPos = (objects[1].xPos + 1) % 640;
             objects[1].yPos = (objects[1].yPos + 1) % 480;
 
-            //write_object(&objects[1]);
             dirty_objects[1] = 1;
         }
-
-
-
-        
     }
-        
-
 }
